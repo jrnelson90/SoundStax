@@ -1,0 +1,183 @@
+package com.jrn.vinylmanager;
+
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.List;
+
+/**
+ * Created by jrnel on 2/18/2017.
+ */
+
+public class AlbumListFragment extends Fragment {
+
+    private RecyclerView mAlbumRecyclerView;
+    private Spinner mGenreFilterSpinner;
+    private AlbumAdapter mAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super .onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_album_list, container, false);
+
+        mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
+        mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
+        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mAdapter != null) {
+                    AlbumBase albumBase = AlbumBase.get(getActivity());
+                    if(String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
+                        List<Album> allAlbums = albumBase.getAlbums();
+                        mAdapter.setAlbums(allAlbums);
+                    }
+                    else {
+                        List<Album> filteredAlbums = albumBase.getFilteredAlbums(
+                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
+                        mAdapter.setAlbums(filteredAlbums);
+                    }
+
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        updateUI();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super .onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_album_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_album:
+                Album album = new Album();
+                AlbumBase.get(getActivity()).addAlbum(album);
+                Intent intent = AlbumActivity.newIntent(getActivity(), album.getId());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateUI() {
+        AlbumBase albumBase = AlbumBase.get(getActivity());
+        List<Album> albums = albumBase.getAlbums();
+
+        if(mAdapter == null){
+            mAdapter = new AlbumAdapter(albums);
+            mAlbumRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.setAlbums(albums);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
+                this.getContext(), android.R.layout.simple_spinner_item, albumBase.getGenreList());
+        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mGenreFilterSpinner.setAdapter(genreAdpater);
+    }
+
+    private class AlbumHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+
+        private final TextView mTitleTextView;
+        private final TextView mArtistTextView;
+        private final TextView mGenreTextView;
+        private Album mAlbum;
+
+        AlbumHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_album_title_text_view);
+            mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_album_artist_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_album_genre_text_view);
+        }
+
+        void bindAlbum(Album album) {
+            mAlbum = album;
+            mTitleTextView.setText(mAlbum.getTitle());
+            mArtistTextView.setText(mAlbum.getArtist());
+            mGenreTextView.setText(mAlbum.getGenre());
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = AlbumActivity.newIntent(getActivity(), mAlbum.getId());
+            startActivity(intent);
+        }
+    }
+
+    private class AlbumAdapter extends RecyclerView.Adapter<AlbumHolder> {
+        private List<Album> mAlbums;
+
+        AlbumAdapter(List<Album> albums) {
+            mAlbums = albums;
+        }
+
+        @Override
+        public AlbumHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_album, parent, false);
+            return new AlbumHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(AlbumHolder holder, int position) {
+            Album album = mAlbums.get(position);
+            holder.bindAlbum(album);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mAlbums.size();
+        }
+
+        void setAlbums(List<Album> albums) {
+            mAlbums = albums;
+        }
+
+    }
+}

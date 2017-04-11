@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<item-->
+        <!--android:id="@+id/menu_item_search"-->
+        <!--android:title="Search"-->
+        <!--android:icon="@android:drawable/ic_menu_search"-->
+        <!--app:showAsAction="always|collapseActionView"-->
+        <!--app:actionViewClass="android.support.v7.widget.SearchView">-->
+
+    <!--</item>-->
+
+    <!--<item-->
+        <!--android:title="Sort">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/menuSortTitle"-->
+                <!--android:title="Sort by Title" />-->
+            <!--<item-->
+                <!--android:id="@+id/menuSortArtist"-->
+                <!--android:title="Sort by Artist" />-->
+            <!--<item-->
+                <!--android:id="@+id/menuSortGenre"-->
+                <!--android:title="Sort by Genre" />-->
+            <!--<item-->
+                <!--android:id="@+id/menuSortYear"-->
+                <!--android:title="Sort by Year" />-->
+        <!--</menu>-->
+    <!--</item>-->
+
+    <item
+        android:id="@+id/menu_item_new_album"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/new_album"
+        app:showAsAction="always"/>
+</menu>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Vinyl Manager JRN</string>
+    <string name="album_title_hint">Enter album title.</string>
+    <string name="album_title_label">Title</string>
+    <string name="ablum_year_label">Release Year</string>
+    <string name="album_year_hint">Enter album realease year.</string>
+    <string name="ablum_owned_hint">Owned</string>
+    <string name="ablum_artist_label">Artist</string>
+    <string name="album_artist_hint">Enter album artist.</string>
+    <string name="album_genre_label">Genre</string>
+    <string name="album_genre_hint">Enter album genre</string>
+    <string name="new_album">New Album</string>
+    <string name="delete_album">Delete Album</string>
+</resources>
