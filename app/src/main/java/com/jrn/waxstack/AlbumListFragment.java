@@ -37,17 +37,13 @@ public class AlbumListFragment extends Fragment {
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
     private String mRequestToken;
-    private Button mGoogleSignIn;
-
+    private Button mSignInButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super .onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        new FetchArtistJSON().execute("Modern Action");
-        new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
-        new FetchRequestToken().execute();
     }
 
     @Override
@@ -57,6 +53,16 @@ public class AlbumListFragment extends Fragment {
 
         mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mSignInButton = (Button) view.findViewById(R.id.sign_in_button);
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new FetchArtistJSON().execute("Modern Action");
+                new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
+                new FetchRequestToken().execute();
+            }
+        });
 
         mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
         mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -256,7 +262,6 @@ public class AlbumListFragment extends Fragment {
             updateData();
         }
     }
-
 
     private class FetchRequestToken extends AsyncTask<Void, Void, String> {
         @Override

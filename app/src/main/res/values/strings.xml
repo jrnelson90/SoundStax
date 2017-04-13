@@ -11,4 +11,5 @@
     <string name="album_genre_hint">Enter album genre</string>
     <string name="new_album">New Album</string>
     <string name="delete_album">Delete Album</string>
+    <string name="sign_in_button_label">Sign In</string>
 </resources>
