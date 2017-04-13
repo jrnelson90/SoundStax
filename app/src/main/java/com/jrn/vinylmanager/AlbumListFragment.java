@@ -2,6 +2,7 @@ package com.jrn.vinylmanager;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -25,14 +28,18 @@ import java.util.List;
 
 public class AlbumListFragment extends Fragment {
 
+    private static final String TAG = "MainActivityFragment";
     private RecyclerView mAlbumRecyclerView;
     private Spinner mGenreFilterSpinner;
     private AlbumAdapter mAdapter;
+    private JSONObject mJSONObject = new JSONObject();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super .onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
+        new FetchItemsTask().execute();
     }
 
     @Override
@@ -120,6 +127,40 @@ public class AlbumListFragment extends Fragment {
         mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
+    private void updateData() {
+        final int THIRD = 3;
+        String name = "";
+        int index = 0;
+        String data = "";
+        JSONObject currentPlanet = null;
+//        while(index < mJsonArray.length()) {
+//            try {
+//                currentPlanet = mJsonArray.getJSONObject(index);
+//                name = currentPlanet.getString("name");
+//            } catch (JSONException e) {
+//                Log.e(TAG, "Object parse failed.", e);
+//            }
+//            index++;
+//        }
+//
+//        if(currentPlanet != null) {
+//            try{
+//                JSONArray satellites = currentPlanet.getJSONArray("satellites");
+//                if(satellites.length() >= THIRD) {
+//                    JSONObject thirdSatellite = satellites.getJSONObject(THIRD - 1);
+//                    data = "Name: " + thirdSatellite.getString("name") +
+//                            ", Diameter(Km): " + thirdSatellite.getString("diameterKm");
+//                }
+//            } catch (JSONException e) {
+//                Log.e(TAG, "", e);
+//            }
+//
+//            if(!data.equals("")) {
+//                // Update a item in the view here with data.
+//            }
+//        }
+    }
+
     private class AlbumHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
 
@@ -179,5 +220,18 @@ public class AlbumListFragment extends Fragment {
             mAlbums = albums;
         }
 
+    }
+
+    private class FetchItemsTask extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchItems();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mJSONObject = jsonObject;
+            updateData();
+        }
     }
 }
