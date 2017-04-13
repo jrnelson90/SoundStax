@@ -169,20 +169,15 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    JSONObject fetchRequestToken() {
-        JSONObject jsonBody = null;
-
+    String fetchRequestToken() {
         // Get JSON object for passed artist info.
+        String jsonStr = null;
         try {
-            String jsonStr = getRequestToken();
+            jsonStr = getRequestToken();
             Log.i(TAG, "Full Received Request Token: " + jsonStr);
-            jsonBody = new JSONObject(jsonStr);
-            Log.i(TAG, "Successfully parsed Request Token");
-        } catch (JSONException e) {
-            Log.e(TAG, "Failed to parse Request Token", e);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch Request Token", ioe);
         }
-        return jsonBody;
+        return jsonStr;
     }
 }

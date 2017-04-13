@@ -36,7 +36,7 @@ public class AlbumListFragment extends Fragment {
     private AlbumAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
-    private JSONObject mRequestToken = new JSONObject();
+    private String mRequestToken;
     private Button mGoogleSignIn;
 
 
@@ -258,14 +258,14 @@ public class AlbumListFragment extends Fragment {
     }
 
 
-    private class FetchRequestToken extends AsyncTask<Void, Void, JSONObject> {
+    private class FetchRequestToken extends AsyncTask<Void, Void, String> {
         @Override
-        protected JSONObject doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             return new JsonFetcher().fetchRequestToken();
         }
 
         @Override
-        protected void onPostExecute(JSONObject jsonObject) {
+        protected void onPostExecute(String jsonObject) {
             mRequestToken = jsonObject;
             updateData();
         }
