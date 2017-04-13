@@ -1,13 +1,13 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.jrn.vinylmanager.database.AlbumBaseHelper;
-import com.jrn.vinylmanager.database.AlbumCursorWrapper;
-import com.jrn.vinylmanager.database.AlbumDbSchema.AlbumTable;
+import com.jrn.waxstack.database.AlbumBaseHelper;
+import com.jrn.waxstack.database.AlbumCursorWrapper;
+import com.jrn.waxstack.database.AlbumDbSchema.AlbumTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +24,11 @@ class AlbumBase {
     private final SQLiteDatabase mDatabase;
 
 
+    private AlbumBase(Context context) {
+        Context context1 = context.getApplicationContext();
+        mDatabase = new AlbumBaseHelper(context1).getWritableDatabase();
+    }
+
     static AlbumBase get(Context context) {
         if (sAlbumBase == null) {
             sAlbumBase = new AlbumBase(context);
@@ -31,9 +36,16 @@ class AlbumBase {
         return sAlbumBase;
     }
 
-    private AlbumBase(Context context) {
-        Context context1 = context.getApplicationContext();
-        mDatabase = new AlbumBaseHelper(context1).getWritableDatabase();
+    private static ContentValues getContentValues(Album album) {
+        ContentValues values = new ContentValues();
+        values.put(AlbumTable.Cols.UUID, album.getId().toString());
+        values.put(AlbumTable.Cols.TITLE, album.getTitle());
+        values.put(AlbumTable.Cols.ARTIST, album.getArtist());
+        values.put(AlbumTable.Cols.GENRE, album.getGenre());
+        values.put(AlbumTable.Cols.YEAR, album.getYear());
+        values.put(AlbumTable.Cols.OWNED, album.isOwned() ? 1 : 0);
+
+        return values;
     }
 
     void addAlbum(Album album) {
@@ -46,7 +58,6 @@ class AlbumBase {
         String[] selectionArgs = { album.getId().toString() };
         mDatabase.delete(AlbumTable.NAME, selection, selectionArgs);
     }
-
 
     List<Album> getAlbums(){
         List<Album> albums = new ArrayList<>();
@@ -120,18 +131,6 @@ class AlbumBase {
         mDatabase.update(AlbumTable.NAME, values,
                 AlbumTable.Cols.UUID + " = ?",
                 new String[] { uuidString });
-    }
-
-    private static ContentValues getContentValues(Album album) {
-        ContentValues values = new ContentValues();
-        values.put(AlbumTable.Cols.UUID, album.getId().toString());
-        values.put(AlbumTable.Cols.TITLE, album.getTitle());
-        values.put(AlbumTable.Cols.ARTIST, album.getArtist());
-        values.put(AlbumTable.Cols.GENRE, album.getGenre());
-        values.put(AlbumTable.Cols.YEAR, album.getYear());
-        values.put(AlbumTable.Cols.OWNED, album.isOwned() ? 1 : 0);
-
-        return values;
     }
 
     private AlbumCursorWrapper queryAlbums(String whereClause, String[] whereArgs) {

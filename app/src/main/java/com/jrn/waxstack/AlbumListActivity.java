@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.support.v4.app.Fragment;
 

@@ -1,12 +1,12 @@
-package com.jrn.vinylmanager.database;
+package com.jrn.waxstack.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.jrn.vinylmanager.Album;
-import com.jrn.vinylmanager.database.AlbumDbSchema.AlbumTable;
+import com.jrn.waxstack.Album;
+import com.jrn.waxstack.database.AlbumDbSchema.AlbumTable;
 
 /**
  * Created by jrnel on 3/1/2017.

@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.util.Log;
 
@@ -19,25 +19,17 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by jrnel on 3/19/2017.
  */
 class JsonFetcher {
-
-    public static final String REQUEST_TOKEN_ENDPOINT_URL = "http://api.discogs.com/oauth/request_token";
-    public static final String AUTHORIZATION_WEBSITE_URL = "http://www.discogs.com/oauth/authorize";
-    public static final String ACCESS_TOKEN_ENDPOINT_URL = "http://api.discogs.com/oauth/access_token";
-    public static final String CONSUMER_KEY = "XqiFKQsXTFMDJpxWsrue";
-    public static final String CONSUMER_SECRET = "XjWXVtNXjieFeGMJoHDCvbnibIOBqkbu";
-    public static final String CALLBACK_URL = "callback://discogs";
-    public static final String USER_AGENT = "VinylManager/0.1 +com.jrn.vinylmanager";
     private static final String TAG = "JsonFetcher";
-    private static final String URL = "https://api.discogs.com/releases/249504";
+    private static final String RICK_URL = "https://api.discogs.com/releases/249504";
 
     private static String getStringFromUrl(String url) throws IOException {
 
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
-        connection.addRequestProperty("User-Agent", USER_AGENT);
+        connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
         connection.setConnectTimeout(30000);
         connection.setReadTimeout(30000);
-        connection.addRequestProperty("Authorization", "Discogs key=" + CONSUMER_KEY + ", secret=" + CONSUMER_SECRET);
-//        connection.addRequestProperty("client_secret", CONSUMER_SECRET);
+        connection.addRequestProperty("Authorization", "Discogs key=" + HttpConst.CONSUMER_KEY +
+                ", secret=" + HttpConst.CONSUMER_SECRET);
         if (connection.getResponseCode() == 200) {
             Log.i("Connection Type", "Success");
             Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
@@ -63,33 +55,61 @@ class JsonFetcher {
     }
 
     /**
-     * Fetch items json array.
+     * Fetch Discogs Artist items, return as a JSONObject.
      *
      * @return the json array
      */
-    JSONObject fetchItems() {
+    JSONObject fetchArtist(String _artistName) {
         JSONObject jsonBody = null;
+
+        //Parse search into a URL friendly encoding.
+        String artist_name_encoded = "";
         try {
-            String searchString = createArtistSearchURL("The Beatles");
+            artist_name_encoded = URLEncoder.encode(_artistName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Get JSON object for passed artist info.
+        String searchString =
+                "https://api.discogs.com/database/search?artist=" + artist_name_encoded;
+        try {
             String jsonStr = getStringFromUrl(searchString);
-            Log.i(TAG, "Full Received JSON: " + jsonStr);
+            Log.i(TAG, "Full Received Artist JSON: " + jsonStr);
             jsonBody = new JSONObject(jsonStr);
-            Log.i(TAG, "Successfully parsed JSON");
+            Log.i(TAG, "Successfully parsed Artist JSON");
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to parse JSON", e);
+            Log.e(TAG, "Failed to parse Artist JSON", e);
         } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch items", ioe);
+            Log.e(TAG, "Failed to fetch Artist items", ioe);
         }
         return jsonBody;
     }
 
-    private String createArtistSearchURL(String artist_name) {
-        String artist_name_encoded = "";
+    JSONObject fetchAlbumRelease(String _albumReleaseName) {
+        JSONObject jsonBody = null;
+
+        //Parse search into a URL friendly encoding.
+        String album_name_encoded = "";
         try {
-            artist_name_encoded = URLEncoder.encode(artist_name, "UTF-8");
+            album_name_encoded = URLEncoder.encode(_albumReleaseName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getMessage());
         }
-        return "https://api.discogs.com/database/search?artist=" + artist_name_encoded;
+
+        // Get JSON object for passed album info.
+        String searchString =
+                "https://api.discogs.com/database/search?release_title=" + album_name_encoded;
+        try {
+            String jsonStr = getStringFromUrl(searchString);
+            Log.i(TAG, "Full Received Album JSON: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed Album JSON");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse Album JSON", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch Album items", ioe);
+        }
+        return jsonBody;
     }
 }

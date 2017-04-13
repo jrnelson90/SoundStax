@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,9 +20,9 @@ import java.util.UUID;
  */
 
 public class AlbumFragment extends Fragment {
+    private static final String ARG_ALBUM_ID = "album_id";
     private Album mAlbum;
     private EditText mTitleField;
-    private static final String ARG_ALBUM_ID = "album_id";
 
     public static AlbumFragment newInstance(UUID albumID) {
         Bundle args = new Bundle();

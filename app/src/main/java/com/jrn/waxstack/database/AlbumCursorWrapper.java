@@ -1,10 +1,10 @@
-package com.jrn.vinylmanager.database;
+package com.jrn.waxstack.database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.jrn.vinylmanager.Album;
-import com.jrn.vinylmanager.database.AlbumDbSchema.AlbumTable;
+import com.jrn.waxstack.Album;
+import com.jrn.waxstack.database.AlbumDbSchema.AlbumTable;
 
 import java.util.UUID;
 

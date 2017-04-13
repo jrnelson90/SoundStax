@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 /**
+ * Generic Single Fragment Activity Class
  * Created by jrnel on 2/18/2017.
  */
 

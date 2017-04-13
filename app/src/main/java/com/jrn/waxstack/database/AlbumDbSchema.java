@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager.database;
+package com.jrn.waxstack.database;
 
 /**
  * Created by jrnel on 3/1/2017.

@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import java.util.UUID;
 

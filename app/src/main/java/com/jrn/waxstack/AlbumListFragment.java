@@ -1,4 +1,4 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 
 import android.content.Intent;
@@ -15,14 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
 /**
+ * Fragment for Discogs Collection Album List
  * Created by jrnel on 2/18/2017.
  */
 
@@ -32,14 +37,31 @@ public class AlbumListFragment extends Fragment {
     private RecyclerView mAlbumRecyclerView;
     private Spinner mGenreFilterSpinner;
     private AlbumAdapter mAdapter;
-    private JSONObject mJSONObject = new JSONObject();
+    private JSONObject mArtistResultsJSON = new JSONObject();
+    private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
+    private Button mGoogleSignIn;
+    private GoogleApiClient mGoogleApiClient;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super .onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        new FetchItemsTask().execute();
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
+        new FetchArtistJSON().execute("Modern Action");
+        new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
     }
 
     @Override
@@ -50,6 +72,23 @@ public class AlbumListFragment extends Fragment {
         mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mGoogleSignIn = (Button) view.findViewById(R.id.sign_in_button);
+        mGoogleSignIn.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.sign_in_button:
+//                        signIn();
+                        break;
+                    // ...
+                }
+            }
+        });
+
+//        private void signIn() {
+//            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+//            startActivityForResult(signInIntent, RC_SIGN_IN);
+//        }
 
         mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
         mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -222,15 +261,30 @@ public class AlbumListFragment extends Fragment {
 
     }
 
-    private class FetchItemsTask extends AsyncTask<Void, Void, JSONObject> {
+    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
         @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchItems();
+        protected JSONObject doInBackground(String... params) {
+            String artistSearchString = params[0];
+            return new JsonFetcher().fetchArtist(artistSearchString);
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            mJSONObject = jsonObject;
+            mArtistResultsJSON = jsonObject;
+            updateData();
+        }
+    }
+
+    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            String albumReleaseSearchString = params[0];
+            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mAlbumReleaseResultsJSON = jsonObject;
             updateData();
         }
     }

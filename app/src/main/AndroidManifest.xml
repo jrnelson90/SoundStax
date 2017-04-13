@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.jrn.vinylmanager">
+          package="com.jrn.waxstack">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AlbumListActivity">
+        <activity android:name="com.jrn.waxstack.AlbumListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN">
 
@@ -18,8 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".AlbumActivity"
-            android:parentActivityName=".AlbumListActivity">
+        <activity
+            android:name="com.jrn.waxstack.AlbumActivity"
+            android:parentActivityName="com.jrn.waxstack.AlbumListActivity">
         </activity>
     </application>
 

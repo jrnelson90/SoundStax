@@ -1,10 +1,9 @@
-package com.jrn.vinylmanager;
+package com.jrn.waxstack;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import java.util.List;
 import java.util.UUID;
 
 public class AlbumActivity extends SingleFragmentActivity {

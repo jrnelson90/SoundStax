@@ -1,14 +1,23 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'ThisIsTheKey'
+            keyPassword 'Sc0tt.Pl!'
+            storeFile file('C:/Users/jrnel/.android/debug_new.keystore')
+            storePassword 'Sc0tt.Pl!'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId "com.jrn.vinylmanager"
+        applicationId 'com.jrn.waxstack'
         minSdkVersion 23
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName '0.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -16,6 +25,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
     }
 }
 
