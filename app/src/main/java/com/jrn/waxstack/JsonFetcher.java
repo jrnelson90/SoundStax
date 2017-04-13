@@ -20,9 +20,65 @@ import javax.net.ssl.HttpsURLConnection;
  */
 class JsonFetcher {
     private static final String TAG = "JsonFetcher";
-    private static final String RICK_URL = "https://api.discogs.com/releases/249504";
+//    private static final String RICK_URL = "https://api.discogs.com/releases/249504";
 
-    private static String getStringFromUrl(String url) throws IOException {
+    private static String getRequestToken() throws IOException {
+//        GET https://api.discogs.com/oauth/request_token
+        HttpsURLConnection connection = (HttpsURLConnection)
+                new URL(HttpConst.REQUEST_TOKEN_ENDPOINT_URL).openConnection();
+
+//        Content-Type: application/x-www-form-urlencoded
+//        Authorization:
+//        OAuth oauth_consumer_key="your_consumer_key",
+//                oauth_nonce="random_string_or_timestamp",
+//                oauth_signature="your_consumer_secret&",
+//                oauth_signature_method="PLAINTEXT",
+//                oauth_timestamp="current_timestamp",
+//                oauth_callback="your_callback"
+//        User-Agent: some_user_agent
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+
+        connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
+        connection.addRequestProperty("Authorization", "OAuth" +
+                "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                ", oauth_nonce=" + ts +
+                ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                ", oauth_signature_method=PLAINTEXT" +
+                ", oauth_timestamp=" + ts +
+                ", oauth_callback=" + HttpConst.CALLBACK_URL);
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
+        connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+        if (connection.getResponseCode() == 200) {
+            Log.i("Connection Type", "Success");
+            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+            Log.i("Connection Message", connection.getResponseMessage());
+            // Success
+            // Further processing here
+        } else {
+            // Error handling code goes here
+            Log.i("Connection Type", "Failed");
+            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+            Log.i("Connection Message", connection.getResponseMessage());
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        String NEWLINE = System.lineSeparator();
+        while ((line = in.readLine()) != null) {
+            sb.append(line).append(NEWLINE);
+        }
+        connection.disconnect();
+
+        return sb.toString();
+    }
+
+    private static String getResultStringFromDiscogs(String url) throws IOException {
 
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
         connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
@@ -74,7 +130,7 @@ class JsonFetcher {
         String searchString =
                 "https://api.discogs.com/database/search?artist=" + artist_name_encoded;
         try {
-            String jsonStr = getStringFromUrl(searchString);
+            String jsonStr = getResultStringFromDiscogs(searchString);
             Log.i(TAG, "Full Received Artist JSON: " + jsonStr);
             jsonBody = new JSONObject(jsonStr);
             Log.i(TAG, "Successfully parsed Artist JSON");
@@ -101,7 +157,7 @@ class JsonFetcher {
         String searchString =
                 "https://api.discogs.com/database/search?release_title=" + album_name_encoded;
         try {
-            String jsonStr = getStringFromUrl(searchString);
+            String jsonStr = getResultStringFromDiscogs(searchString);
             Log.i(TAG, "Full Received Album JSON: " + jsonStr);
             jsonBody = new JSONObject(jsonStr);
             Log.i(TAG, "Successfully parsed Album JSON");
@@ -109,6 +165,23 @@ class JsonFetcher {
             Log.e(TAG, "Failed to parse Album JSON", e);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch Album items", ioe);
+        }
+        return jsonBody;
+    }
+
+    JSONObject fetchRequestToken() {
+        JSONObject jsonBody = null;
+
+        // Get JSON object for passed artist info.
+        try {
+            String jsonStr = getRequestToken();
+            Log.i(TAG, "Full Received Request Token: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed Request Token");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse Request Token", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch Request Token", ioe);
         }
         return jsonBody;
     }
