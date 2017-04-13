@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "553979527760",
+    "project_id": "wax-stack"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553979527760:android:cb34b7ee22a9cadd",
+        "android_client_info": {
+          "package_name": "com.jrn.waxstack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553979527760-bn3bmneerub2kdt53lrshqttn0j6iucq.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "553979527760-vpq917e251ur2d81d9ljesh2iehf3vmk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jrn.waxstack",
+            "certificate_hash": "17611336fb20326d162a3def2f4ac3dee0586c60"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrPub1BVnJi4NEv5UL3NUAbdIWbQRtj-Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
