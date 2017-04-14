@@ -1,6 +1,8 @@
 package com.jrn.waxstack;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,7 +60,13 @@ public class AlbumListFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new FetchRequestToken().execute();
+                ConnectivityManager connectivityManager = (ConnectivityManager)
+                        getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager.getActiveNetworkInfo() != null
+                        && connectivityManager.getActiveNetworkInfo().isAvailable()
+                        && connectivityManager.getActiveNetworkInfo().isConnected()) {
+                    new FetchRequestToken().execute();
+                }
             }
         });
 
@@ -235,7 +243,7 @@ public class AlbumListFragment extends Fragment {
     private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
         @Override
         protected String[] doInBackground(Void... params) {
-            return new JsonFetcher().fetchRequestToken();
+            return new OauthTokenFetcher().fetchRequestToken();
         }
 
         @Override

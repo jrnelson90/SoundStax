@@ -1,8 +1,10 @@
 package com.jrn.waxstack;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,13 +76,12 @@ public class AuthPageFragment extends VisibleFragment {
                     Uri OauthResult = Uri.parse(url);
                     String verifyString = OauthResult.toString().split("oauth_verifier=")[1];
                     OauthTokens.setOauthUserVerifier(verifyString);
-                    Log.i("Oauth Success", "Verifier: " + OauthTokens.getOauthUserVerifier());
+                    Log.i("Oauth Success", "Verifier received");
 
                     new FetchOauthAccessToken().execute(new String[]{
                             OauthTokens.getOauthRequestToken(),
                             OauthTokens.getOauthUserVerifier()
                     });
-
                 } else {
                     view.loadUrl(url);
                 }
@@ -98,15 +99,38 @@ public class AuthPageFragment extends VisibleFragment {
         @Override
         protected String[] doInBackground(String[]... params) {
             String[] _passedOauth = params[0];
-            return new JsonFetcher().fetchOauthAccessToken(_passedOauth);
+            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
         }
 
         @Override
         protected void onPostExecute(String[] tokenArray) {
             if (tokenArray.length == 2) {
                 OauthTokens.setOauthAccessToken(tokenArray[0]);
-                OauthTokens.setOauthAccessToken(tokenArray[1]);
+                OauthTokens.setOauthAccessTokenSecret(tokenArray[1]);
+                navigateBackToList();
             }
         }
+    }
+
+    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
+        @Override
+        protected String[] doInBackground(String[]... params) {
+            String[] _passedOauth = params[0];
+            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
+        }
+
+        @Override
+        protected void onPostExecute(String[] tokenArray) {
+            if (tokenArray.length == 2) {
+                OauthTokens.setOauthAccessToken(tokenArray[0]);
+                OauthTokens.setOauthAccessTokenSecret(tokenArray[1]);
+                navigateBackToList();
+            }
+        }
+    }
+
+    private void navigateBackToList() {
+        Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
+        NavUtils.navigateUpTo(getActivity(), upIntent);
     }
 }
