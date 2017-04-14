@@ -40,8 +40,6 @@ class JsonFetcher {
         String ts = tsLong.toString();
 
         connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
         connection.addRequestProperty("Authorization", "OAuth" +
                 "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
                 ", oauth_nonce=" + ts +
@@ -49,8 +47,8 @@ class JsonFetcher {
                 ", oauth_signature_method=PLAINTEXT" +
                 ", oauth_timestamp=" + ts +
                 ", oauth_callback=" + HttpConst.CALLBACK_URL);
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
 
         if (connection.getResponseCode() == 200) {
@@ -82,8 +80,8 @@ class JsonFetcher {
 
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
         connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         connection.addRequestProperty("Authorization", "Discogs key=" + HttpConst.CONSUMER_KEY +
                 ", secret=" + HttpConst.CONSUMER_SECRET);
         if (connection.getResponseCode() == 200) {
@@ -201,47 +199,41 @@ class JsonFetcher {
         return oauthAccessReturn;
     }
 
-    public String getOauthAccessToken(String[] _passedOauthVerify) throws IOException {
-        //        GET https://api.discogs.com/oauth/request_token
+    private String getOauthAccessToken(String[] _passedOauthVerify) throws IOException {
+        // POST https://api.discogs.com/oauth/access_token
+
         HttpsURLConnection connection = (HttpsURLConnection)
                 new URL(HttpConst.ACCESS_TOKEN_ENDPOINT_URL).openConnection();
-
-//        Content-Type: application/x-www-form-urlencoded
-//        Authorization:
-//        OAuth oauth_consumer_key="your_consumer_key",
-//                oauth_nonce="random_string_or_timestamp",
-//                oauth_signature="your_consumer_secret&",
-//                oauth_signature_method="PLAINTEXT",
-//                oauth_timestamp="current_timestamp",
-//                oauth_callback="your_callback"
-//        User-Agent: some_user_agent
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
-
-        connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
         connection.addRequestProperty("Authorization", "OAuth" +
                 "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
                 ", oauth_nonce=" + ts +
                 ", oauth_token=" + _passedOauthVerify[0] +
                 ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                OauthTokens.getOauthRequestTokenSecret() +
                 ", oauth_signature_method=PLAINTEXT" +
                 ", oauth_timestamp=" + ts +
                 ", oauth_verifier=" + _passedOauthVerify[1]);
-        connection.setConnectTimeout(30000);
-        connection.setReadTimeout(30000);
-        connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
+        connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+        connection.connect();
 
+        // Read POST response code
         if (connection.getResponseCode() == 200) {
-            Log.i("Connection Type", "Success");
+            Log.i("Connection Result", "Success");
             Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
             Log.i("Connection Message", connection.getResponseMessage());
             // Success
             // Further processing here
         } else {
             // Error handling code goes here
-            Log.i("Connection Type", "Failed");
+            Log.i("Connection Result", "Failed");
             Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
             Log.i("Connection Message", connection.getResponseMessage());
         }

@@ -22,6 +22,12 @@
             android:name="com.jrn.waxstack.AlbumActivity"
             android:parentActivityName="com.jrn.waxstack.AlbumListActivity">
         </activity>
+
+        <activity
+            android:name="com.jrn.waxstack.AuthPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:parentActivityName="com.jrn.waxstack.AlbumListActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -1,7 +1,5 @@
 package com.jrn.waxstack;
 
-
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,13 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,36 +37,27 @@ public class AlbumListFragment extends Fragment {
     private AlbumAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
-    private String[] mRequestToken;
-    private String[] mAccessToken;
-    private Button mSignInButton;
-    private WebView mAuthWebView;
-    private Dialog mAuthDialog;
-    private ProgressBar mProgressBar;
-    private String[] mOauthKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super .onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_album_list, container, false);
 
         mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
-        mSignInButton = (Button) view.findViewById(R.id.sign_in_button);
-        mSignInButton.setOnClickListener(new View.OnClickListener() {
+        Button signInButton = (Button) view.findViewById(R.id.sign_in_button);
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new FetchArtistJSON().execute("Modern Action");
-//                new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
                 new FetchRequestToken().execute();
             }
         });
@@ -81,13 +66,12 @@ public class AlbumListFragment extends Fragment {
         mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mAdapter != null) {
+                if (mAdapter != null) {
                     AlbumBase albumBase = AlbumBase.get(getActivity());
-                    if(String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
+                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
                         List<Album> allAlbums = albumBase.getAlbums();
                         mAdapter.setAlbums(allAlbums);
-                    }
-                    else {
+                    } else {
                         List<Album> filteredAlbums = albumBase.getFilteredAlbums(
                                 String.valueOf(mGenreFilterSpinner.getSelectedItem()));
                         mAdapter.setAlbums(filteredAlbums);
@@ -116,7 +100,7 @@ public class AlbumListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super .onCreateOptionsMenu(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_album_list, menu);
     }
 
@@ -138,11 +122,10 @@ public class AlbumListFragment extends Fragment {
         AlbumBase albumBase = AlbumBase.get(getActivity());
         List<Album> albums = albumBase.getAlbums();
 
-        if(mAdapter == null){
+        if (mAdapter == null) {
             mAdapter = new AlbumAdapter(albums);
             mAlbumRecyclerView.setAdapter(mAdapter);
-        }
-        else {
+        } else {
             mAdapter.setAlbums(albums);
             mAdapter.notifyDataSetChanged();
         }
@@ -158,86 +141,10 @@ public class AlbumListFragment extends Fragment {
         int index = 0;
         String data = "";
         JSONObject currentPlanet = null;
-//        while(index < mJsonArray.length()) {
-//            try {
-//                currentPlanet = mJsonArray.getJSONObject(index);
-//                name = currentPlanet.getString("name");
-//            } catch (JSONException e) {
-//                Log.e(TAG, "Object parse failed.", e);
-//            }
-//            index++;
-//        }
-//
-//        if(currentPlanet != null) {
-//            try{
-//                String[] satellites = currentPlanet.getString[]("satellites");
-//                if(satellites.length() >= THIRD) {
-//                    JSONObject thirdSatellite = satellites.getJSONObject(THIRD - 1);
-//                    data = "Name: " + thirdSatellite.getString("name") +
-//                            ", Diameter(Km): " + thirdSatellite.getString("diameterKm");
-//                }
-//            } catch (JSONException e) {
-//                Log.e(TAG, "", e);
-//            }
-//
-//            if(!data.equals("")) {
-//                // Update a item in the view here with data.
-//            }
-//        }
-    }
-
-    private void openAuthDialog() {
-        mAuthDialog = new Dialog(getContext());
-        mAuthDialog.setContentView(R.layout.auth_dialog);
-        mProgressBar = (ProgressBar) mAuthDialog.findViewById(R.id.auth_webview_progress_bar);
-        mProgressBar.setMax(100);
-        mAuthWebView = (WebView) mAuthDialog.findViewById(R.id.webv);
-        mAuthWebView.getSettings().setJavaScriptEnabled(true);
-
-        mAuthWebView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView webView, int newProgress) {
-                if (newProgress == 100) {
-                    mProgressBar.setVisibility(View.GONE);
-                } else {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mProgressBar.setProgress(newProgress);
-                }
-            }
-        });
-
-        mAuthWebView.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.contains("callback")) {
-                    Uri OauthResult = Uri.parse(url);
-                    mOauthKey = OauthResult.toString().split("&");
-                    mOauthKey[0] = mOauthKey[0].split("//")[1].split("=")[1];
-                    mOauthKey[1] = mOauthKey[1].split("=")[1];
-                    mAuthDialog.cancel();
-                    Log.i("Oauth Success", "Key: " + mOauthKey[0]);
-                    Log.i("Oauth Success", "Verifier: " + mOauthKey[1]);
-
-                    new FetchOauthAccessToken().execute(new String[]{mRequestToken[0], mOauthKey[1]});
-                } else {
-                    view.loadUrl(url);
-                }
-                return true;
-            }
-        });
-
-        String authUrl;
-        if (mRequestToken != null) {
-            authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?" + mRequestToken[1];
-            Log.i("Auth URL", authUrl);
-            mAuthWebView.loadUrl(authUrl);
-            mAuthDialog.show();
-            mAuthDialog.setCancelable(true);
-        } else {
-            Log.i("Auth Dialog", "No oauth request token values populated");
-        }
     }
 
     private class AlbumHolder extends RecyclerView.ViewHolder
-        implements View.OnClickListener {
+            implements View.OnClickListener {
 
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
@@ -333,21 +240,26 @@ public class AlbumListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] tokenArray) {
-            mRequestToken = tokenArray;
-            openAuthDialog();
-        }
-    }
+            if (tokenArray.length == 3 && tokenArray[0] != null) {
+                OauthTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
+                OauthTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
+                OauthTokens.setOauthCallbackConfirmed(tokenArray[2].split("=")[1]);
 
-    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
-        @Override
-        protected String[] doInBackground(String[]... params) {
-            String[] _passedOauth = params[0];
-            return new JsonFetcher().fetchOauthAccessToken(_passedOauth);
-        }
+                String authUrl = null;
+                if (OauthTokens.getOauthRequestToken() != null) {
+                    authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
+                            OauthTokens.getOauthRequestToken();
+                    Log.i("Auth URL", authUrl);
+                } else {
+                    Log.i("Auth Dialog", "No oauth request token values populated");
+                }
 
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            mAccessToken = tokenArray;
+                if (authUrl != null) {
+                    Uri authUri = Uri.parse(authUrl);
+                    Intent i = AuthPageActivity.newIntent(getActivity(), authUri);
+                    startActivity(i);
+                }
+            }
         }
     }
 }
