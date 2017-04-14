@@ -1,18 +1,21 @@
 package com.jrn.waxstack;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,8 +39,10 @@ public class AlbumListFragment extends Fragment {
     private AlbumAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
-    private String mRequestToken;
+    private String[] mRequestToken;
     private Button mSignInButton;
+    private WebView mAuthWebView;
+    private Dialog mAuthDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +63,8 @@ public class AlbumListFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new FetchArtistJSON().execute("Modern Action");
-                new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
+//                new FetchArtistJSON().execute("Modern Action");
+//                new FetchAlbumReleaseJSON().execute("Fresh Fruit for Rotting Vegetables");
                 new FetchRequestToken().execute();
             }
         });
@@ -141,7 +146,6 @@ public class AlbumListFragment extends Fragment {
     }
 
     private void updateData() {
-        final int THIRD = 3;
         String name = "";
         int index = 0;
         String data = "";
@@ -158,7 +162,7 @@ public class AlbumListFragment extends Fragment {
 //
 //        if(currentPlanet != null) {
 //            try{
-//                JSONArray satellites = currentPlanet.getJSONArray("satellites");
+//                String[] satellites = currentPlanet.getString[]("satellites");
 //                if(satellites.length() >= THIRD) {
 //                    JSONObject thirdSatellite = satellites.getJSONObject(THIRD - 1);
 //                    data = "Name: " + thirdSatellite.getString("name") +
@@ -172,6 +176,24 @@ public class AlbumListFragment extends Fragment {
 //                // Update a item in the view here with data.
 //            }
 //        }
+    }
+
+    private void openAuthDialog() {
+        mAuthDialog = new Dialog(getContext());
+        mAuthDialog.setContentView(R.layout.auth_dialog);
+        mAuthWebView = (WebView) mAuthDialog.findViewById(R.id.webv);
+        mAuthWebView.getSettings().setJavaScriptEnabled(true);
+
+        String authUrl;
+        if (mRequestToken != null) {
+            authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?" + mRequestToken[1];
+            Log.i("Auth URL", authUrl);
+            mAuthWebView.loadUrl(authUrl);
+            mAuthDialog.show();
+            mAuthDialog.setCancelable(true);
+        } else {
+            Log.i("Auth Dialog", "No oauth request token values populated");
+        }
     }
 
     private class AlbumHolder extends RecyclerView.ViewHolder
@@ -263,16 +285,16 @@ public class AlbumListFragment extends Fragment {
         }
     }
 
-    private class FetchRequestToken extends AsyncTask<Void, Void, String> {
+    private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
         @Override
-        protected String doInBackground(Void... params) {
+        protected String[] doInBackground(Void... params) {
             return new JsonFetcher().fetchRequestToken();
         }
 
         @Override
-        protected void onPostExecute(String jsonObject) {
-            mRequestToken = jsonObject;
-            updateData();
+        protected void onPostExecute(String[] tokenArray) {
+            mRequestToken = tokenArray;
+            openAuthDialog();
         }
     }
 }

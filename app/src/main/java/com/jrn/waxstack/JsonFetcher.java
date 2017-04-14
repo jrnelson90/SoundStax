@@ -169,15 +169,20 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    String fetchRequestToken() {
-        // Get JSON object for passed artist info.
-        String jsonStr = null;
+    String[] fetchRequestToken() {
+        // Get JSON array for oauth token.
+        String[] oauthReturn = new String[3];
         try {
-            jsonStr = getRequestToken();
-            Log.i(TAG, "Full Received Request Token: " + jsonStr);
+            String jsonStr = getRequestToken();
+            Log.i(TAG, "Received oauth Token string: " + jsonStr);
+            oauthReturn = jsonStr.split("&");
+            Log.i(TAG, "Received oauth Token Secret: " + oauthReturn[0]);
+            Log.i(TAG, "Received oauth Token: " + oauthReturn[1]);
+            Log.i(TAG, "Oauth Callback Confirmed: " + oauthReturn[2]);
+
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch Request Token", ioe);
         }
-        return jsonStr;
+        return oauthReturn;
     }
 }
