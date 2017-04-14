@@ -204,7 +204,7 @@ class JsonFetcher {
     public String getOauthAccessToken(String[] _passedOauthVerify) throws IOException {
         //        GET https://api.discogs.com/oauth/request_token
         HttpsURLConnection connection = (HttpsURLConnection)
-                new URL(HttpConst.REQUEST_TOKEN_ENDPOINT_URL).openConnection();
+                new URL(HttpConst.ACCESS_TOKEN_ENDPOINT_URL).openConnection();
 
 //        Content-Type: application/x-www-form-urlencoded
 //        Authorization:
