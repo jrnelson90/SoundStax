@@ -9,7 +9,7 @@ import java.util.UUID;
 public class AlbumActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_ALBUM_ID =
-            "com.jrn.vinylmanager.album_id";
+            "com.jrn.waxstack.album_id";
 
     public static Intent newIntent(Context packageContext, UUID albumID) {
         Intent intent = new Intent(packageContext, AlbumActivity.class);
