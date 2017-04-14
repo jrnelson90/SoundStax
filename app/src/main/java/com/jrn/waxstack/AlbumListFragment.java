@@ -39,12 +39,17 @@ public class AlbumListFragment extends Fragment {
     private AlbumAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
+    private JSONObject mUserInfoJSON = new JSONObject();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        if (OauthTokens.getOauthAccessToken() != null) {
+            new FetchUserIdentityJSON().execute();
+        }
     }
 
     @Override
@@ -69,6 +74,23 @@ public class AlbumListFragment extends Fragment {
                 }
             }
         });
+
+//        Button testUserButton = (Button) view.findViewById(R.id.test_user_button);
+//        testUserButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(OauthTokens.getOauthAccessToken() != null
+//                        && OauthTokens.getOauthAccessTokenSecret() != null){
+//                    ConnectivityManager connectivityManager = (ConnectivityManager)
+//                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+//                    if (connectivityManager.getActiveNetworkInfo() != null
+//                            && connectivityManager.getActiveNetworkInfo().isAvailable()
+//                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
+//                        new FetchUserIdentityJSON().execute();
+//                    }
+//                }
+//            }
+//        });
 
         mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
         mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -237,6 +259,18 @@ public class AlbumListFragment extends Fragment {
         protected void onPostExecute(JSONObject jsonObject) {
             mAlbumReleaseResultsJSON = jsonObject;
             updateData();
+        }
+    }
+
+    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserIdentity();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserInfoJSON = jsonObject;
         }
     }
 

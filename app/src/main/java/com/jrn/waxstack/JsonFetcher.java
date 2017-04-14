@@ -26,8 +26,13 @@ class JsonFetcher {
         connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
-        connection.addRequestProperty("Authorization", "Discogs key=" + HttpConst.CONSUMER_KEY +
-                ", secret=" + HttpConst.CONSUMER_SECRET);
+        if (OauthTokens.getOauthAccessToken() != null) {
+            connection.addRequestProperty("Authorization", "Discogs token=" + OauthTokens.getOauthAccessToken());
+        } else {
+            connection.addRequestProperty("Authorization", "Discogs key=" + HttpConst.CONSUMER_KEY +
+                    ", secret=" + HttpConst.CONSUMER_SECRET);
+        }
+
         if (connection.getResponseCode() == 200) {
             Log.i("Connection Type", "Success");
             Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
@@ -107,6 +112,65 @@ class JsonFetcher {
             Log.e(TAG, "Failed to parse Album JSON", e);
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch Album items", ioe);
+        }
+        return jsonBody;
+    }
+
+    JSONObject fetchUserIdentity() {
+        JSONObject jsonBody = null;
+
+        // Get JSON object for passed album info.
+        String userIdentityURL = "https://api.discogs.com/oauth/identity";
+        try {
+
+            HttpsURLConnection connection =
+                    (HttpsURLConnection) new URL(userIdentityURL).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Authorization", "OAuth" +
+                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                    ", oauth_nonce=" + ts +
+                    ", oauth_token=" + OauthTokens.getOauthAccessToken() +
+                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                    OauthTokens.getOauthAccessTokenSecret() +
+                    ", oauth_signature_method=PLAINTEXT" +
+                    ", oauth_timestamp=" + ts);
+            connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+
+            if (connection.getResponseCode() == 200) {
+                Log.i("Connection Type", "Success");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+                // Success
+                // Further processing here
+            } else {
+                // Error handling code goes here
+                Log.i("Connection Type", "Failed");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            String NEWLINE = System.lineSeparator();
+            while ((line = in.readLine()) != null) {
+                sb.append(line).append(NEWLINE);
+            }
+            connection.disconnect();
+
+            String jsonStr = sb.toString();
+            Log.i(TAG, "Received User Identity JSON: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed User Identity JSON");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse User Identity JSON", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch User Identity items", ioe);
         }
         return jsonBody;
     }

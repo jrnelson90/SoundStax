@@ -95,42 +95,26 @@ public class AuthPageFragment extends VisibleFragment {
         return v;
     }
 
-    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
-        @Override
-        protected String[] doInBackground(String[]... params) {
-            String[] _passedOauth = params[0];
-            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
-        }
-
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 2) {
-                OauthTokens.setOauthAccessToken(tokenArray[0]);
-                OauthTokens.setOauthAccessTokenSecret(tokenArray[1]);
-                navigateBackToList();
-            }
-        }
-    }
-
-    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
-        @Override
-        protected String[] doInBackground(String[]... params) {
-            String[] _passedOauth = params[0];
-            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
-        }
-
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 2) {
-                OauthTokens.setOauthAccessToken(tokenArray[0]);
-                OauthTokens.setOauthAccessTokenSecret(tokenArray[1]);
-                navigateBackToList();
-            }
-        }
-    }
-
     private void navigateBackToList() {
         Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
         NavUtils.navigateUpTo(getActivity(), upIntent);
+    }
+
+    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
+        @Override
+        protected String[] doInBackground(String[]... params) {
+            String[] _passedOauth = params[0];
+            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
+        }
+
+        @Override
+        protected void onPostExecute(String[] tokenArray) {
+            if (tokenArray.length == 2) {
+                OauthTokens.setOauthAccessTokenSecret(tokenArray[0].split("=")[1]);
+                OauthTokens.setOauthAccessToken(tokenArray[1]
+                        .split("=")[1].replace("\n", ""));
+                navigateBackToList();
+            }
+        }
     }
 }
