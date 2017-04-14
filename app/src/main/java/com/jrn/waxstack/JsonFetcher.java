@@ -185,4 +185,76 @@ class JsonFetcher {
         }
         return oauthReturn;
     }
+
+    String[] fetchOauthAccessToken(String[] _passedOauthVerify) {
+        // Get JSON array for oauth token.
+        String[] oauthAccessReturn = new String[3];
+        try {
+            String jsonStr = getOauthAccessToken(_passedOauthVerify);
+            Log.i(TAG, "Received oauth Token string: " + jsonStr);
+            oauthAccessReturn = jsonStr.split("&");
+            Log.i(TAG, "Received oauth Token Secret: " + oauthAccessReturn[0]);
+            Log.i(TAG, "Received oauth Token: " + oauthAccessReturn[1]);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch Request Token", ioe);
+        }
+        return oauthAccessReturn;
+    }
+
+    public String getOauthAccessToken(String[] _passedOauthVerify) throws IOException {
+        //        GET https://api.discogs.com/oauth/request_token
+        HttpsURLConnection connection = (HttpsURLConnection)
+                new URL(HttpConst.REQUEST_TOKEN_ENDPOINT_URL).openConnection();
+
+//        Content-Type: application/x-www-form-urlencoded
+//        Authorization:
+//        OAuth oauth_consumer_key="your_consumer_key",
+//                oauth_nonce="random_string_or_timestamp",
+//                oauth_signature="your_consumer_secret&",
+//                oauth_signature_method="PLAINTEXT",
+//                oauth_timestamp="current_timestamp",
+//                oauth_callback="your_callback"
+//        User-Agent: some_user_agent
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+
+        connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
+        connection.addRequestProperty("Authorization", "OAuth" +
+                "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                ", oauth_nonce=" + ts +
+                ", oauth_token=" + _passedOauthVerify[0] +
+                ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                ", oauth_signature_method=PLAINTEXT" +
+                ", oauth_timestamp=" + ts +
+                ", oauth_verifier=" + _passedOauthVerify[1]);
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
+        connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+        if (connection.getResponseCode() == 200) {
+            Log.i("Connection Type", "Success");
+            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+            Log.i("Connection Message", connection.getResponseMessage());
+            // Success
+            // Further processing here
+        } else {
+            // Error handling code goes here
+            Log.i("Connection Type", "Failed");
+            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+            Log.i("Connection Message", connection.getResponseMessage());
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        String NEWLINE = System.lineSeparator();
+        while ((line = in.readLine()) != null) {
+            sb.append(line).append(NEWLINE);
+        }
+        connection.disconnect();
+
+        return sb.toString();
+    }
 }

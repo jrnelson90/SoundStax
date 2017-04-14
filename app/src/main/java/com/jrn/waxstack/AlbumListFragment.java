@@ -3,6 +3,7 @@ package com.jrn.waxstack;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,10 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,9 +44,12 @@ public class AlbumListFragment extends Fragment {
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
     private String[] mRequestToken;
+    private String[] mAccessToken;
     private Button mSignInButton;
     private WebView mAuthWebView;
     private Dialog mAuthDialog;
+    private ProgressBar mProgressBar;
+    private String[] mOauthKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,7 @@ public class AlbumListFragment extends Fragment {
 
         mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
         mSignInButton = (Button) view.findViewById(R.id.sign_in_button);
         mSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -181,8 +189,40 @@ public class AlbumListFragment extends Fragment {
     private void openAuthDialog() {
         mAuthDialog = new Dialog(getContext());
         mAuthDialog.setContentView(R.layout.auth_dialog);
+        mProgressBar = (ProgressBar) mAuthDialog.findViewById(R.id.auth_webview_progress_bar);
+        mProgressBar.setMax(100);
         mAuthWebView = (WebView) mAuthDialog.findViewById(R.id.webv);
         mAuthWebView.getSettings().setJavaScriptEnabled(true);
+
+        mAuthWebView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView webView, int newProgress) {
+                if (newProgress == 100) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setProgress(newProgress);
+                }
+            }
+        });
+
+        mAuthWebView.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains("callback")) {
+                    Uri OauthResult = Uri.parse(url);
+                    mOauthKey = OauthResult.toString().split("&");
+                    mOauthKey[0] = mOauthKey[0].split("//")[1].split("=")[1];
+                    mOauthKey[1] = mOauthKey[1].split("=")[1];
+                    mAuthDialog.cancel();
+                    Log.i("Oauth Success", "Key: " + mOauthKey[0]);
+                    Log.i("Oauth Success", "Verifier: " + mOauthKey[1]);
+
+                    new FetchOauthAccessToken().execute(new String[]{mRequestToken[0], mOauthKey[1]});
+                } else {
+                    view.loadUrl(url);
+                }
+                return true;
+            }
+        });
 
         String authUrl;
         if (mRequestToken != null) {
@@ -295,6 +335,19 @@ public class AlbumListFragment extends Fragment {
         protected void onPostExecute(String[] tokenArray) {
             mRequestToken = tokenArray;
             openAuthDialog();
+        }
+    }
+
+    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
+        @Override
+        protected String[] doInBackground(String[]... params) {
+            String[] _passedOauth = params[0];
+            return new JsonFetcher().fetchOauthAccessToken(_passedOauth);
+        }
+
+        @Override
+        protected void onPostExecute(String[] tokenArray) {
+            mAccessToken = tokenArray;
         }
     }
 }
