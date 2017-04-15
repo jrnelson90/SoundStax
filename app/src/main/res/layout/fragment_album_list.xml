@@ -14,21 +14,6 @@
         android:padding="4dp"
         android:textAlignment="gravity"/>
 
-    <Button
-        android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:text="@string/sign_in_button_label"/>
-
-    <!--<Button-->
-    <!--android:id="@+id/test_user_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:padding="4dp"-->
-    <!--android:text="@string/test_user_button_label"-->
-    <!--android:layout_toRightOf="@id/sign_in_button"/>-->
-
     <TextView
         android:id="@+id/album_genre_filter_textview"
         android:layout_width="wrap_content"

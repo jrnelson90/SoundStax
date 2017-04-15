@@ -10,23 +10,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.justinrandalnelson.waxstacks.AlbumListActivity">
+        <activity android:name=".LaunchpadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN">
-
                 </action>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
+            android:name="com.justinrandalnelson.waxstacks.AlbumListActivity"
+            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
+        </activity>
+        <activity
             android:name="com.justinrandalnelson.waxstacks.AlbumActivity"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.AlbumListActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
         </activity>
 
         <activity
             android:name="com.justinrandalnelson.waxstacks.AuthPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.AlbumListActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
         </activity>
     </application>
 
