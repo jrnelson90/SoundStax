@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wax Stack</string>
+    <string name="app_name">Wax Stacks</string>
     <string name="album_title_hint">Enter album title.</string>
     <string name="album_title_label">Title</string>
     <string name="ablum_year_label">Release Year</string>
