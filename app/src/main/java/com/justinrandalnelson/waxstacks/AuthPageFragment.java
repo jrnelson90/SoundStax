@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -87,6 +88,12 @@ public class AuthPageFragment extends VisibleFragment {
                 }
                 return true;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.clearCache(true);
+            }
         });
 
         // Load Auth Page
@@ -113,6 +120,8 @@ public class AuthPageFragment extends VisibleFragment {
                 OauthTokens.setOauthAccessTokenSecret(tokenArray[0].split("=")[1]);
                 OauthTokens.setOauthAccessToken(tokenArray[1]
                         .split("=")[1].replace("\n", ""));
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.removeAllCookies(null);
                 navigateBackToList();
             }
         }
