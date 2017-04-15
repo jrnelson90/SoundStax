@@ -131,12 +131,21 @@ class JsonFetcher {
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            connection.setRequestProperty("Authorization", "OAuth" +
+//                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+//                    ", oauth_nonce=" + ts +
+//                    ", oauth_token=" + OauthTokens.getOauthAccessToken() +
+//                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+//                    OauthTokens.getOauthAccessTokenSecret() +
+//                    ", oauth_signature_method=PLAINTEXT" +
+//                    ", oauth_timestamp=" + ts);
+
             connection.setRequestProperty("Authorization", "OAuth" +
                     "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
                     ", oauth_nonce=" + ts +
-                    ", oauth_token=" + OauthTokens.getOauthAccessToken() +
+                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
                     ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                    OauthTokens.getOauthAccessTokenSecret() +
+                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                     ", oauth_signature_method=PLAINTEXT" +
                     ", oauth_timestamp=" + ts);
             connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);

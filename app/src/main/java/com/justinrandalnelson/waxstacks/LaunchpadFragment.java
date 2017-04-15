@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,24 +14,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import org.json.JSONObject;
+
 /**
  * Created by jrnel on 4/14/2017.
  */
 
 public class LaunchpadFragment extends Fragment {
+    private JSONObject mUserInfoJSON = new JSONObject();
+    private boolean fetchingUserInfoInProcess;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-//        Preferences pref = new PreferenceManager()
-//                (PreferenceManager.getDefaultSharedPreferences(getContext()));
-
+        Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        mUserInfoJSON = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        boolean oauthVerified = false;
+        boolean oauthVerified = checkAccessToken();
         View view;
         if (!oauthVerified) {
             view = inflater.inflate(R.layout.fragment_login_splash, container, false);
@@ -89,8 +94,35 @@ public class LaunchpadFragment extends Fragment {
 //                    }
                 }
             });
+
+            final Button logoutButton = (Button) view.findViewById(R.id.logout_button);
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    logoutUser();
+                }
+            });
         }
         return view;
+    }
+
+    private void logoutUser() {
+        Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+        Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+        getFragmentManager().beginTransaction()
+                .detach(this)
+                .attach(this)
+                .commit();
+    }
+
+    private boolean checkAccessToken() {
+        if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() == 0) {
+            return false;
+        } else {
+            FetchUserIdentityJSON checkUser = new FetchUserIdentityJSON();
+            checkUser.execute();
+        }
+        return true;
     }
 
     private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
@@ -124,21 +156,17 @@ public class LaunchpadFragment extends Fragment {
         }
     }
 
-    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
+    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
         @Override
-        protected String[] doInBackground(String[]... params) {
-            String[] _passedOauth = params[0];
-            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
+        protected JSONObject doInBackground(Void... params) {
+            fetchingUserInfoInProcess = true;
+            return new JsonFetcher().fetchUserIdentity();
         }
 
         @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 2) {
-                OauthTokens.setOauthAccessTokenSecret(tokenArray[0].split("=")[1]);
-                OauthTokens.setOauthAccessToken(tokenArray[1]
-                        .split("=")[1].replace("\n", ""));
-//                navigateBackToList();
-            }
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserInfoJSON = jsonObject;
+            fetchingUserInfoInProcess = false;
         }
     }
 }

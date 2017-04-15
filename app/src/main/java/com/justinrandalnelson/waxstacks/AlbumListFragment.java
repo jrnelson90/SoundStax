@@ -42,9 +42,9 @@ public class AlbumListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        if (OauthTokens.getOauthAccessToken() != null) {
-            new FetchUserIdentityJSON().execute();
-        }
+//        if (OauthTokens.getOauthAccessToken() != null) {
+//            new FetchUserIdentityJSON().execute();
+//        }
     }
 
     @Override

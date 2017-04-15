@@ -48,6 +48,14 @@
             android:text="User Info"
             android:textAlignment="viewStart"/>
 
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/user_button"
+            android:layout_below="@+id/user_button"
+            android:text="@string/log_out_button_label"/>
+
     </RelativeLayout>
 
 </LinearLayout>
