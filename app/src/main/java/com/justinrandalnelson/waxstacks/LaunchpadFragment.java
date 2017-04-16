@@ -17,6 +17,7 @@ import android.widget.Button;
 import org.json.JSONObject;
 
 /**
+ * Launchpad fragment
  * Created by jrnel on 4/14/2017.
  */
 
@@ -55,64 +56,9 @@ public class LaunchpadFragment extends Fragment {
             });
         } else {
             view = inflater.inflate(R.layout.fragment_launchpad, container, false);
-            Button collectionButton = (Button) view.findViewById(R.id.collection_button);
-            collectionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    ConnectivityManager connectivityManager = (ConnectivityManager)
-//                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    if (connectivityManager.getActiveNetworkInfo() != null
-//                            && connectivityManager.getActiveNetworkInfo().isAvailable()
-//                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
-//                        new FetchRequestToken().execute();
-//                    }
-                }
-            });
-            Button wantlistButton = (Button) view.findViewById(R.id.wantlist_button);
-            wantlistButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    ConnectivityManager connectivityManager = (ConnectivityManager)
-//                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    if (connectivityManager.getActiveNetworkInfo() != null
-//                            && connectivityManager.getActiveNetworkInfo().isAvailable()
-//                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
-//                        new FetchRequestToken().execute();
-//                    }
-                }
-            });
-            Button userInfoButton = (Button) view.findViewById(R.id.user_button);
-            userInfoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    ConnectivityManager connectivityManager = (ConnectivityManager)
-//                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    if (connectivityManager.getActiveNetworkInfo() != null
-//                            && connectivityManager.getActiveNetworkInfo().isAvailable()
-//                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
-//                        new FetchRequestToken().execute();
-//                    }
-                }
-            });
-
-            final Button logoutButton = (Button) view.findViewById(R.id.logout_button);
-            logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    logoutUser();
-                }
-            });
+            // Inflate dashboard view
         }
         return view;
-    }
-
-    private void logoutUser() {
-        Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
-        Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
-        getFragmentManager().beginTransaction()
-                .detach(this)
-                .attach(this)
-                .commit();
     }
 
     private boolean checkAccessToken() {

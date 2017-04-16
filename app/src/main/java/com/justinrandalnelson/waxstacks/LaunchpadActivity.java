@@ -82,7 +82,7 @@ public class LaunchpadActivity extends SingleFragmentActivity {
             case R.id.collection_fragment_nav:
                 fragmentClass = AlbumListFragment.class;
                 break;
-            case R.id.wantlist_button:
+            case R.id.wantlist_fragment_nav:
                 fragmentClass = AlbumListFragment.class;
                 break;
             case R.id.lists_fragment_nav:
@@ -92,7 +92,9 @@ public class LaunchpadActivity extends SingleFragmentActivity {
                 fragmentClass = AlbumListFragment.class;
                 break;
             case R.id.logout_nav:
-                fragmentClass = AlbumListFragment.class;
+                Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+                Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+                fragmentClass = LaunchpadFragment.class;
                 break;
             default:
                 fragmentClass = LaunchpadFragment.class;
@@ -137,7 +139,7 @@ public class LaunchpadActivity extends SingleFragmentActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
+        // Pass any configuration change to the drawer toggles
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
