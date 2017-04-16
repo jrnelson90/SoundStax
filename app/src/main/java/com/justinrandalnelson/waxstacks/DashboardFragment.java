@@ -23,11 +23,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Launchpad fragment
+ * Dashboard fragment
  * Created by jrnel on 4/14/2017.
  */
 
-public class LaunchpadFragment extends Fragment {
+public class DashboardFragment extends Fragment {
     private JSONObject mUserInfoJSON = new JSONObject();
     private JSONObject mUserCollectionJSON = new JSONObject();
     private JSONObject mUserWantlistJSON = new JSONObject();
@@ -68,7 +68,7 @@ public class LaunchpadFragment extends Fragment {
                 }
             });
         } else {
-            view = inflater.inflate(R.layout.fragment_launchpad, container, false);
+            view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
             mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
 

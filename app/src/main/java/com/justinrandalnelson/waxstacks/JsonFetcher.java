@@ -179,7 +179,7 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    public JSONObject fetchUserCollection() {
+    JSONObject fetchUserCollection() {
         JSONObject jsonBody = null;
 
         // Get JSON object for passed album info.
@@ -228,7 +228,7 @@ class JsonFetcher {
             connection.disconnect();
 
             String jsonStr = sb.toString();
-            Log.i(TAG, "Received User Collection JSON: " + jsonStr);
+            Log.i(TAG, "Received User Collection JSON");
             jsonBody = new JSONObject(jsonStr);
             Log.i(TAG, "Successfully parsed User Collection JSON");
         } catch (JSONException e) {
@@ -239,7 +239,7 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    public JSONObject fetchUserWantlist() {
+    JSONObject fetchUserWantlist() {
         JSONObject jsonBody = null;
 
         // Get JSON object for passed album info.
@@ -288,7 +288,7 @@ class JsonFetcher {
             connection.disconnect();
 
             String jsonStr = sb.toString();
-            Log.i(TAG, "Received User Wantlist JSON: " + jsonStr);
+            Log.i(TAG, "Received User Wantlist JSON");
             jsonBody = new JSONObject(jsonStr);
             Log.i(TAG, "Successfully parsed User Wantlist JSON");
         } catch (JSONException e) {
@@ -299,7 +299,7 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    public JSONObject fetchUserProfile() {
+    JSONObject fetchUserProfile() {
         JSONObject jsonBody = null;
 
         // Get JSON object for passed album info.
@@ -399,7 +399,7 @@ class JsonFetcher {
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             InputStream in = connection.getInputStream();
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[51200];
 
             while ((bytesRead = in.read(buffer)) > 0) {

@@ -21,7 +21,7 @@
         android:layout_alignBaseline="@id/album_genre_filter_spinner"
         android:layout_toStartOf="@id/album_genre_filter_spinner"
         android:padding="4dp"
-        android:text="Genre Filter"/>
+        android:text="@string/genre_filter_label"/>
 
     <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"

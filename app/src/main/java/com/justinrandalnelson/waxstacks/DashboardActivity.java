@@ -14,7 +14,7 @@ import android.view.View;
  * Created by jrnel on 4/14/2017.
  */
 
-public class LaunchpadActivity extends SingleFragmentActivity {
+public class DashboardActivity extends SingleFragmentActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -24,7 +24,7 @@ public class LaunchpadActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new LaunchpadFragment();
+        return new DashboardFragment();
     }
 
     @Override
@@ -76,8 +76,8 @@ public class LaunchpadActivity extends SingleFragmentActivity {
         Fragment fragment = null;
         Class fragmentClass;
         switch (menuItem.getItemId()) {
-            case R.id.launchpad_fragment_nav:
-                fragmentClass = LaunchpadFragment.class;
+            case R.id.dashboard_fragment_nav:
+                fragmentClass = DashboardFragment.class;
                 break;
             case R.id.collection_fragment_nav:
                 fragmentClass = AlbumListFragment.class;
@@ -94,10 +94,10 @@ public class LaunchpadActivity extends SingleFragmentActivity {
             case R.id.logout_nav:
                 Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
                 Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
-                fragmentClass = LaunchpadFragment.class;
+                fragmentClass = DashboardFragment.class;
                 break;
             default:
-                fragmentClass = LaunchpadFragment.class;
+                fragmentClass = DashboardFragment.class;
         }
 
         try {

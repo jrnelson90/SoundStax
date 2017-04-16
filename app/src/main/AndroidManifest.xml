@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LaunchpadActivity">
+        <activity android:name=".DashboardActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN">
                 </action>
@@ -19,17 +19,17 @@
         </activity>
         <activity
             android:name="com.justinrandalnelson.waxstacks.AlbumListActivity"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
         <activity
             android:name="com.justinrandalnelson.waxstacks.AlbumActivity"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
 
         <activity
             android:name="com.justinrandalnelson.waxstacks.AuthPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.LaunchpadActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
     </application>
 

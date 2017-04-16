@@ -67,7 +67,11 @@ public class AuthPageFragment extends VisibleFragment {
 
             public void onReceivedTitle(WebView webView, String title) {
                 AppCompatActivity activity = (AppCompatActivity) getActivity();
-                activity.getSupportActionBar().setSubtitle(title);
+                try {
+                    activity.getSupportActionBar().setSubtitle(title);
+                } catch (Exception e) {
+
+                }
             }
         });
 
