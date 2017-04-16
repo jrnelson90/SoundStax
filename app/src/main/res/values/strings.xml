@@ -20,4 +20,6 @@
     <string name="lists_nav_label">Lists</string>
     <string name="profile_nav_label">Profile</string>
     <string name="logout_nav_label">Log out</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
