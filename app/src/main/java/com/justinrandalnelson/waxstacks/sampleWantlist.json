@@ -1,0 +1,2432 @@
+{
+  "wants": [
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "415 Records",
+            "entity_type": "1",
+            "catno": "S-0010",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/16439",
+            "id": 16439,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "45 RPM",
+              "Single"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/_wwGxnWNQ-tYXhkdcc7zaF4kX28=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-820453-1346472012-4185.jpeg.jpg",
+        "title": "100% White Girl \/ No Long Good-Byes",
+        "artists": [
+          {
+            "join": "",
+            "name": "VKTMS",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/313927",
+            "id": 313927
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/820453",
+        "year": 1980,
+        "id": 820453
+      },
+      "notes": "",
+      "date_added": "2014-09-08T20:34:55-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/820453",
+      "id": 820453
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "A&M Records",
+            "entity_type": "1",
+            "catno": "SP-3522",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/904",
+            "id": 904,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation",
+              "Reissue"
+            ],
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/uQZQG-vsJxnpM_tYn1T1uFvw50I=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2110190-1283296252.jpeg.jpg",
+        "title": "The Sergio Mendes And Brasil '66 Foursider",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Sérgio Mendes & Brasil '66",
+            "anv": "Sergio Mendes And Brasil '66",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/58353",
+            "id": 58353
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2110190",
+        "year": 1974,
+        "id": 2110190
+      },
+      "notes": "",
+      "date_added": "2014-10-13T16:33:13-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2110190",
+      "id": 2110190
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Active Distribution",
+            "entity_type": "1",
+            "catno": "Active 7",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/106926",
+            "id": 106926,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Havoc Records",
+            "entity_type": "1",
+            "catno": "HC1214",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/34582",
+            "id": 34582,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/IS1suCKDK95fmm-OlD_Tljicoes=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1251493-1272230013.jpeg.jpg",
+        "title": "System Error",
+        "artists": [
+          {
+            "join": "",
+            "name": "Restarts",
+            "anv": "The Restarts",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/657254",
+            "id": 657254
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1251493",
+        "year": 2003,
+        "id": 1251493
+      },
+      "notes": "",
+      "date_added": "2013-08-30T01:46:43-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1251493",
+      "id": 1251493
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Acute Records",
+            "entity_type": "1",
+            "catno": "ACU013",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/14239",
+            "id": 14239,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/HxDlkB1Qu8omGraYAYKJHVmW5qI=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3148598-1318009883.jpeg.jpg",
+        "title": "Drums Over London",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Disco Zombies",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/740573",
+            "id": 740573
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3148598",
+        "year": 2011,
+        "id": 3148598
+      },
+      "notes": "",
+      "date_added": "2016-05-20T11:06:45-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3148598",
+      "id": 3148598
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Artifix Records",
+            "entity_type": "1",
+            "catno": "SPR025",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/55779",
+            "id": 55779,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation",
+              "Repress"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/9WQqBx6zmKr9Ox8B4JdYY6FLoec=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3617859-1337557337-2171.png.jpg",
+        "title": "All Bagged Up: The Collected Works 1977-1980",
+        "artists": [
+          {
+            "join": ",",
+            "name": "The Bags",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/317916",
+            "id": 317916
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3617859",
+        "year": 2012,
+        "id": 3617859
+      },
+      "notes": "",
+      "date_added": "2013-09-18T19:10:43-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3617859",
+      "id": 3617859
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Asian Man Records",
+            "entity_type": "1",
+            "catno": "AM-233",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/36851",
+            "id": 36851,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Phat 'N' Phunky Records",
+            "entity_type": "1",
+            "catno": "PNP-22",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/430910",
+            "id": 430910,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "EP",
+              "45 RPM"
+            ],
+            "text": "Purple",
+            "name": "Vinyl",
+            "qty": "1"
+          },
+          {
+            "descriptions": [
+              "7\"",
+              "EP",
+              "45 RPM"
+            ],
+            "text": "Gold",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/VGOjol3kPV-AinoftqFvOb9kf1w=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3806488-1345153249-6587.jpeg.jpg",
+        "title": "Army Of Helaman",
+        "artists": [
+          {
+            "join": "",
+            "name": "Primary (6)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/2882112",
+            "id": 2882112
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3806488",
+        "year": 2012,
+        "id": 3806488
+      },
+      "notes": "",
+      "date_added": "2016-06-01T15:16:53-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3806488",
+      "id": 3806488
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "BOMP!",
+            "entity_type": "1",
+            "catno": "BLP 4035",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33810",
+            "id": 33810,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/yogJqSmtM1oiO6mEFcIg4O253X0=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-381384-1459272586-7884.jpeg.jpg",
+        "title": "Don't Push Me Around",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Zeros",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/261758",
+            "id": 261758
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/381384",
+        "year": 1991,
+        "id": 381384
+      },
+      "notes": "",
+      "date_added": "2013-10-25T19:16:27-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/381384",
+      "id": 381384
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Boss Tuneage",
+            "entity_type": "1",
+            "catno": "BTRCRS006",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/139138",
+            "id": 139138,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "CD",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/quJch00wZD9XMXxDzsf_3bh41Y4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3590096-1336484821.jpeg.jpg",
+        "title": "Thology",
+        "artists": [
+          {
+            "join": "",
+            "name": "Dan (13)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/592624",
+            "id": 592624
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3590096",
+        "year": 2005,
+        "id": 3590096
+      },
+      "notes": "",
+      "date_added": "2013-09-08T13:12:21-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3590096",
+      "id": 3590096
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Broken Rekids",
+            "entity_type": "1",
+            "catno": "SKIP 61",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/36428",
+            "id": 36428,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/oLkHpRV__L7qY0OGrwcnS2POEJ4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2740955-1394381353-6788.jpeg.jpg",
+        "title": "VKTMS",
+        "artists": [
+          {
+            "join": "",
+            "name": "VKTMS",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/313927",
+            "id": 313927
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2740955",
+        "year": 1997,
+        "id": 2740955
+      },
+      "notes": "",
+      "date_added": "2013-10-28T15:36:00-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2740955",
+      "id": 2740955
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Burn Books",
+            "entity_type": "1",
+            "catno": "BB002",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/246161",
+            "id": 246161,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "Cassette",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/y2CDdVONv1Tqx8Z4MNV6NXQwPlo=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2990498-1331711271.jpeg.jpg",
+        "title": "New York Rules",
+        "artists": [
+          {
+            "join": "",
+            "name": "Various",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/194",
+            "id": 194
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2990498",
+        "year": 2011,
+        "id": 2990498
+      },
+      "notes": "",
+      "date_added": "2016-06-07T09:30:13-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2990498",
+      "id": 2990498
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Captain Oi!",
+            "entity_type": "1",
+            "catno": "AHOY CD 105",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33554",
+            "id": 33554,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/o9rKQhOBAS_c0qhb6kqQ_klWj-4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-4299935-1398543284-9816.jpeg.jpg",
+        "title": "A Punk Rock Collection",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Expelled",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/262004",
+            "id": 262004
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/4299935",
+        "year": 1999,
+        "id": 4299935
+      },
+      "notes": "",
+      "date_added": "2014-10-16T09:11:12-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/4299935",
+      "id": 4299935
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Captain Oi!",
+            "entity_type": "1",
+            "catno": "AHOY CD 163",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33554",
+            "id": 33554,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/HN6Clc18g1ID-ACUD_qyWhLxSZc=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3110973-1398880270-9622.jpeg.jpg",
+        "title": "Punk Collection",
+        "artists": [
+          {
+            "join": "",
+            "name": "Newtown Neurotics",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/306151",
+            "id": 306151
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3110973",
+        "year": 2001,
+        "id": 3110973
+      },
+      "notes": "",
+      "date_added": "2014-09-18T22:59:15-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3110973",
+      "id": 3110973
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Captain Oi!",
+            "entity_type": "1",
+            "catno": "AHOY CD 79",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33554",
+            "id": 33554,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/G6CXLyuOjI_wJzyczUaEC5w58Gw=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3640465-1338478541-7288.jpeg.jpg",
+        "title": "The Oi! Collection",
+        "artists": [
+          {
+            "join": "\/",
+            "name": "Crux",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/263698",
+            "id": 263698
+          },
+          {
+            "join": "",
+            "name": "The Samples",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/263689",
+            "id": 263689
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3640465",
+        "year": 1997,
+        "id": 3640465
+      },
+      "notes": "",
+      "date_added": "2015-07-01T21:01:31-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3640465",
+      "id": 3640465
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Cash Money Records",
+            "entity_type": "1",
+            "catno": "B0016990-01",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/19799",
+            "id": 19799,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Universal Republic Records",
+            "entity_type": "1",
+            "catno": "B0016990-01",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/81846",
+            "id": 81846,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/8dHor-OM8mlQBdrJ7K9ogF6nS_k=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3690031-1459367107-9386.jpeg.jpg",
+        "title": "Pink Friday: Roman Reloaded",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Nicki Minaj",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1615988",
+            "id": 1615988
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3690031",
+        "year": 2012,
+        "id": 3690031
+      },
+      "notes": "",
+      "date_added": "2016-02-13T21:46:39-08:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3690031",
+      "id": 3690031
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Columbia",
+            "entity_type": "1",
+            "catno": "88985316611",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/1866",
+            "id": 1866,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Sony Music",
+            "entity_type": "1",
+            "catno": "88985316611",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/25487",
+            "id": 25487,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP"
+            ],
+            "text": "Green",
+            "name": "Vinyl",
+            "qty": "1"
+          },
+          {
+            "descriptions": [
+              "LP"
+            ],
+            "text": "Pink",
+            "name": "Vinyl",
+            "qty": "1"
+          },
+          {
+            "descriptions": [
+              "Album",
+              "Limited Edition",
+              "Reissue",
+              "Remastered"
+            ],
+            "name": "All Media",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/N5jeVKsfZooqYihHOUKkrmi3KpM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8613279-1465143735-9351.jpeg.jpg",
+        "title": "London Calling",
+        "artists": [
+          {
+            "join": ",",
+            "name": "The Clash",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/29890",
+            "id": 29890
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/8613279",
+        "year": 2016,
+        "id": 8613279
+      },
+      "notes": "",
+      "date_added": "2017-02-16T01:25:43-08:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/8613279",
+      "id": 8613279
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Daflespitz Records",
+            "entity_type": "1",
+            "catno": "9408X51",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/236593",
+            "id": 236593,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/1Qbp_MYPLxLauaIEP8uJLuNtxIk=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2773939-1323470353.jpeg.jpg",
+        "title": "VKTMS",
+        "artists": [
+          {
+            "join": "",
+            "name": "VKTMS",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/313927",
+            "id": 313927
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2773939",
+        "year": 1994,
+        "id": 2773939
+      },
+      "notes": "",
+      "date_added": "2014-09-08T20:34:40-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2773939",
+      "id": 2773939
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Data Records (5)",
+            "entity_type": "1",
+            "catno": "DATA 009",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/234050",
+            "id": 234050,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "EP"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/7PM_ZMg6OnmT40OXsCmJpWg75l0=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2083488-1440767800-7823.jpeg.jpg",
+        "title": "Patriotic Shit EP",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Nervous Tension (2)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1682322",
+            "id": 1682322
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2083488",
+        "year": 1999,
+        "id": 2083488
+      },
+      "notes": "",
+      "date_added": "2014-10-09T09:43:51-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2083488",
+      "id": 2083488
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "DBK Works",
+            "entity_type": "1",
+            "catno": "DBK 109",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/43400",
+            "id": 43400,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Compilation",
+              "Remastered"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/MGTDJXAzdY0ZKCkvSk_4fvE0D9Q=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1111169-1373014706-1422.jpeg.jpg",
+        "title": "The American In Me",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Avengers",
+            "anv": "The Avengers",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/256994",
+            "id": 256994
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1111169",
+        "year": 2004,
+        "id": 1111169
+      },
+      "notes": "",
+      "date_added": "2013-08-30T01:38:57-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1111169",
+      "id": 1111169
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Dead Wretched",
+            "entity_type": "1",
+            "catno": "none",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/734127",
+            "id": 734127,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Album",
+              "Compilation"
+            ],
+            "name": "CDr",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/X6mDJ_4YTO0LezHbYWyW4Z4yjwM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-6055139-1409913897-4989.jpeg.jpg",
+        "title": "Time To Die",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Dead Wretched",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/760055",
+            "id": 760055
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/6055139",
+        "year": 2005,
+        "id": 6055139
+      },
+      "notes": "",
+      "date_added": "2014-09-12T02:45:52-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/6055139",
+      "id": 6055139
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Decca",
+            "entity_type": "1",
+            "catno": "SKL 5292",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/5320",
+            "id": 5320,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/OEiUuCwi5VhbFg2kC1McqgSTs1g=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1191469-1216513892.jpeg.jpg",
+        "title": "Do It Dog Style",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Slaughter And The Dogs",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/292798",
+            "id": 292798
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1191469",
+        "year": 1978,
+        "id": 1191469
+      },
+      "notes": "",
+      "date_added": "2014-10-22T00:47:21-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1191469",
+      "id": 1191469
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Demon Records",
+            "entity_type": "1",
+            "catno": "DEMREC70",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/8522",
+            "id": 8522,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "text": "Deluxe Gatefold 180g Brown",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/oyhN-mN72L-AD7_P2hw8Hh5s55k=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-6639722-1423648682-3067.jpeg.jpg",
+        "title": "Brand New Age",
+        "artists": [
+          {
+            "join": "",
+            "name": "UK Subs",
+            "anv": "U.K. Subs",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/131370",
+            "id": 131370
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/6639722",
+        "year": 2015,
+        "id": 6639722
+      },
+      "notes": "",
+      "date_added": "2017-04-06T19:32:35-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/6639722",
+      "id": 6639722
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Detour Records (3)",
+            "entity_type": "1",
+            "catno": "DRLP029",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/104732",
+            "id": 104732,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album",
+              "Compilation"
+            ],
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/C8TaZ5PgVAHdWTrv_ArLYBWa5JM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3024800-1312245565.jpeg.jpg",
+        "title": "Will Damage Your Health!",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Cigarettes",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/318777",
+            "id": 318777
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3024800",
+        "year": 2002,
+        "id": 3024800
+      },
+      "notes": "",
+      "date_added": "2014-09-08T19:06:12-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3024800",
+      "id": 3024800
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Dionysus Records",
+            "entity_type": "1",
+            "catno": "BA1130",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33891",
+            "id": 33891,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Bacchus Archives",
+            "entity_type": "1",
+            "catno": "BA1130",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/63349",
+            "id": 63349,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/iB0QRBz9PLq1dSvk5K9O81H-ogM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-676168-1339356191-4232.jpeg.jpg",
+        "title": "Rockin' At Ground Zero",
+        "artists": [
+          {
+            "join": ",",
+            "name": "The Gears",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/383680",
+            "id": 383680
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/676168",
+        "year": 1999,
+        "id": 676168
+      },
+      "notes": "",
+      "date_added": "2013-10-28T08:39:32-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/676168",
+      "id": 676168
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Dirtnap Records",
+            "entity_type": "1",
+            "catno": "ZZZ-46",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/39045",
+            "id": 39045,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/gf7YvWRGmDmik4aFh2sNrxJvNmw=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-486233-1121729918.jpg.jpg",
+        "title": "On The Outside",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Marked Men",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/288084",
+            "id": 288084
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/486233",
+        "year": 2004,
+        "id": 486233
+      },
+      "notes": "",
+      "date_added": "2016-05-31T19:48:24-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/486233",
+      "id": 486233
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Douchemaster Records",
+            "entity_type": "1",
+            "catno": "DMR-003",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/99212",
+            "id": 99212,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Douchemaster Records",
+            "entity_type": "1",
+            "catno": "#3",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/99212",
+            "id": 99212,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\""
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/HFixKxHZBSw46INzQrqN8erEugw=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1337668-1325462453.jpeg.jpg",
+        "title": "Love And Dust",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Busy Signals (2)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/991591",
+            "id": 991591
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1337668",
+        "year": 2005,
+        "id": 1337668
+      },
+      "notes": "",
+      "date_added": "2014-09-08T19:46:39-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1337668",
+      "id": 1337668
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Downtown Music",
+            "entity_type": "1",
+            "catno": "WR708733",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/59240",
+            "id": 59240,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Mad Decent",
+            "entity_type": "1",
+            "catno": "none",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/56916",
+            "id": 56916,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album",
+              "Limited Edition",
+              "Picture Disc"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/y7ZunY0Gs34lXGSslMtaeQk_tPk=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1835605-1247126213.jpeg.jpg",
+        "title": "Guns Don't Kill People... Lazers Do",
+        "artists": [
+          {
+            "join": "",
+            "name": "Major Lazer",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1474921",
+            "id": 1474921
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1835605",
+        "year": 2009,
+        "id": 1835605
+      },
+      "notes": "",
+      "date_added": "2016-12-02T20:36:13-08:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1835605",
+      "id": 1835605
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Dr. Strange Records",
+            "entity_type": "1",
+            "catno": "DSR-102",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/35822",
+            "id": 35822,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "Album"
+            ],
+            "name": "CD",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/A-p7f4emNPZxX9ZtxmUruFvpBig=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2838463-1303346660.jpeg.jpg",
+        "title": "Kill A Generation",
+        "artists": [
+          {
+            "join": ",",
+            "name": "The Voids (2)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1750467",
+            "id": 1750467
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2838463",
+        "year": 2003,
+        "id": 2838463
+      },
+      "notes": "",
+      "date_added": "2013-09-03T11:41:34-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2838463",
+      "id": 2838463
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Earmark",
+            "entity_type": "1",
+            "catno": "40009",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/23153",
+            "id": 23153,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album",
+              "Reissue"
+            ],
+            "text": "180 Gram",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/R6VNzfbMz8Rk_mBETXIw9_cpcNs=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1752127-1283950831.jpeg.jpg",
+        "title": "City Baby Attacked By Rats",
+        "artists": [
+          {
+            "join": "",
+            "name": "G.B.H.",
+            "anv": "Charged G.B.H",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/257143",
+            "id": 257143
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1752127",
+        "year": 2003,
+        "id": 1752127
+      },
+      "notes": "",
+      "date_added": "2013-08-30T02:03:58-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1752127",
+      "id": 1752127
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Etage Noir Recordings",
+            "entity_type": "1",
+            "catno": "EN032",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/27208",
+            "id": 27208,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "EP",
+              "12\"",
+              "45 RPM"
+            ],
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/0G9bVzRO-rv1g2obNetyVx975J8=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3560403-1335349043.jpeg.jpg",
+        "title": "The Princess EP",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Parov Stelar",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/183523",
+            "id": 183523
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3560403",
+        "year": 2012,
+        "id": 3560403
+      },
+      "notes": "",
+      "date_added": "2016-11-11T02:16:03-08:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3560403",
+      "id": 3560403
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Etage Noir Recordings",
+            "entity_type": "1",
+            "catno": "06025 4726093 2",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/27208",
+            "id": 27208,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Island Records",
+            "entity_type": "1",
+            "catno": "06025 4726093 2",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/8377",
+            "id": 8377,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Universal Music Group",
+            "entity_type": "1",
+            "catno": "06025 4726093 2",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/38404",
+            "id": 38404,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "text": "Gatefold",
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/i37deTod01xIS2J9chQL3Jp3BJk=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-6964729-1430557970-6363.jpeg.jpg",
+        "title": "The Demon Diaries",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Parov Stelar",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/183523",
+            "id": 183523
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/6964729",
+        "year": 2015,
+        "id": 6964729
+      },
+      "notes": "",
+      "date_added": "2016-09-14T21:35:30-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/6964729",
+      "id": 6964729
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Final Vinyl Records",
+            "entity_type": "1",
+            "catno": "FVR 014",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/146425",
+            "id": 146425,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "EP",
+              "Limited Edition",
+              "Numbered"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/AQH6e563c2bNTulo_eGlp3fctog=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3584846-1336268737.jpeg.jpg",
+        "title": "The Krays \/ The Relix",
+        "artists": [
+          {
+            "join": "\/",
+            "name": "The Krays (2)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1534502",
+            "id": 1534502
+          },
+          {
+            "join": ",",
+            "name": "The New York Rel-X",
+            "anv": "The Relix",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1332708",
+            "id": 1332708
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3584846",
+        "year": 2000,
+        "id": 3584846
+      },
+      "notes": "",
+      "date_added": "2015-05-07T12:50:21-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3584846",
+      "id": 3584846
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "First Night Records",
+            "entity_type": "1",
+            "catno": "Encore 1",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/115875",
+            "id": 115875,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP"
+            ],
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/Ipe_OAqE3iUyGcUrC1SUlzdJNts=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2204934-1452664994-8132.jpeg.jpg",
+        "title": "Les Misérables",
+        "artists": [
+          {
+            "join": "And",
+            "name": "Alain Boublil",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/422369",
+            "id": 422369
+          },
+          {
+            "join": "",
+            "name": "Claude-Michel Schönberg",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/1115911",
+            "id": 1115911
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2204934",
+        "year": 1985,
+        "id": 2204934
+      },
+      "notes": "",
+      "date_added": "2016-06-01T15:39:31-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2204934",
+      "id": 2204934
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Flicknife Records",
+            "entity_type": "1",
+            "catno": "SHARP 016",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/26474",
+            "id": 26474,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/rp1aL_hbEfzyxgvHCaVCI3B2foM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1569259-1435290886-9543.jpeg.jpg",
+        "title": "A Clockwork Legion",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Major Accident",
+            "anv": "Accident",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/271674",
+            "id": 271674
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1569259",
+        "year": 1984,
+        "id": 1569259
+      },
+      "notes": "",
+      "date_added": "2014-09-08T18:20:33-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1569259",
+      "id": 1569259
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Fresh Records (14)",
+            "entity_type": "1",
+            "catno": "FRESH 2",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/344059",
+            "id": 344059,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "Single"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/H8EbScrkC1gvNjxTS8XBUNQQBSQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1328323-1210022457.jpeg.jpg",
+        "title": "My Friends \/ John Wayne",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Dark",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/277634",
+            "id": 277634
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1328323",
+        "year": 1979,
+        "id": 1328323
+      },
+      "notes": "",
+      "date_added": "2016-09-14T22:42:34-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1328323",
+      "id": 1328323
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Fresh Records (14)",
+            "entity_type": "1",
+            "catno": "FRESH 24",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/344059",
+            "id": 344059,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "Single"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/-UWZiOqbUFLGRXsSlrKGSNmmyss=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1347512-1211640105.jpeg.jpg",
+        "title": "Einsteins Brain",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Dark",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/277634",
+            "id": 277634
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1347512",
+        "year": 1981,
+        "id": 1347512
+      },
+      "notes": "",
+      "date_added": "2016-09-14T22:42:46-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1347512",
+      "id": 1347512
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Fresh Records (14)",
+            "entity_type": "1",
+            "catno": "FRESH 28",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/344059",
+            "id": 344059,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "Single"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/bUfl5Xt1Phgw_lNs62_5rYkoJcE=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1736340-1240070026.jpeg.jpg",
+        "title": "Casual Trousers",
+        "artists": [
+          {
+            "join": "",
+            "name": "J.C.'s Mainmen",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/642593",
+            "id": 642593
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1736340",
+        "year": 1981,
+        "id": 1736340
+      },
+      "notes": "",
+      "date_added": "2014-09-29T11:22:54-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1736340",
+      "id": 1736340
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Fresh Records (14)",
+            "entity_type": "1",
+            "catno": "FRESH 36",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/344059",
+            "id": 344059,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "7\"",
+              "45 RPM",
+              "EP"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/Oc-gvczVdBL-Hb0Z0c8z3QN8_TE=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-816852-1390746930-1960.jpeg.jpg",
+        "title": "Puppets Of War EP",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Chron Gen",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/316237",
+            "id": 316237
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/816852",
+        "year": 1981,
+        "id": 816852
+      },
+      "notes": "",
+      "date_added": "2014-10-01T13:05:34-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/816852",
+      "id": 816852
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Fresh Records (14)",
+            "entity_type": "1",
+            "catno": "FRESH LP 9",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/344059",
+            "id": 344059,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/xNQ_Y60ER3u2qQPUe62YmtSH2rM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-624589-1360103425-9818.jpeg.jpg",
+        "title": "Chemical Warfare",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Dark",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/277634",
+            "id": 277634
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/624589",
+        "year": 1982,
+        "id": 624589
+      },
+      "notes": "",
+      "date_added": "2016-09-14T22:41:29-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/624589",
+      "id": 624589
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Front Line (2)",
+            "entity_type": "1",
+            "catno": "FL 14",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/1022575",
+            "id": 1022575,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Front Line (2)",
+            "entity_type": "1",
+            "catno": "7243 8 10325 10",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/1022575",
+            "id": 1022575,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Virgin",
+            "entity_type": "1",
+            "catno": "8 10325 1",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/750",
+            "id": 750,
+            "entity_type_name": "Label"
+          },
+          {
+            "name": "Virgin",
+            "entity_type": "1",
+            "catno": "7243 8 10325 1 0",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/750",
+            "id": 750,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album",
+              "Reissue"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/S1g4C_tZW7nNuL5FukHkSSGUSF0=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-519469-1447942440-2815.jpeg.jpg",
+        "title": "Uptown Top Ranking",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Althea & Donna",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/116701",
+            "id": 116701
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/519469",
+        "year": 2001,
+        "id": 519469
+      },
+      "notes": "",
+      "date_added": "2014-10-13T16:34:19-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/519469",
+      "id": 519469
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Get Back",
+            "entity_type": "1",
+            "catno": "GET 110",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/17511",
+            "id": 17511,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP"
+            ],
+            "text": "White",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/eTHJi9tMHn1oV3xVXM4BPhMRY_Y=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1190819-1199570303.jpeg.jpg",
+        "title": "Zero Hour: June 13 1979",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Avengers",
+            "anv": "The Avengers",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/256994",
+            "id": 256994
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1190819",
+        "year": 2003,
+        "id": 1190819
+      },
+      "notes": "",
+      "date_added": "2013-08-30T01:32:10-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1190819",
+      "id": 1190819
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Get Back",
+            "entity_type": "1",
+            "catno": "get117",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/17511",
+            "id": 17511,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album",
+              "Reissue"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/owVbgF8PxQNFA43RG0suR7OCFU4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2910585-1306856189.jpeg.jpg",
+        "title": "Like It Or Not Live",
+        "artists": [
+          {
+            "join": "",
+            "name": "F-Word!",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/255061",
+            "id": 255061
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2910585",
+        "year": 2004,
+        "id": 2910585
+      },
+      "notes": "",
+      "date_added": "2014-10-01T12:46:41-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2910585",
+      "id": 2910585
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Hard-On Records",
+            "entity_type": "1",
+            "catno": "hard-on #6",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/50661",
+            "id": 50661,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/ZviPJJle3XjtfnAFxzE-BSw8ppM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2748915-1322242370.jpeg.jpg",
+        "title": "Destroy High Society",
+        "artists": [
+          {
+            "join": "",
+            "name": "The Pricks",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/808941",
+            "id": 808941
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2748915",
+        "year": 1999,
+        "id": 2748915
+      },
+      "notes": "",
+      "date_added": "2013-10-28T09:39:03-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2748915",
+      "id": 2748915
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Hellcat Records",
+            "entity_type": "1",
+            "catno": "80408-1",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/34341",
+            "id": 34341,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/AtfdXEAeIms8MMVO35G4kCyWFpk=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-475705-1128327465.jpeg.jpg",
+        "title": "No Gods \/ No Managers",
+        "artists": [
+          {
+            "join": "",
+            "name": "Choking Victim",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/261818",
+            "id": 261818
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/475705",
+        "year": 1999,
+        "id": 475705
+      },
+      "notes": "",
+      "date_added": "2013-08-30T02:01:53-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/475705",
+      "id": 475705
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Hellcat Records",
+            "entity_type": "1",
+            "catno": "87079-1",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/34341",
+            "id": 34341,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "12\"",
+              "45 RPM",
+              "EP",
+              "Reissue"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/oOXTgsfIHqqCl8vawnDNK7B67gI=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3549846-1334972475.jpeg.jpg",
+        "title": "Hectic E.P.",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Operation Ivy",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/261324",
+            "id": 261324
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3549846",
+        "year": 2012,
+        "id": 3549846
+      },
+      "notes": "",
+      "date_added": "2014-09-11T21:23:54-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/3549846",
+      "id": 3549846
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Helter Skelter Records",
+            "entity_type": "1",
+            "catno": "HS951252",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/16732",
+            "id": 16732,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation"
+            ],
+            "text": "Orange Clear",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/ba8yP4bLEGtY5YpoCvP7rVDXCQQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1649890-1432610924-5544.jpeg.jpg",
+        "title": "The Best Of",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Chron Gen",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/316237",
+            "id": 316237
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1649890",
+        "year": 1995,
+        "id": 1649890
+      },
+      "notes": "",
+      "date_added": "2016-05-31T20:04:18-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1649890",
+      "id": 1649890
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Hopeless Records",
+            "entity_type": "1",
+            "catno": "HR620-1",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/33835",
+            "id": 33835,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/KdFed-zBebdPM3Fef0QNSvfVaeI=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1345148-1268774062.jpeg.jpg",
+        "title": "Evildoers Beware!",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Mustard Plug",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/268944",
+            "id": 268944
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1345148",
+        "year": 1997,
+        "id": 1345148
+      },
+      "notes": "",
+      "date_added": "2016-06-10T09:11:11-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1345148",
+      "id": 1345148
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Incognito Records (4)",
+            "entity_type": "1",
+            "catno": "INC 043",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/385020",
+            "id": 385020,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation",
+              "Limited Edition",
+              "Numbered"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/MMP6CmENITPbz5KPcM77a-LU3XY=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1384849-1294636936.jpeg.jpg",
+        "title": "Back To Front Vol. 1",
+        "artists": [
+          {
+            "join": "",
+            "name": "Various",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/194",
+            "id": 194
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/1384849",
+        "year": 1993,
+        "id": 1384849
+      },
+      "notes": "",
+      "date_added": "2015-05-20T22:03:41-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/1384849",
+      "id": 1384849
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Incognito Records (4)",
+            "entity_type": "1",
+            "catno": "INC.059",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/385020",
+            "id": 385020,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Compilation",
+              "Limited Edition",
+              "Numbered"
+            ],
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/Fr43E7TAm58F8BttbQGMYkxhLO8=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2530393-1299703267.jpeg.jpg",
+        "title": "Back To Front Vol. 4",
+        "artists": [
+          {
+            "join": "",
+            "name": "Various",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/194",
+            "id": 194
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/2530393",
+        "year": 1994,
+        "id": 2530393
+      },
+      "notes": "",
+      "date_added": "2015-05-20T22:05:27-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/2530393",
+      "id": 2530393
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Invada",
+            "entity_type": "1",
+            "catno": "INV160LP",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/75832",
+            "id": 75832,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "text": "White",
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/C0hjbK2UufBbCUx3CL30QK0Do_0=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-9016413-1473327535-2503.jpeg.jpg",
+        "title": "Mr. Robot: Volume 1 (Original Television Series Soundtrack)",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Mac Quayle",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/27467",
+            "id": 27467
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/9016413",
+        "year": 2016,
+        "id": 9016413
+      },
+      "notes": "",
+      "date_added": "2016-09-15T22:18:40-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/9016413",
+      "id": 9016413
+    },
+    {
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "Invada",
+            "entity_type": "1",
+            "catno": "INV161LP",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/75832",
+            "id": 75832,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Album"
+            ],
+            "text": "White",
+            "name": "Vinyl",
+            "qty": "2"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/PpxkkVS7YYtVMnkxQ0bHayMaYP4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-9022562-1473447949-2774.jpeg.jpg",
+        "title": "Mr. Robot: Volume 2 (Original Television Series Soundtrack)",
+        "artists": [
+          {
+            "join": ",",
+            "name": "Mac Quayle",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/27467",
+            "id": 27467
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/9022562",
+        "year": 2016,
+        "id": 9022562
+      },
+      "notes": "",
+      "date_added": "2016-09-15T22:19:04-07:00",
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants\/9022562",
+      "id": 9022562
+    }
+  ],
+  "pagination": {
+    "per_page": 50,
+    "items": 118,
+    "page": 1,
+    "urls": {
+      "last": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants?per_page=50&page=3",
+      "next": "https:\/\/api.discogs.com\/users\/jrnelson90\/wants?per_page=50&page=2"
+    },
+    "pages": 3
+  }
+}

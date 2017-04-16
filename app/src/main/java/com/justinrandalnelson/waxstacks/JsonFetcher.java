@@ -131,15 +131,6 @@ class JsonFetcher {
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//            connection.setRequestProperty("Authorization", "OAuth" +
-//                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-//                    ", oauth_nonce=" + ts +
-//                    ", oauth_token=" + OauthTokens.getOauthAccessToken() +
-//                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-//                    OauthTokens.getOauthAccessTokenSecret() +
-//                    ", oauth_signature_method=PLAINTEXT" +
-//                    ", oauth_timestamp=" + ts);
-
             connection.setRequestProperty("Authorization", "OAuth" +
                     "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
                     ", oauth_nonce=" + ts +
@@ -185,6 +176,122 @@ class JsonFetcher {
     }
 
     public JSONObject fetchUserCollection() {
-        return new JSONObject();
+        JSONObject jsonBody = null;
+
+        // Get JSON object for passed album info.
+        String userIdentityURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/collection/folders/0/releases";
+        try {
+
+            HttpsURLConnection connection =
+                    (HttpsURLConnection) new URL(userIdentityURL).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Authorization", "OAuth" +
+                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                    ", oauth_nonce=" + ts +
+                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                    ", oauth_signature_method=PLAINTEXT" +
+                    ", oauth_timestamp=" + ts);
+            connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+
+            if (connection.getResponseCode() == 200) {
+                Log.i("Connection Type", "Success");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+                // Success
+                // Further processing here
+            } else {
+                // Error handling code goes here
+                Log.i("Connection Type", "Failed");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            String NEWLINE = System.lineSeparator();
+            while ((line = in.readLine()) != null) {
+                sb.append(line).append(NEWLINE);
+            }
+            connection.disconnect();
+
+            String jsonStr = sb.toString();
+            Log.i(TAG, "Received User Collection JSON: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed User Collection JSON");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse User Collection JSON", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch User Collection items", ioe);
+        }
+        return jsonBody;
+    }
+
+    public JSONObject fetchUserWantlist() {
+        JSONObject jsonBody = null;
+
+        // Get JSON object for passed album info.
+        String userIdentityURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/wants";
+        try {
+
+            HttpsURLConnection connection =
+                    (HttpsURLConnection) new URL(userIdentityURL).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Authorization", "OAuth" +
+                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                    ", oauth_nonce=" + ts +
+                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                    ", oauth_signature_method=PLAINTEXT" +
+                    ", oauth_timestamp=" + ts);
+            connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+
+            if (connection.getResponseCode() == 200) {
+                Log.i("Connection Type", "Success");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+                // Success
+                // Further processing here
+            } else {
+                // Error handling code goes here
+                Log.i("Connection Type", "Failed");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            String NEWLINE = System.lineSeparator();
+            while ((line = in.readLine()) != null) {
+                sb.append(line).append(NEWLINE);
+            }
+            connection.disconnect();
+
+            String jsonStr = sb.toString();
+            Log.i(TAG, "Received User Wantlist JSON: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed User Wantlist JSON");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse User Wantlist JSON", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch User Wantlist items", ioe);
+        }
+        return jsonBody;
     }
 }

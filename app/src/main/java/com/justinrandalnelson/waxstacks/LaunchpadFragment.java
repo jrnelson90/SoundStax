@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 public class LaunchpadFragment extends Fragment {
     private JSONObject mUserInfoJSON = new JSONObject();
     private JSONObject mUserCollectionJSON = new JSONObject();
+    private JSONObject mUserWantlistJSON = new JSONObject();
     private boolean fetchingUserInfoInProcess;
     private LinearLayout mCollectionLinearLayout;
     private LinearLayout mWantlistLinearLayout;
@@ -99,6 +101,22 @@ public class LaunchpadFragment extends Fragment {
         return true;
     }
 
+    private void extractCollectionData() {
+        try {
+            mUserCollectionJSON.get("release");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void extractWantlistData() {
+        try {
+            mUserWantlistJSON.get("release");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populateDashboardCollectionView() {
         // Update view with retrieved Collection data
     }
@@ -144,7 +162,19 @@ public class LaunchpadFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserInfoJSON = jsonObject;
+//            String usernameString = mUserInfoJSON.getString("username");
+            try {
+                String usernameString = mUserInfoJSON.getString("username");
+                Preferences.set(Preferences.USERNAME, usernameString);
+                Log.i("Set Username Pref:", Preferences.get(Preferences.USERNAME, ""));
+                String userIdString = mUserInfoJSON.getString("id");
+                Preferences.set(Preferences.USER_ID, userIdString);
+                Log.i("Set User ID Pref:", Preferences.get(Preferences.USER_ID, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             fetchingUserInfoInProcess = false;
+            new FetchUserCollectionJSON().execute();
         }
     }
 
@@ -157,6 +187,21 @@ public class LaunchpadFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserCollectionJSON = jsonObject;
+            extractCollectionData();
+            new FetchUserWantlistJSON().execute();
+        }
+    }
+
+    private class FetchUserWantlistJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserWantlist();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserWantlistJSON = jsonObject;
+            extractWantlistData();
             populateDashboardCollectionView();
         }
     }
