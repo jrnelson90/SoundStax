@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,8 +133,6 @@ public class DashboardFragment extends Fragment {
 
     private void updateProfilePicture(Bitmap _userProfilePicBitmap) {
         mUserProfilePicture.setImageBitmap(_userProfilePicBitmap);
-//        mUserProfilePicture.invalidate();
-//        getView().invalidate();
     }
 
     private void updateUsername() {
@@ -190,6 +189,10 @@ public class DashboardFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Toast.makeText(getContext(),
+                    "Logged in as " + Preferences.get(Preferences.USERNAME, "")
+                    , Toast.LENGTH_SHORT)
+                    .show();
             updateUsername();
             new FetchUserProfileJSON().execute();
         }

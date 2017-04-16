@@ -120,7 +120,12 @@ public class DashboardActivity extends SingleFragmentActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        mTitle = title;
+
+        if (!title.equals("Log out")) {
+            mTitle = title;
+        } else {
+            mTitle = "Wax Stacks";
+        }
         getSupportActionBar().setTitle(mTitle);
     }
 
