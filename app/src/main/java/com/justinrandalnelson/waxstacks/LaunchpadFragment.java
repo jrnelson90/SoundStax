@@ -2,6 +2,7 @@ package com.justinrandalnelson.waxstacks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,9 +31,12 @@ public class LaunchpadFragment extends Fragment {
     private JSONObject mUserInfoJSON = new JSONObject();
     private JSONObject mUserCollectionJSON = new JSONObject();
     private JSONObject mUserWantlistJSON = new JSONObject();
+    private JSONObject mUserProfileJSON = new JSONObject();
     private boolean fetchingUserInfoInProcess;
     private LinearLayout mCollectionLinearLayout;
     private LinearLayout mWantlistLinearLayout;
+    private TextView mUsernameLabel;
+    private ImageView mUserProfilePicture;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,10 @@ public class LaunchpadFragment extends Fragment {
             });
         } else {
             view = inflater.inflate(R.layout.fragment_launchpad, container, false);
+
+            mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
+
+            mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
 
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
             for (int i = 0; i < 10; i++) {
@@ -121,6 +130,16 @@ public class LaunchpadFragment extends Fragment {
         // Update view with retrieved Collection data
     }
 
+    private void updateProfilePicture(Bitmap _userProfilePicBitmap) {
+        mUserProfilePicture.setImageBitmap(_userProfilePicBitmap);
+//        mUserProfilePicture.invalidate();
+//        getView().invalidate();
+    }
+
+    private void updateUsername() {
+        mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
+    }
+
     private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
         @Override
         protected String[] doInBackground(Void... params) {
@@ -155,14 +174,12 @@ public class LaunchpadFragment extends Fragment {
     private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
         @Override
         protected JSONObject doInBackground(Void... params) {
-            fetchingUserInfoInProcess = true;
             return new JsonFetcher().fetchUserIdentity();
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserInfoJSON = jsonObject;
-//            String usernameString = mUserInfoJSON.getString("username");
             try {
                 String usernameString = mUserInfoJSON.getString("username");
                 Preferences.set(Preferences.USERNAME, usernameString);
@@ -173,7 +190,39 @@ public class LaunchpadFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            fetchingUserInfoInProcess = false;
+            updateUsername();
+            new FetchUserProfileJSON().execute();
+        }
+    }
+
+    private class FetchUserProfileJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserProfile();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserProfileJSON = jsonObject;
+            new FetchUserProilePicture().execute();
+        }
+    }
+
+    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            String profilePicUrl = null;
+            try {
+                profilePicUrl = mUserProfileJSON.getString("avatar_url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return new JsonFetcher().fetchUserProfilePicture(profilePicUrl);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap _userProfilePicBitmap) {
+            updateProfilePicture(_userProfilePicBitmap);
             new FetchUserCollectionJSON().execute();
         }
     }
@@ -187,7 +236,7 @@ public class LaunchpadFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserCollectionJSON = jsonObject;
-            extractCollectionData();
+//            extractCollectionData();
             new FetchUserWantlistJSON().execute();
         }
     }
@@ -201,7 +250,7 @@ public class LaunchpadFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserWantlistJSON = jsonObject;
-            extractWantlistData();
+//            extractWantlistData();
             populateDashboardCollectionView();
         }
     }

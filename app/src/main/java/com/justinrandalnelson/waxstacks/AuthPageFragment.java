@@ -117,9 +117,6 @@ public class AuthPageFragment extends VisibleFragment {
         @Override
         protected void onPostExecute(String[] tokenArray) {
             if (tokenArray.length == 2) {
-//                OauthTokens.setOauthAccessTokenSecret(tokenArray[0].split("=")[1]);
-//                OauthTokens.setOauthAccessToken(tokenArray[1]
-//                        .split("=")[1].replace("\n", ""));
                 String parsedAccessKey = tokenArray[1].split("=")[1].replace("\n", "");
                 String parsedAccessSecret = tokenArray[0].split("=")[1];
                 Preferences.set(Preferences.OAUTH_ACCESS_KEY, parsedAccessKey);

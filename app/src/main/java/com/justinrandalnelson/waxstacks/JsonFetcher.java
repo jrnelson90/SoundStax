@@ -1,12 +1,16 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -293,5 +297,123 @@ class JsonFetcher {
             Log.e(TAG, "Failed to fetch User Wantlist items", ioe);
         }
         return jsonBody;
+    }
+
+    public JSONObject fetchUserProfile() {
+        JSONObject jsonBody = null;
+
+        // Get JSON object for passed album info.
+        String userIdentityURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "");
+        try {
+
+            HttpsURLConnection connection =
+                    (HttpsURLConnection) new URL(userIdentityURL).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Authorization", "OAuth" +
+                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                    ", oauth_nonce=" + ts +
+                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                    ", oauth_signature_method=PLAINTEXT" +
+                    ", oauth_timestamp=" + ts);
+            connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+
+            if (connection.getResponseCode() == 200) {
+                Log.i("Connection Type", "Success");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+                // Success
+                // Further processing here
+            } else {
+                // Error handling code goes here
+                Log.i("Connection Type", "Failed");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+            }
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            String NEWLINE = System.lineSeparator();
+            while ((line = in.readLine()) != null) {
+                sb.append(line).append(NEWLINE);
+            }
+            connection.disconnect();
+
+            String jsonStr = sb.toString();
+            Log.i(TAG, "Received User Profile JSON: " + jsonStr);
+            jsonBody = new JSONObject(jsonStr);
+            Log.i(TAG, "Successfully parsed User Profile JSON");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse User Profile JSON", e);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch User Profile items", ioe);
+        }
+        return jsonBody;
+    }
+
+    Bitmap fetchUserProfilePicture(String profilePicUrl) {
+        Bitmap profileBitmap = null;
+
+        // Get JSON object for passed album info.
+        try {
+
+            HttpsURLConnection connection =
+                    (HttpsURLConnection) new URL(profilePicUrl).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Authorization", "OAuth" +
+                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                    ", oauth_nonce=" + ts +
+                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                    ", oauth_signature_method=PLAINTEXT" +
+                    ", oauth_timestamp=" + ts);
+            connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+
+            if (connection.getResponseCode() == 200) {
+                Log.i("Connection Type", "Profile Picture URL Success");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+                // Success
+                // Further processing here
+            } else {
+                // Error handling code goes here
+                Log.i("Connection Type", "Failed");
+                Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                Log.i("Connection Message", connection.getResponseMessage());
+            }
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = connection.getInputStream();
+            int bytesRead = 0;
+            byte[] buffer = new byte[51200];
+
+            while ((bytesRead = in.read(buffer)) > 0) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.close();
+            connection.disconnect();
+
+            profileBitmap = BitmapFactory.
+                    decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
+            Log.i(TAG, "Received User Profile Picture: Bitmap created");
+        } catch (IOException ioe) {
+            Log.e(TAG, "Error Downloading User Profile Picture: ", ioe);
+        }
+        return profileBitmap;
     }
 }
