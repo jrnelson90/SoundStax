@@ -183,4 +183,8 @@ class JsonFetcher {
         }
         return jsonBody;
     }
+
+    public JSONObject fetchUserCollection() {
+        return new JSONObject();
+    }
 }

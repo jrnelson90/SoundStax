@@ -2,6 +2,7 @@ package com.justinrandalnelson.waxstacks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import org.json.JSONObject;
 
@@ -23,7 +26,10 @@ import org.json.JSONObject;
 
 public class LaunchpadFragment extends Fragment {
     private JSONObject mUserInfoJSON = new JSONObject();
+    private JSONObject mUserCollectionJSON = new JSONObject();
     private boolean fetchingUserInfoInProcess;
+    private LinearLayout mCollectionLinearLayout;
+    private LinearLayout mWantlistLinearLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,28 @@ public class LaunchpadFragment extends Fragment {
             });
         } else {
             view = inflater.inflate(R.layout.fragment_launchpad, container, false);
+
+            mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
+            for (int i = 0; i < 10; i++) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setId(i);
+                imageView.setPadding(2, 2, 2, 2);
+                imageView.setImageBitmap(BitmapFactory.decodeResource(
+                        getResources(), R.mipmap.disc_vinyl_icon));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                mCollectionLinearLayout.addView(imageView);
+            }
+
+            mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
+            for (int i = 0; i < 10; i++) {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setId(i);
+                imageView.setPadding(2, 2, 2, 2);
+                imageView.setImageBitmap(BitmapFactory.decodeResource(
+                        getResources(), R.mipmap.disc_vinyl_icon));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                mWantlistLinearLayout.addView(imageView);
+            }
             // Inflate dashboard view
         }
         return view;
@@ -69,6 +97,10 @@ public class LaunchpadFragment extends Fragment {
             checkUser.execute();
         }
         return true;
+    }
+
+    private void populateDashboardCollectionView() {
+        // Update view with retrieved Collection data
     }
 
     private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
@@ -113,6 +145,19 @@ public class LaunchpadFragment extends Fragment {
         protected void onPostExecute(JSONObject jsonObject) {
             mUserInfoJSON = jsonObject;
             fetchingUserInfoInProcess = false;
+        }
+    }
+
+    private class FetchUserCollectionJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserCollection();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserCollectionJSON = jsonObject;
+            populateDashboardCollectionView();
         }
     }
 }
