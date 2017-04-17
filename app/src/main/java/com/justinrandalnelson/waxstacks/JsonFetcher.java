@@ -30,11 +30,12 @@ class JsonFetcher {
         connection.addRequestProperty("User-Agent", HttpConst.USER_AGENT);
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
-        if (OauthTokens.getOauthAccessToken() != null) {
-            connection.addRequestProperty("Authorization", "Discogs token=" + OauthTokens.getOauthAccessToken());
+        if (Preferences.get(Preferences.USERNAME, "").length() == 0) {
+            connection.addRequestProperty("Authorization", "Discogs token=" +
+                    Preferences.get(Preferences.USERNAME, ""));
         } else {
-            connection.addRequestProperty("Authorization", "Discogs key=" + HttpConst.CONSUMER_KEY +
-                    ", secret=" + HttpConst.CONSUMER_SECRET);
+            connection.addRequestProperty("Authorization", "Discogs key=" +
+                    HttpConst.CONSUMER_KEY + ", secret=" + HttpConst.CONSUMER_SECRET);
         }
 
         if (connection.getResponseCode() == 200) {

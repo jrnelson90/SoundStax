@@ -2,7 +2,6 @@ package com.justinrandalnelson.waxstacks;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -20,6 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +35,6 @@ public class DashboardFragment extends Fragment {
     private JSONObject mUserCollectionJSON = new JSONObject();
     private JSONObject mUserWantlistJSON = new JSONObject();
     private JSONObject mUserProfileJSON = new JSONObject();
-    private boolean fetchingUserInfoInProcess;
     private LinearLayout mCollectionLinearLayout;
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
@@ -44,7 +45,27 @@ public class DashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(getContext()));
-        mUserInfoJSON = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+            try {
+                mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
+                Log.i("Profile reloaded", "Reloaded " + mUserProfileJSON.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+//        Bundle bundle = new Bundle();
+//        bundle.putString(JSON_STRING,json.toString());
+
     }
 
     @Override
@@ -131,8 +152,21 @@ public class DashboardFragment extends Fragment {
         // Update view with retrieved Collection data
     }
 
-    private void updateProfilePicture(Bitmap _userProfilePicBitmap) {
-        mUserProfilePicture.setImageBitmap(_userProfilePicBitmap);
+    private void updateProfilePicture() {
+        String userPictureURL = null;
+        try {
+            userPictureURL = mUserProfileJSON.getString("avatar_url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(getContext())
+                .load(userPictureURL)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .skipMemoryCache(true)
+                .fitCenter()
+                .placeholder(R.drawable.loading)
+                .into(mUserProfilePicture);
     }
 
     private void updateUsername() {
@@ -148,14 +182,13 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] tokenArray) {
             if (tokenArray.length == 3 && tokenArray[0] != null) {
-                OauthTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
-                OauthTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
-                OauthTokens.setOauthCallbackConfirmed(tokenArray[2].split("=")[1]);
+                OauthVerifyTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
+                OauthVerifyTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
 
                 String authUrl = null;
-                if (OauthTokens.getOauthRequestToken() != null) {
+                if (OauthVerifyTokens.getOauthRequestToken() != null) {
                     authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
-                            OauthTokens.getOauthRequestToken();
+                            OauthVerifyTokens.getOauthRequestToken();
                     Log.i("Auth URL", authUrl);
                 } else {
                     Log.i("Auth Dialog", "No oauth request token values populated");
@@ -179,6 +212,7 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserInfoJSON = jsonObject;
+
             try {
                 String usernameString = mUserInfoJSON.getString("username");
                 Preferences.set(Preferences.USERNAME, usernameString);
@@ -189,12 +223,23 @@ public class DashboardFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Toast.makeText(getContext(),
-                    "Logged in as " + Preferences.get(Preferences.USERNAME, "")
-                    , Toast.LENGTH_SHORT)
-                    .show();
             updateUsername();
-            new FetchUserProfileJSON().execute();
+
+            if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
+                    Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
+                Toast.makeText(getContext(),
+                        "Logged in as " + Preferences.get(Preferences.USERNAME, "")
+                        , Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            if (mUserProfileJSON.length() == 0) {
+                new FetchUserProfileJSON().execute();
+            } else {
+                Log.i("User Profile", "Already loaded user");
+                updateProfilePicture();
+                new FetchUserCollectionJSON().execute();
+            }
         }
     }
 
@@ -207,28 +252,30 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserProfileJSON = jsonObject;
-            new FetchUserProilePicture().execute();
-        }
-    }
-
-    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            String profilePicUrl = null;
-            try {
-                profilePicUrl = mUserProfileJSON.getString("avatar_url");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return new JsonFetcher().fetchUserProfilePicture(profilePicUrl);
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap _userProfilePicBitmap) {
-            updateProfilePicture(_userProfilePicBitmap);
+            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
+            updateProfilePicture();
             new FetchUserCollectionJSON().execute();
         }
     }
+
+//    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
+//        @Override
+//        protected Bitmap doInBackground(Void... params) {
+//            String profilePicUrl = null;
+//            try {
+//                profilePicUrl = mUserProfileJSON.getString("avatar_url");
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return new JsonFetcher().fetchUserProfilePicture(profilePicUrl);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Bitmap _userProfilePicBitmap) {
+////            updateProfilePicture(_userProfilePicBitmap);
+////            new FetchUserCollectionJSON().execute();
+//        }
+//    }
 
     private class FetchUserCollectionJSON extends AsyncTask<Void, Void, JSONObject> {
         @Override

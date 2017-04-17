@@ -10,6 +10,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
+ * Oauth Network Fetcher
  * Created by jrnel on 4/14/2017.
  */
 
@@ -105,7 +106,7 @@ class OauthTokenFetcher {
                 ", oauth_nonce=" + ts +
                 ", oauth_token=" + _passedOauthVerify[0] +
                 ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                OauthTokens.getOauthRequestTokenSecret() +
+                OauthVerifyTokens.getOauthRequestTokenSecret() +
                 ", oauth_signature_method=PLAINTEXT" +
                 ", oauth_timestamp=" + ts +
                 ", oauth_verifier=" + _passedOauthVerify[1]);

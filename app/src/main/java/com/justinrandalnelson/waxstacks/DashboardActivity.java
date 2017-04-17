@@ -94,6 +94,9 @@ public class DashboardActivity extends SingleFragmentActivity {
             case R.id.logout_nav:
                 Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
                 Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+                Preferences.set(Preferences.USERNAME, "");
+                Preferences.set(Preferences.USER_ID, "");
+                Preferences.set(Preferences.USER_PROFILE, "");
                 fragmentClass = DashboardFragment.class;
                 break;
             default:
