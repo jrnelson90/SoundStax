@@ -41,6 +41,8 @@ class UserWantlistDB {
         values.put(WantlistTable.Cols.ARTIST, album.getArtist());
         values.put(WantlistTable.Cols.GENRE, album.getGenre());
         values.put(WantlistTable.Cols.YEAR, album.getYear());
+        values.put(WantlistTable.Cols.THUMB_URL, album.getThumbUrl());
+        values.put(WantlistTable.Cols.THUMB_DIR, album.getThumbDir());
 
         return values;
     }

@@ -26,7 +26,9 @@ public class UserCollectionDBHelper extends SQLiteOpenHelper {
                 CollectionTable.Cols.TITLE + ", " +
                 CollectionTable.Cols.ARTIST + ", " +
                 CollectionTable.Cols.GENRE + ", " +
-                CollectionTable.Cols.YEAR +
+                CollectionTable.Cols.YEAR + ", " +
+                CollectionTable.Cols.THUMB_URL + ", " +
+                CollectionTable.Cols.THUMB_DIR +
                 ")"
         );
     }

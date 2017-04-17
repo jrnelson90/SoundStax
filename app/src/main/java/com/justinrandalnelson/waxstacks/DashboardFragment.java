@@ -49,7 +49,6 @@ public class DashboardFragment extends Fragment {
     private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
     private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

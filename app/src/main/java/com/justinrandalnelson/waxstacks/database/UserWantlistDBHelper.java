@@ -26,7 +26,9 @@ public class UserWantlistDBHelper extends SQLiteOpenHelper {
                 WantlistTable.Cols.TITLE + ", " +
                 WantlistTable.Cols.ARTIST + ", " +
                 WantlistTable.Cols.GENRE + ", " +
-                WantlistTable.Cols.YEAR +
+                WantlistTable.Cols.YEAR + ", " +
+                WantlistTable.Cols.THUMB_URL + ", " +
+                WantlistTable.Cols.THUMB_DIR +
                 ")"
         );
     }

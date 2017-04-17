@@ -41,6 +41,8 @@ class UserCollectionDB {
         values.put(CollectionTable.Cols.ARTIST, album.getArtist());
         values.put(CollectionTable.Cols.GENRE, album.getGenre());
         values.put(CollectionTable.Cols.YEAR, album.getYear());
+        values.put(CollectionTable.Cols.THUMB_URL, album.getThumbUrl());
+        values.put(CollectionTable.Cols.THUMB_DIR, album.getThumbDir());
 
         return values;
     }
