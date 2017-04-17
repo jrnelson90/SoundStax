@@ -23,14 +23,12 @@ public class AlbumCursorWrapper extends CursorWrapper {
         String artist = getString(getColumnIndex(AlbumTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(AlbumTable.Cols.GENRE));
         String year = getString(getColumnIndex(AlbumTable.Cols.YEAR));
-        int isOwned = getInt(getColumnIndex(AlbumTable.Cols.OWNED));
 
         Album album = new Album(UUID.fromString(uuidString));
         album.setTitle(title);
         album.setArtist(artist);
         album.setGenre(genre);
         album.setYear(year);
-        album.setOwned(isOwned != 0);
 
         return album;
     }

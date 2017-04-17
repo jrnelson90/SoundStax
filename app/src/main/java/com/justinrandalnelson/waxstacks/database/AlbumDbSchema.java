@@ -14,7 +14,6 @@ public class AlbumDbSchema {
             public static final String ARTIST = "artist";
             public static final String GENRE = "genre";
             public static final String YEAR = "year";
-            public static final String OWNED = "owned";
         }
     }
 

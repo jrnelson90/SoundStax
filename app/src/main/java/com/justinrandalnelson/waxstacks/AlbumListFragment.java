@@ -12,8 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,16 +33,14 @@ public class AlbumListFragment extends Fragment {
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
     private JSONObject mUserInfoJSON = new JSONObject();
-
+    private AlbumBase mAlbumBase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-//        if (OauthVerifyTokens.getOauthAccessToken() != null) {
-//            new FetchUserIdentityJSON().execute();
-//        }
+        mAlbumBase = AlbumBase.get(getActivity());
     }
 
     @Override
@@ -55,30 +51,29 @@ public class AlbumListFragment extends Fragment {
         mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
         mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
-        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (mAdapter != null) {
-                    AlbumBase albumBase = AlbumBase.get(getActivity());
-                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-                        List<Album> allAlbums = albumBase.getAlbums();
-                        mAdapter.setAlbums(allAlbums);
-                    } else {
-                        List<Album> filteredAlbums = albumBase.getFilteredAlbums(
-                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-                        mAdapter.setAlbums(filteredAlbums);
-                    }
-
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
+//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                if (mAdapter != null) {
+//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
+//                        List<Album> allAlbums = mAlbumBase.getAlbums();
+//                        mAdapter.setAlbums(allAlbums);
+//                    } else {
+//                        List<Album> filteredAlbums = mAlbumBase.getFilteredAlbums(
+//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
+//                        mAdapter.setAlbums(filteredAlbums);
+//                    }
+//
+//                    mAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         updateUI();
 
@@ -112,8 +107,8 @@ public class AlbumListFragment extends Fragment {
     }
 
     private void updateUI() {
-        AlbumBase albumBase = AlbumBase.get(getActivity());
-        List<Album> albums = albumBase.getAlbums();
+//        AlbumBase albumBase = AlbumBase.get(getActivity());
+        List<Album> albums = mAlbumBase.getAlbums();
 
         if (mAdapter == null) {
             mAdapter = new AlbumAdapter(albums);
@@ -123,10 +118,10 @@ public class AlbumListFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
-        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-                this.getContext(), android.R.layout.simple_spinner_item, albumBase.getGenreList());
-        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mGenreFilterSpinner.setAdapter(genreAdpater);
+//        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
+//                this.getContext(), android.R.layout.simple_spinner_item, mAlbumBase.getGenreList());
+//        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
     private void updateData() {

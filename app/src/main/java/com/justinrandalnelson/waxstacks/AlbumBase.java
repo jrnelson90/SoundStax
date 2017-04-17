@@ -20,9 +20,7 @@ import java.util.UUID;
 
 class AlbumBase {
     private static AlbumBase sAlbumBase;
-
     private final SQLiteDatabase mDatabase;
-
 
     private AlbumBase(Context context) {
         Context context1 = context.getApplicationContext();
@@ -43,7 +41,6 @@ class AlbumBase {
         values.put(AlbumTable.Cols.ARTIST, album.getArtist());
         values.put(AlbumTable.Cols.GENRE, album.getGenre());
         values.put(AlbumTable.Cols.YEAR, album.getYear());
-        values.put(AlbumTable.Cols.OWNED, album.isOwned() ? 1 : 0);
 
         return values;
     }

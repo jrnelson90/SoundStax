@@ -28,12 +28,11 @@ public class AlbumBaseHelper extends SQLiteOpenHelper {
                 AlbumTable.Cols.TITLE + ", " +
                 AlbumTable.Cols.ARTIST + ", " +
                 AlbumTable.Cols.GENRE + ", " +
-                AlbumTable.Cols.YEAR + ", " +
-                AlbumTable.Cols.OWNED +
+                AlbumTable.Cols.YEAR +
                 ")"
         );
 
-        populateTestDb(db);
+//        populateTestDb(db);
     }
 
     @Override
@@ -67,7 +66,6 @@ public class AlbumBaseHelper extends SQLiteOpenHelper {
             album.setArtist(testArtist[i]);
             album.setGenre(testGenre[i]);
             album.setYear(testYear[i]);
-            album.setOwned(i%3 == 0);
             ContentValues values = new ContentValues();
 
             values.put(AlbumTable.Cols.UUID, album.getId().toString());
@@ -75,7 +73,6 @@ public class AlbumBaseHelper extends SQLiteOpenHelper {
             values.put(AlbumTable.Cols.ARTIST, album.getArtist());
             values.put(AlbumTable.Cols.GENRE, album.getGenre());
             values.put(AlbumTable.Cols.YEAR, album.getYear());
-            values.put(AlbumTable.Cols.OWNED, album.isOwned() ? 1 : 0);
 
             db.insert(AlbumTable.NAME, null, values);
         }

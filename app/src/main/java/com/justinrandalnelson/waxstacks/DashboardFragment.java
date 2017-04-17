@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,7 @@ import org.json.JSONObject;
  */
 
 public class DashboardFragment extends Fragment {
+    private AlbumBase mAlbumBase;
     private JSONObject mUserInfoJSON = new JSONObject();
     private JSONObject mUserCollectionJSON = new JSONObject();
     private JSONObject mUserWantlistJSON = new JSONObject();
@@ -45,6 +47,9 @@ public class DashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(getContext()));
+        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+            mAlbumBase = AlbumBase.get(getActivity());
+        }
     }
 
     @Override
@@ -91,7 +96,6 @@ public class DashboardFragment extends Fragment {
             });
         } else {
             view = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
             mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
 
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
@@ -134,7 +138,23 @@ public class DashboardFragment extends Fragment {
 
     private void extractCollectionData() {
         try {
-            mUserCollectionJSON.get("release");
+            JSONArray UserCollectionArray = (JSONArray) mUserCollectionJSON.get("releases");
+            Log.i("Collection Parse", "Release array created");
+            for (int i = 0; i < UserCollectionArray.length(); i++) {
+                JSONObject currentAlbum = (JSONObject) UserCollectionArray.get(i);
+                Log.i("Collection Parse", "Parsing album: " + String.valueOf(i + 1));
+                JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
+                Log.i("Collection Parse", "Parsing basic album info for album " + String.valueOf(i + 1));
+                String albumTitle = basicInfo.getString("title");
+                String albumYear = basicInfo.getString("year");
+                String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+                Album album = new Album();
+                album.setArtist(albumArtist);
+                album.setYear(albumYear);
+                album.setTitle(albumTitle);
+                mAlbumBase.addAlbum(album);
+            }
+            Log.i("Collection Parse", "All albums in collection have been parsed to SQLite");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -142,7 +162,7 @@ public class DashboardFragment extends Fragment {
 
     private void extractWantlistData() {
         try {
-            mUserWantlistJSON.get("release");
+            mUserWantlistJSON.get("releases");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -227,6 +247,7 @@ public class DashboardFragment extends Fragment {
 
             if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
                     Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
+                mAlbumBase = AlbumBase.get(getActivity());
                 Toast.makeText(getContext(),
                         "Logged in as " + Preferences.get(Preferences.USERNAME, "")
                         , Toast.LENGTH_SHORT)
@@ -286,7 +307,6 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserCollectionJSON = jsonObject;
-//            extractCollectionData();
             new FetchUserWantlistJSON().execute();
         }
     }
@@ -300,7 +320,8 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             mUserWantlistJSON = jsonObject;
-//            extractWantlistData();
+            extractCollectionData();
+            extractWantlistData();
             populateDashboardCollectionView();
         }
     }
