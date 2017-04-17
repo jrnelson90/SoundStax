@@ -10,6 +10,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.List;
+
 /**
  * Created by jrnel on 4/14/2017.
  */
@@ -80,16 +82,16 @@ public class DashboardActivity extends SingleFragmentActivity {
                 fragmentClass = DashboardFragment.class;
                 break;
             case R.id.collection_fragment_nav:
-                fragmentClass = AlbumListFragment.class;
+                fragmentClass = CollectionListviewFragment.class;
                 break;
             case R.id.wantlist_fragment_nav:
-                fragmentClass = AlbumListFragment.class;
+                fragmentClass = WantlistListviewFragment.class;
                 break;
             case R.id.lists_fragment_nav:
-                fragmentClass = AlbumListFragment.class;
+                fragmentClass = CollectionListviewFragment.class;
                 break;
             case R.id.profile_fragment_nav:
-                fragmentClass = AlbumListFragment.class;
+                fragmentClass = CollectionListviewFragment.class;
                 break;
             case R.id.logout_nav:
                 Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
@@ -97,6 +99,18 @@ public class DashboardActivity extends SingleFragmentActivity {
                 Preferences.set(Preferences.USERNAME, "");
                 Preferences.set(Preferences.USER_ID, "");
                 Preferences.set(Preferences.USER_PROFILE, "");
+                UserWantlistDB wantlist = UserWantlistDB.get(getApplicationContext());
+                List<Album> wantlistAlbums = wantlist.getAlbums();
+                for (int i = 0; i < wantlistAlbums.size(); i++) {
+                    wantlist.deleteAlbum(wantlistAlbums.get(i));
+                }
+                UserCollectionDB collection = UserCollectionDB.get(getApplicationContext());
+                List<Album> collectionAlbums = collection.getAlbums();
+                for (int i = 0; i < collectionAlbums.size(); i++) {
+                    collection.deleteAlbum(collectionAlbums.get(i));
+                }
+                wantlistAlbums.clear();
+                collectionAlbums.clear();
                 fragmentClass = DashboardFragment.class;
                 break;
             default:

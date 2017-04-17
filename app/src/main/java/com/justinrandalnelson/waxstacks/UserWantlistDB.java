@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.justinrandalnelson.waxstacks.database.AlbumBaseHelper;
-import com.justinrandalnelson.waxstacks.database.AlbumCursorWrapper;
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.AlbumTable;
+import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.WantlistTable;
+import com.justinrandalnelson.waxstacks.database.UserWantlistDBHelper;
+import com.justinrandalnelson.waxstacks.database.WantlistCursorWrapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,48 +18,48 @@ import java.util.UUID;
  * Created by jrnel on 2/18/2017.
  */
 
-class AlbumBase {
-    private static AlbumBase sAlbumBase;
-    private final SQLiteDatabase mDatabase;
+class UserWantlistDB {
+    private static UserWantlistDB sUserWantlistDB;
+    private final SQLiteDatabase mWantlistDatabase;
 
-    private AlbumBase(Context context) {
+    private UserWantlistDB(Context context) {
         Context context1 = context.getApplicationContext();
-        mDatabase = new AlbumBaseHelper(context1).getWritableDatabase();
+        mWantlistDatabase = new UserWantlistDBHelper(context1).getWritableDatabase();
     }
 
-    static AlbumBase get(Context context) {
-        if (sAlbumBase == null) {
-            sAlbumBase = new AlbumBase(context);
+    static UserWantlistDB get(Context context) {
+        if (sUserWantlistDB == null) {
+            sUserWantlistDB = new UserWantlistDB(context);
         }
-        return sAlbumBase;
+        return sUserWantlistDB;
     }
 
     private static ContentValues getContentValues(Album album) {
         ContentValues values = new ContentValues();
-        values.put(AlbumTable.Cols.UUID, album.getId().toString());
-        values.put(AlbumTable.Cols.TITLE, album.getTitle());
-        values.put(AlbumTable.Cols.ARTIST, album.getArtist());
-        values.put(AlbumTable.Cols.GENRE, album.getGenre());
-        values.put(AlbumTable.Cols.YEAR, album.getYear());
+        values.put(WantlistTable.Cols.UUID, album.getId().toString());
+        values.put(WantlistTable.Cols.TITLE, album.getTitle());
+        values.put(WantlistTable.Cols.ARTIST, album.getArtist());
+        values.put(WantlistTable.Cols.GENRE, album.getGenre());
+        values.put(WantlistTable.Cols.YEAR, album.getYear());
 
         return values;
     }
 
     void addAlbum(Album album) {
         ContentValues values = getContentValues(album);
-        mDatabase.insert(AlbumTable.NAME, null, values);
+        mWantlistDatabase.insert(WantlistTable.NAME, null, values);
     }
 
     void deleteAlbum(Album album) {
-        String selection = AlbumTable.Cols.UUID + " = ?";
-        String[] selectionArgs = { album.getId().toString() };
-        mDatabase.delete(AlbumTable.NAME, selection, selectionArgs);
+        String selection = WantlistTable.Cols.UUID + " = ?";
+        String[] selectionArgs = {album.getId().toString()};
+        mWantlistDatabase.delete(WantlistTable.NAME, selection, selectionArgs);
     }
 
-    List<Album> getAlbums(){
+    List<Album> getAlbums() {
         List<Album> albums = new ArrayList<>();
 
-        try (AlbumCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 albums.add(cursor.getAlbum());
@@ -71,9 +71,9 @@ class AlbumBase {
     }
 
     List<Album> getFilteredAlbums(String filterContraint) {
-            List<Album> albums = new ArrayList<>();
+        List<Album> albums = new ArrayList<>();
 
-        try (AlbumCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 if (cursor.getAlbum().getGenre().equals(filterContraint))
@@ -82,14 +82,14 @@ class AlbumBase {
             }
         }
 
-            return albums;
+        return albums;
     }
 
     ArrayList<String> getGenreList() {
         ArrayList<String> returnedGenres = new ArrayList<>();
         ArrayList<String> foundGenres = new ArrayList<>();
 
-        try (AlbumCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 String currentGenre = cursor.getAlbum().getGenre();
@@ -110,8 +110,8 @@ class AlbumBase {
 
     Album getAlbum(UUID id) {
 
-        try (AlbumCursorWrapper cursor = queryAlbums(
-                AlbumTable.Cols.UUID + " = ?",
+        try (WantlistCursorWrapper cursor = queryAlbums(
+                WantlistTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
         )) {
             if (cursor.getCount() == 0) {
@@ -125,14 +125,14 @@ class AlbumBase {
     void updateAlbum(Album album) {
         String uuidString = album.getId().toString();
         ContentValues values = getContentValues(album);
-        mDatabase.update(AlbumTable.NAME, values,
-                AlbumTable.Cols.UUID + " = ?",
-                new String[] { uuidString });
+        mWantlistDatabase.update(WantlistTable.NAME, values,
+                WantlistTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
     }
 
-    private AlbumCursorWrapper queryAlbums(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
-                AlbumTable.NAME,
+    private WantlistCursorWrapper queryAlbums(String whereClause, String[] whereArgs) {
+        Cursor cursor = mWantlistDatabase.query(
+                WantlistTable.NAME,
                 null,
                 whereClause,
                 whereArgs,
@@ -142,6 +142,6 @@ class AlbumBase {
                 null
         );
 
-        return new AlbumCursorWrapper(cursor);
+        return new WantlistCursorWrapper(cursor);
     }
 }

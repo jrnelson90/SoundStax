@@ -38,7 +38,7 @@ public class AlbumFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID albumID = (UUID) getArguments().getSerializable(ARG_ALBUM_ID);
-        mAlbum = AlbumBase.get(getActivity()).getAlbum(albumID);
+        mAlbum = UserCollectionDB.get(getActivity()).getAlbum(albumID);
     }
 
     @Override
@@ -47,9 +47,9 @@ public class AlbumFragment extends Fragment {
 
         if (mAlbum.getTitle() != null && mAlbum.getArtist() != null
                 && mAlbum.getGenre() != null && mAlbum.getYear() != null) {
-            AlbumBase.get(getActivity()).updateAlbum(mAlbum);
+            UserCollectionDB.get(getActivity()).updateAlbum(mAlbum);
         } else {
-            AlbumBase.get(getActivity()).deleteAlbum(mAlbum);
+            UserCollectionDB.get(getActivity()).deleteAlbum(mAlbum);
         }
 
     }
@@ -149,7 +149,7 @@ public class AlbumFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.", Toast.LENGTH_SHORT).show();
-                AlbumBase.get(getActivity()).deleteAlbum(mAlbum);
+                UserCollectionDB.get(getActivity()).deleteAlbum(mAlbum);
                 getActivity().finish();
             }
         });

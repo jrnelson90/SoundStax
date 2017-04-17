@@ -1,7 +1,6 @@
 package com.justinrandalnelson.waxstacks;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,27 +19,27 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * Fragment for Discogs Collection Album List
+ * Fragment for Discogs Wantlist Album List
  * Created by jrnel on 2/18/2017.
  */
 
-public class AlbumListFragment extends Fragment {
+public class WantlistListviewFragment extends Fragment {
 
-    private static final String TAG = "AlbumListFragment";
+    private static final String TAG = "WantlistListviewFragment";
     private RecyclerView mAlbumRecyclerView;
     private Spinner mGenreFilterSpinner;
     private AlbumAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
     private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
     private JSONObject mUserInfoJSON = new JSONObject();
-    private AlbumBase mAlbumBase;
+    private UserWantlistDB mUserWantlistDB;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        mAlbumBase = AlbumBase.get(getActivity());
+        mUserWantlistDB = UserWantlistDB.get(getActivity());
     }
 
     @Override
@@ -57,10 +56,10 @@ public class AlbumListFragment extends Fragment {
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                if (mAdapter != null) {
 //                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Album> allAlbums = mAlbumBase.getAlbums();
+//                        List<Album> allAlbums = mUserWantlistDB.getAlbums();
 //                        mAdapter.setAlbums(allAlbums);
 //                    } else {
-//                        List<Album> filteredAlbums = mAlbumBase.getFilteredAlbums(
+//                        List<Album> filteredAlbums = mUserWantlistDB.getFilteredAlbums(
 //                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
 //                        mAdapter.setAlbums(filteredAlbums);
 //                    }
@@ -97,7 +96,7 @@ public class AlbumListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.menu_item_new_album:
                 Album album = new Album();
-                AlbumBase.get(getActivity()).addAlbum(album);
+                UserWantlistDB.get(getActivity()).addAlbum(album);
                 Intent intent = AlbumActivity.newIntent(getActivity(), album.getId());
                 startActivity(intent);
                 return true;
@@ -107,8 +106,8 @@ public class AlbumListFragment extends Fragment {
     }
 
     private void updateUI() {
-//        AlbumBase albumBase = AlbumBase.get(getActivity());
-        List<Album> albums = mAlbumBase.getAlbums();
+//        UserWantlistDB albumBase = UserWantlistDB.get(getActivity());
+        List<Album> albums = mUserWantlistDB.getAlbums();
 
         if (mAdapter == null) {
             mAdapter = new AlbumAdapter(albums);
@@ -119,7 +118,7 @@ public class AlbumListFragment extends Fragment {
         }
 
 //        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mAlbumBase.getGenreList());
+//                this.getContext(), android.R.layout.simple_spinner_item, mUserWantlistDB.getGenreList());
 //        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
@@ -192,45 +191,44 @@ public class AlbumListFragment extends Fragment {
 
     }
 
-    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String artistSearchString = params[0];
-            return new JsonFetcher().fetchArtist(artistSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mArtistResultsJSON = jsonObject;
-            updateData();
-        }
-    }
-
-    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String albumReleaseSearchString = params[0];
-            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mAlbumReleaseResultsJSON = jsonObject;
-            updateData();
-        }
-    }
-
-    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserIdentity();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserInfoJSON = jsonObject;
-        }
-    }
-
+//    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
+//        @Override
+//        protected JSONObject doInBackground(String... params) {
+//            String artistSearchString = params[0];
+//            return new JsonFetcher().fetchArtist(artistSearchString);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject jsonObject) {
+//            mArtistResultsJSON = jsonObject;
+//            updateData();
+//        }
+//    }
+//
+//    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
+//        @Override
+//        protected JSONObject doInBackground(String... params) {
+//            String albumReleaseSearchString = params[0];
+//            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject jsonObject) {
+//            mAlbumReleaseResultsJSON = jsonObject;
+//            updateData();
+//        }
+//    }
+//
+//    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
+//        @Override
+//        protected JSONObject doInBackground(Void... params) {
+//            return new JsonFetcher().fetchUserIdentity();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject jsonObject) {
+//            mUserInfoJSON = jsonObject;
+//        }
+//    }
 
 }
