@@ -5,8 +5,8 @@ package com.justinrandalnelson.waxstacks.database;
  */
 
 public class AlbumDbSchema {
-    public static final class AlbumTable {
-        public static final String NAME = "albums";
+    public static final class CollectionTable {
+        public static final String NAME = "userCollection";
 
         public static final class Cols {
             public static final String UUID = "uuid";
@@ -14,7 +14,18 @@ public class AlbumDbSchema {
             public static final String ARTIST = "artist";
             public static final String GENRE = "genre";
             public static final String YEAR = "year";
-            public static final String OWNED = "owned";
+        }
+    }
+
+    public static final class WantlistTable {
+        public static final String NAME = "userWantlist";
+
+        public static final class Cols {
+            public static final String UUID = "uuid";
+            public static final String TITLE = "title";
+            public static final String ARTIST = "artist";
+            public static final String GENRE = "genre";
+            public static final String YEAR = "year";
         }
     }
 

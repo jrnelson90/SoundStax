@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 /**
+ * Fragment for Discogs Login WebView for User Authentication
  * Created by jrnel on 4/14/2017.
  */
 
@@ -24,7 +25,6 @@ public class AuthPageFragment extends VisibleFragment {
     private static final String ARG_URI = "auth_page_url";
 
     private Uri mUri;
-    private WebView mWebView;
     private ProgressBar mProgressBar;
 
 
@@ -49,13 +49,13 @@ public class AuthPageFragment extends VisibleFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_auth_page, container, false);
 
-        mWebView = (WebView) v.findViewById(R.id.fragment_auth_page_web_view);
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        WebView webView = (WebView) v.findViewById(R.id.fragment_auth_page_web_view);
+        webView.getSettings().setJavaScriptEnabled(true);
 
         mProgressBar = (ProgressBar) v.findViewById(R.id.auth_webview_progress_bar);
         mProgressBar.setMax(100);
 
-        mWebView.setWebChromeClient(new WebChromeClient() {
+        webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView webView, int newProgress) {
                 if (newProgress == 100) {
                     mProgressBar.setVisibility(View.GONE);
@@ -67,21 +67,26 @@ public class AuthPageFragment extends VisibleFragment {
 
             public void onReceivedTitle(WebView webView, String title) {
                 AppCompatActivity activity = (AppCompatActivity) getActivity();
-                activity.getSupportActionBar().setSubtitle(title);
+                try {
+                    activity.getSupportActionBar().setSubtitle(title);
+                } catch (NullPointerException npe) {
+                    npe.printStackTrace();
+                    Log.e("No Subtitle Found", "Actionbar missing subtitle object");
+                }
             }
         });
 
-        mWebView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains(HttpConst.CALLBACK_URL)) {
                     Uri OauthResult = Uri.parse(url);
                     String verifyString = OauthResult.toString().split("oauth_verifier=")[1];
-                    OauthTokens.setOauthUserVerifier(verifyString);
+                    OauthVerifyTokens.setOauthUserVerifier(verifyString);
                     Log.i("Oauth Success", "Verifier received");
 
                     new FetchOauthAccessToken().execute(new String[]{
-                            OauthTokens.getOauthRequestToken(),
-                            OauthTokens.getOauthUserVerifier()
+                            OauthVerifyTokens.getOauthRequestToken(),
+                            OauthVerifyTokens.getOauthUserVerifier()
                     });
                 } else {
                     view.loadUrl(url);
@@ -97,7 +102,7 @@ public class AuthPageFragment extends VisibleFragment {
         });
 
         // Load Auth Page
-        mWebView.loadUrl(mUri.toString());
+        webView.loadUrl(mUri.toString());
 
         return v;
     }
@@ -117,9 +122,6 @@ public class AuthPageFragment extends VisibleFragment {
         @Override
         protected void onPostExecute(String[] tokenArray) {
             if (tokenArray.length == 2) {
-//                OauthTokens.setOauthAccessTokenSecret(tokenArray[0].split("=")[1]);
-//                OauthTokens.setOauthAccessToken(tokenArray[1]
-//                        .split("=")[1].replace("\n", ""));
                 String parsedAccessKey = tokenArray[1].split("=")[1].replace("\n", "");
                 String parsedAccessSecret = tokenArray[0].split("=")[1];
                 Preferences.set(Preferences.OAUTH_ACCESS_KEY, parsedAccessKey);

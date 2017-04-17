@@ -14,6 +14,9 @@ public class Preferences extends PreferenceActivity {
 
     protected static String OAUTH_ACCESS_KEY = "oauthAccessKey";
     protected static String OAUTH_ACCESS_SECRET = "oauthAccessSecret";
+    protected static String USERNAME = "username";
+    protected static String USER_ID = "userId";
+    protected static String USER_PROFILE = "userProfile";
     protected static String IS_LOGGED_IN = "isLoggedIn";
     protected static String FIRST_RUN = "firstRun";
 
