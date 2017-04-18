@@ -30,16 +30,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Dashboard fragment
@@ -60,7 +55,7 @@ public class DashboardFragment extends Fragment {
     private ArrayList<Bitmap> mAlbumBitmaps = new ArrayList<>();
     private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
     private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
-
+    private RequestQueue queue;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +65,7 @@ public class DashboardFragment extends Fragment {
             mUserCollectionDB = UserCollectionDB.get(getActivity());
             mUserWantlistDB = UserWantlistDB.get(getActivity());
         }
+        queue = Volley.newRequestQueue(getContext());
     }
 
     @Override
@@ -220,10 +216,10 @@ public class DashboardFragment extends Fragment {
     private void downloadListThumbnails() {
         // Update view with retrieved Collection data
         if (mUserCollectionDB.getAlbums().get(0).getThumbDir().equals("")) {
-            new ThumbDownloader().execute("Collection");
+            ThumbDownloader("Collection");
         }
         if (mUserWantlistDB.getAlbums().get(0).getThumbDir().equals("")) {
-            new ThumbDownloader().execute("Wantlist");
+            ThumbDownloader("Wantlist");
         }
     }
 
@@ -236,7 +232,6 @@ public class DashboardFragment extends Fragment {
         }
 
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getContext());
         ImageRequest profilePicRequest = new ImageRequest(userPictureURL,
                 new Response.Listener<Bitmap>() {
                     @Override
@@ -244,12 +239,95 @@ public class DashboardFragment extends Fragment {
                         mUserProfilePicture.setImageBitmap(response);
                     }
                 }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(profilePicRequest);
     }
 
     private void updateUsername() {
         mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
+    }
+
+    private void ThumbDownloader(final String _thumbDbName) {
+        final String TAG = "ThumbDownloader";
+
+        int downloadListSize = 0;
+        if (_thumbDbName.equals("Collection")) {
+            downloadListSize = mUserCollectionDB.getAlbums().size();
+        } else if (_thumbDbName.equals("Wantlist")) {
+            downloadListSize = mUserWantlistDB.getAlbums().size();
+        }
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < downloadListSize; i++) {
+            String thumbURL = "";
+            if (_thumbDbName.equals("Collection")) {
+                thumbURL = mUserCollectionDB.getAlbums().get(i).getThumbUrl();
+            } else if (_thumbDbName.equals("Wantlist")) {
+                thumbURL = mUserWantlistDB.getAlbums().get(i).getThumbUrl();
+            }
+
+            // Instantiate the RequestQueue.
+            final int finalI = i;
+            ImageRequest thumbRequest = new ImageRequest(thumbURL,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap albumCoverBitmap) {
+                            try {
+                                // path to /data/data/yourapp/app_data/imageDir
+                                ContextWrapper cw = new ContextWrapper(getContext());
+
+                                String thumbDir = "";
+                                if (_thumbDbName.equals("Collection")) {
+                                    thumbDir = "CollectionCovers";
+                                } else if (_thumbDbName.equals("Wantlist")) {
+                                    thumbDir = "WantlistCovers";
+                                }
+
+                                File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                                // Create imageDir
+                                File filePath = new File(directory, "release_cover" + finalI + ".jpeg");
+
+                                FileOutputStream fos = null;
+                                try {
+                                    fos = new FileOutputStream(filePath);
+                                    albumCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (fos != null) {
+                                            fos.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                Album currentAlbum = null;
+                                if (_thumbDbName.equals("Collection")) {
+                                    currentAlbum = mUserCollectionDB.getAlbums().get(finalI);
+                                    currentAlbum.setThumbDir(filePath.getAbsolutePath());
+                                    mUserCollectionDB.updateAlbum(currentAlbum);
+                                } else if (_thumbDbName.equals("Wantlist")) {
+                                    currentAlbum = mUserWantlistDB.getAlbums().get(finalI);
+                                    currentAlbum.setThumbDir(filePath.getAbsolutePath());
+                                    mUserWantlistDB.updateAlbum(currentAlbum);
+                                }
+//                                if (currentAlbum != null) {
+//                                    Log.i(TAG, currentAlbum.getThumbDir());
+//                                }
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
+            // Add the request to the RequestQueue.
+            queue.add(thumbRequest);
+
+
+        }
+        // wait for each item
+        Log.i("ThumbDownloader", "Grabbed all " + _thumbDbName + " thumbnail files");
+        Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
+
     }
 
     private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
@@ -324,21 +402,6 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private class FetchUserProfileJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserProfile();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserProfileJSON = jsonObject;
-            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
-            updateProfilePicture();
-            new FetchUserCollectionJSON().execute();
-        }
-    }
-
 //    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
 //        @Override
 //        protected Bitmap doInBackground(Void... params) {
@@ -357,6 +420,21 @@ public class DashboardFragment extends Fragment {
 ////            new FetchUserCollectionJSON().execute();
 //        }
 //    }
+
+    private class FetchUserProfileJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserProfile();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserProfileJSON = jsonObject;
+            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
+            updateProfilePicture();
+            new FetchUserCollectionJSON().execute();
+        }
+    }
 
     private class FetchUserCollectionJSON extends AsyncTask<Void, Void, JSONObject> {
         @Override
@@ -383,130 +461,6 @@ public class DashboardFragment extends Fragment {
             extractCollectionData();
             extractWantlistData();
             downloadListThumbnails();
-        }
-    }
-
-    private class ThumbDownloader extends AsyncTask<String, Void, Boolean> {
-        private static final String TAG = "ThumbDownloader";
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String thumbDbName = params[0];
-            int downloadListSize = 0;
-            if (thumbDbName.equals("Collection")) {
-                downloadListSize = mUserCollectionDB.getAlbums().size();
-            } else if (thumbDbName.equals("Wantlist")) {
-                downloadListSize = mUserWantlistDB.getAlbums().size();
-            }
-
-            for (int i = 0; i < downloadListSize; i++) {
-                Bitmap albumCoverBitmap;
-                try {
-
-                    String thumbURL = "";
-                    if (thumbDbName.equals("Collection")) {
-                        thumbURL = mUserCollectionDB.getAlbums().get(i).getThumbUrl();
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        thumbURL = mUserWantlistDB.getAlbums().get(i).getThumbUrl();
-                    }
-
-                    HttpsURLConnection connection =
-                            (HttpsURLConnection) new URL(thumbURL).openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(5000);
-                    connection.setReadTimeout(5000);
-                    Long tsLong = System.currentTimeMillis() / 1000;
-                    String ts = tsLong.toString();
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setRequestProperty("Authorization", "OAuth" +
-                            "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-                            ", oauth_nonce=" + ts +
-                            ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                            ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                            Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-                            ", oauth_signature_method=PLAINTEXT" +
-                            ", oauth_timestamp=" + ts);
-                    connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
-
-                    if (connection.getResponseCode() != 200) {
-                        // Error handling code goes here
-                        Log.i("Connection Type", "Album Cover Image URL Failed");
-                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
-                        Log.i("Connection Message", connection.getResponseMessage());
-                        return false;
-                    }
-
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    InputStream in = connection.getInputStream();
-                    int bytesRead;
-                    byte[] buffer = new byte[51200];
-
-                    while ((bytesRead = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                    out.close();
-                    connection.disconnect();
-
-                    albumCoverBitmap = BitmapFactory.
-                            decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
-                } catch (IOException ioe) {
-                    Log.e(TAG, "Error Downloading Album Cover Image: ", ioe);
-                    return false;
-                }
-
-                try {
-                    // path to /data/data/yourapp/app_data/imageDir
-                    ContextWrapper cw = new ContextWrapper(getContext());
-
-                    String thumbDir = "";
-                    if (thumbDbName.equals("Collection")) {
-                        thumbDir = "CollectionCovers";
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        thumbDir = "WantlistCovers";
-                    }
-
-                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
-                    // Create imageDir
-                    File filePath = new File(directory, "release_cover" + i + ".jpeg");
-
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(filePath);
-                        albumCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        return false;
-                    } finally {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    Album currentAlbum = null;
-                    if (thumbDbName.equals("Collection")) {
-                        currentAlbum = mUserCollectionDB.getAlbums().get(i);
-                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                        mUserCollectionDB.updateAlbum(currentAlbum);
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        currentAlbum = mUserWantlistDB.getAlbums().get(i);
-                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                        mUserWantlistDB.updateAlbum(currentAlbum);
-                    }
-//                    Log.i("DB Thumb Directory", currentAlbum.getThumbDir());
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-            // wait for each item
-            Log.i("ThumbDownloader", "Grabbed all " + thumbDbName + " thumbnail files");
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            //
         }
     }
 
