@@ -12,7 +12,8 @@ public class Album {
     private String mYear;
     private String mArtist;
     private String mGenre;
-    private boolean mOwned;
+    private String mThumbUrl;
+    private String mThumbDir;
 
     public Album() {
         this(UUID.randomUUID());
@@ -54,14 +55,6 @@ public class Album {
         mYear = year;
     }
 
-    public boolean isOwned() {
-        return mOwned;
-    }
-
-    public void setOwned(boolean owned) {
-        mOwned = owned;
-    }
-
     public String getTitle() {
         return mTitle;
     }
@@ -69,4 +62,21 @@ public class Album {
     public void setTitle(String title) {
         mTitle = title;
     }
+
+    public String getThumbUrl() {
+        return mThumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        mThumbUrl = thumbUrl;
+    }
+
+    public String getThumbDir() {
+        return mThumbDir;
+    }
+
+    public void setThumbDir(String thumbDir) {
+        mThumbDir = thumbDir;
+    }
+
 }

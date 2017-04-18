@@ -23,12 +23,16 @@ public class WantlistCursorWrapper extends CursorWrapper {
         String artist = getString(getColumnIndex(WantlistTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(WantlistTable.Cols.GENRE));
         String year = getString(getColumnIndex(WantlistTable.Cols.YEAR));
+        String thumbUrl = getString(getColumnIndex(WantlistTable.Cols.THUMB_URL));
+        String thumbDir = getString(getColumnIndex(WantlistTable.Cols.THUMB_DIR));
 
         Album album = new Album(UUID.fromString(uuidString));
         album.setTitle(title);
         album.setArtist(artist);
         album.setGenre(genre);
         album.setYear(year);
+        album.setThumbUrl(thumbUrl);
+        album.setThumbDir(thumbDir);
 
         return album;
     }

@@ -1,6 +1,7 @@
 package com.justinrandalnelson.waxstacks;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,7 +28,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Dashboard fragment
@@ -48,7 +58,6 @@ public class DashboardFragment extends Fragment {
     private ArrayList<Bitmap> mAlbumBitmaps = new ArrayList<>();
     private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
     private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -165,7 +174,6 @@ public class DashboardFragment extends Fragment {
                     JSONObject currentAlbum = (JSONObject) UserCollectionArray.get(i);
                     Log.i("Collection Parse", "Parsing album: " + String.valueOf(i + 1));
                     JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    Log.i("Collection Parse", "Parsing basic album info for album " + String.valueOf(i + 1));
                     String albumTitle = basicInfo.getString("title");
                     String albumYear = basicInfo.getString("year");
                     String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
@@ -173,39 +181,8 @@ public class DashboardFragment extends Fragment {
                     album.setArtist(albumArtist);
                     album.setYear(albumYear);
                     album.setTitle(albumTitle);
-//                    Glide.with(getContext())
-//                            .load(Uri.parse(basicInfo.getString("thumb")))
-//                            .asBitmap()
-//                            .into(R.id.);
-//                    new Downloader().execute(basicInfo.getString("thumb"));
-                    Log.i("Collection Parse", "Retrieved cover for album " + String.valueOf(i + 1));
-//                    final int finalI = i;
-//                    Glide.with(getContext())
-//                            .load(Uri.parse(basicInfo.getString("thumb")))
-//                            .asBitmap()
-//                            .into(
-//                            new SimpleTarget<Bitmap>(200, 200) {
-//                                 @Override
-//                                 public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-//                                     new AsyncTask<Bitmap, Void, Void>() {
-//                                         @Override
-//                                         protected Void doInBackground(Bitmap... params) {
-//                                             Bitmap retreivedCover = params[0];
-//                                             mAlbumBitmaps.add(retreivedCover);
-//                                             File file = new File(Environment.getDataDirectory() +
-//                                                     "/albumCovers/album_cover "+ finalI +".jpeg");
-//                                             OutputStream os = null;
-//                                             try {
-//                                                 os = new FileOutputStream(file);
-//                                             } catch (FileNotFoundException e) {
-//                                                 e.printStackTrace();
-//                                             }
-//                                             retreivedCover.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                                             return null;
-//                                         }
-//                                     }.execute();
-//                                 }
-//                             });
+                    album.setThumbUrl(basicInfo.getString("thumb"));
+                    album.setThumbDir("");
                     mUserCollectionDB.addAlbum(album);
                 }
                 Log.i("Collection Parse", "All albums in collection have been parsed to SQLite");
@@ -227,7 +204,6 @@ public class DashboardFragment extends Fragment {
                     JSONObject currentAlbum = (JSONObject) UserWantlistArray.get(i);
                     Log.i("Wantlist Parse", "Parsing album: " + String.valueOf(i + 1));
                     JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    Log.i("Wantlist Parse", "Parsing basic album info for album " + String.valueOf(i + 1));
                     String albumTitle = basicInfo.getString("title");
                     String albumYear = basicInfo.getString("year");
                     String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
@@ -235,39 +211,8 @@ public class DashboardFragment extends Fragment {
                     album.setArtist(albumArtist);
                     album.setYear(albumYear);
                     album.setTitle(albumTitle);
-//                    Glide.with(getContext())
-//                            .load(Uri.parse(basicInfo.getString("thumb")))
-//                            .asBitmap()
-//                            .into(R.id.);
-//                    new Downloader().execute(basicInfo.getString("thumb"));
-                    Log.i("Wantlist Parse", "Retrieved cover for album " + String.valueOf(i + 1));
-                    final int finalI = i;
-//                    Glide.with(getContext())
-//                            .load(Uri.parse(basicInfo.getString("thumb")))
-//                            .asBitmap()
-//                            .into(
-//                                    new SimpleTarget<Bitmap>(200, 200) {
-//                                        @Override
-//                                        public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-//                                            new AsyncTask<Bitmap, Void, Void>() {
-//                                                @Override
-//                                                protected Void doInBackground(Bitmap... params) {
-//                                                    Bitmap retreivedCover = params[0];
-//                                                    mAlbumBitmaps.add(retreivedCover);
-//                                                    File file = new File(Environment.getDataDirectory() +
-//                                                            "/albumCovers/album_cover "+ finalI +".jpeg");
-//                                                    OutputStream os = null;
-//                                                    try {
-//                                                        os = new FileOutputStream(file);
-//                                                    } catch (FileNotFoundException e) {
-//                                                        e.printStackTrace();
-//                                                    }
-//                                                    retreivedCover.compress(Bitmap.CompressFormat.JPEG, 100, os);
-//                                                    return null;
-//                                                }
-//                                            }.execute();
-//                                        }
-//                                    });
+                    album.setThumbUrl(basicInfo.getString("thumb"));
+                    album.setThumbDir("");
                     mUserWantlistDB.addAlbum(album);
                 }
                 Log.i("Wantlist Parse", "All albums in wantlist have been parsed to SQLite");
@@ -279,8 +224,14 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private void populateDashboardCollectionView() {
+    private void downloadListThumbnails() {
         // Update view with retrieved Collection data
+        if (mUserCollectionDB.getAlbums().get(0).getThumbDir().equals("")) {
+            new ThumbDownloader().execute("Collection");
+        }
+        if (mUserWantlistDB.getAlbums().get(0).getThumbDir().equals("")) {
+            new ThumbDownloader().execute("Wantlist");
+        }
     }
 
     private void updateProfilePicture() {
@@ -434,34 +385,139 @@ public class DashboardFragment extends Fragment {
             mUserWantlistJSON = jsonObject;
             extractCollectionData();
             extractWantlistData();
-            populateDashboardCollectionView();
+            downloadListThumbnails();
         }
     }
 
-//    class Downloader extends AsyncTask<String, Void, Bitmap> {
-//        private static final String TAG = "Downloader";
-//        @Override protected Bitmap doInBackground(String... params) {
-//            Uri thumbURL = Uri.parse(params[0]);
-//            Bitmap albumCoverBitmap = null;
-//            try {
-//                albumCoverBitmap = Glide.with(getContext())
-//                        .load(thumbURL)
-//                        .asBitmap()
-//                        .centerCrop()
-//                        .into(200, 200)
-//                        .get();
-//                Log.i("Grabbing image", "Image success");
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//            // wait for each item
-//            return albumCoverBitmap;
-//        }
-//
-//        @Override protected void onPostExecute(Bitmap result) {
-//            //
-//            mAlbumBitmaps.add(result);
-//        }
-//    }
+    private class ThumbDownloader extends AsyncTask<String, Void, Boolean> {
+        private static final String TAG = "ThumbDownloader";
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String thumbDbName = params[0];
+            int downloadListSize = 0;
+            if (thumbDbName.equals("Collection")) {
+                downloadListSize = mUserCollectionDB.getAlbums().size();
+            } else if (thumbDbName.equals("Wantlist")) {
+                downloadListSize = mUserWantlistDB.getAlbums().size();
+            }
+
+            for (int i = 0; i < downloadListSize; i++) {
+                Bitmap albumCoverBitmap;
+                try {
+
+                    String thumbURL = "";
+                    if (thumbDbName.equals("Collection")) {
+                        thumbURL = mUserCollectionDB.getAlbums().get(i).getThumbUrl();
+                    } else if (thumbDbName.equals("Wantlist")) {
+                        thumbURL = mUserWantlistDB.getAlbums().get(i).getThumbUrl();
+                    }
+
+                    HttpsURLConnection connection =
+                            (HttpsURLConnection) new URL(thumbURL).openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(5000);
+                    Long tsLong = System.currentTimeMillis() / 1000;
+                    String ts = tsLong.toString();
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestProperty("Authorization", "OAuth" +
+                            "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                            ", oauth_nonce=" + ts +
+                            ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                            ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                            Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                            ", oauth_signature_method=PLAINTEXT" +
+                            ", oauth_timestamp=" + ts);
+                    connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
+
+                    if (connection.getResponseCode() == 200) {
+//                        Log.i("Connection Type", "Album Cover Image URL Success");
+//                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+//                        Log.i("Connection Message", connection.getResponseMessage());
+                        // Success
+                    } else {
+                        // Error handling code goes here
+                        Log.i("Connection Type", "Album Cover Image URL Failed");
+                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+                        Log.i("Connection Message", connection.getResponseMessage());
+                        return false;
+                    }
+
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    InputStream in = connection.getInputStream();
+                    int bytesRead;
+                    byte[] buffer = new byte[51200];
+
+                    while ((bytesRead = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                    out.close();
+                    connection.disconnect();
+
+                    albumCoverBitmap = BitmapFactory.
+                            decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
+//                    Log.i(TAG, "Received Album Cover Image: Bitmap created");
+                } catch (IOException ioe) {
+                    Log.e(TAG, "Error Downloading Album Cover Image: ", ioe);
+                    return false;
+                }
+
+                try {
+                    // path to /data/data/yourapp/app_data/imageDir
+                    ContextWrapper cw = new ContextWrapper(getContext());
+
+                    String thumbDir = "";
+                    if (thumbDbName.equals("Collection")) {
+                        thumbDir = "CollectionCovers";
+                    } else if (thumbDbName.equals("Wantlist")) {
+                        thumbDir = "WantlistCovers";
+                    }
+
+                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                    // Create imageDir
+                    File filePath = new File(directory, "release_cover" + i + ".jpeg");
+
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(filePath);
+                        albumCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        return false;
+                    } finally {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+//                    Log.i("Writing image", "Image success");
+                    Album currentAlbum = null;
+                    if (thumbDbName.equals("Collection")) {
+                        currentAlbum = mUserCollectionDB.getAlbums().get(i);
+                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
+                        mUserCollectionDB.updateAlbum(currentAlbum);
+                    } else if (thumbDbName.equals("Wantlist")) {
+                        currentAlbum = mUserWantlistDB.getAlbums().get(i);
+                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
+                        mUserWantlistDB.updateAlbum(currentAlbum);
+                    }
+                    Log.i("DB Thumb Directory", currentAlbum.getThumbDir());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            // wait for each item
+            Log.i("ThumbDownloader", "Grabbed all " + thumbDbName + " thumbnail files");
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            //
+        }
+    }
 
 }

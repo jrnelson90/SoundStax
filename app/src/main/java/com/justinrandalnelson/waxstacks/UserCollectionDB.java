@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.justinrandalnelson.waxstacks.database.AlbumDbSchema;
 import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.CollectionTable;
 import com.justinrandalnelson.waxstacks.database.CollectionCursorWrapper;
 import com.justinrandalnelson.waxstacks.database.UserCollectionDBHelper;
@@ -41,6 +42,8 @@ class UserCollectionDB {
         values.put(CollectionTable.Cols.ARTIST, album.getArtist());
         values.put(CollectionTable.Cols.GENRE, album.getGenre());
         values.put(CollectionTable.Cols.YEAR, album.getYear());
+        values.put(CollectionTable.Cols.THUMB_URL, album.getThumbUrl());
+        values.put(CollectionTable.Cols.THUMB_DIR, album.getThumbDir());
 
         return values;
     }
@@ -54,6 +57,12 @@ class UserCollectionDB {
         String selection = CollectionTable.Cols.UUID + " = ?";
         String[] selectionArgs = { album.getId().toString() };
         mCollectionDatabase.delete(CollectionTable.NAME, selection, selectionArgs);
+    }
+
+    void deleteAllAlbums() {
+        // db.delete(String tableName, String whereClause, String[] whereArgs);
+        // If whereClause is null, it will delete all rows.
+        mCollectionDatabase.delete(AlbumDbSchema.WantlistTable.NAME, null, null);
     }
 
     List<Album> getAlbums(){

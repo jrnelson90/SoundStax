@@ -1,6 +1,8 @@
 package com.justinrandalnelson.waxstacks;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,11 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -136,7 +141,10 @@ public class CollectionListviewFragment extends Fragment {
 
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
+        private final TextView mYearTextView;
         private final TextView mGenreTextView;
+        private final ImageView mThumbImageView;
+
         private Album mAlbum;
 
         AlbumHolder(View itemView) {
@@ -144,14 +152,24 @@ public class CollectionListviewFragment extends Fragment {
             itemView.setOnClickListener(this);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_album_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_album_artist_text_view);
+            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_album_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_album_genre_text_view);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_album_thumb_image_view);
         }
 
         void bindAlbum(Album album) {
             mAlbum = album;
             mTitleTextView.setText(mAlbum.getTitle());
             mArtistTextView.setText(mAlbum.getArtist());
+            mYearTextView.setText(mAlbum.getYear());
             mGenreTextView.setText(mAlbum.getGenre());
+
+            try {
+                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mAlbum.getThumbDir()));
+                mThumbImageView.setImageBitmap(thumbBitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

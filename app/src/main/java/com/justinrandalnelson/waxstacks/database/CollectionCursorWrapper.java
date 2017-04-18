@@ -23,12 +23,16 @@ public class CollectionCursorWrapper extends CursorWrapper {
         String artist = getString(getColumnIndex(CollectionTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(CollectionTable.Cols.GENRE));
         String year = getString(getColumnIndex(CollectionTable.Cols.YEAR));
+        String thumbUrl = getString(getColumnIndex(CollectionTable.Cols.THUMB_URL));
+        String thumbDir = getString(getColumnIndex(CollectionTable.Cols.THUMB_DIR));
 
         Album album = new Album(UUID.fromString(uuidString));
         album.setTitle(title);
         album.setArtist(artist);
         album.setGenre(genre);
         album.setYear(year);
+        album.setThumbUrl(thumbUrl);
+        album.setThumbDir(thumbDir);
 
         return album;
     }

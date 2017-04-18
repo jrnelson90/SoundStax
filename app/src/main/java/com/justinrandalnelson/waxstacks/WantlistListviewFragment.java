@@ -1,6 +1,9 @@
 package com.justinrandalnelson.waxstacks;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,11 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -130,12 +136,14 @@ public class WantlistListviewFragment extends Fragment {
         JSONObject currentPlanet = null;
     }
 
-    private class AlbumHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    private class AlbumHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
+        private final TextView mYearTextView;
         private final TextView mGenreTextView;
+        private final ImageView mThumbImageView;
+
         private Album mAlbum;
 
         AlbumHolder(View itemView) {
@@ -143,14 +151,24 @@ public class WantlistListviewFragment extends Fragment {
             itemView.setOnClickListener(this);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_album_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_album_artist_text_view);
+            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_album_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_album_genre_text_view);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_album_thumb_image_view);
         }
 
         void bindAlbum(Album album) {
             mAlbum = album;
             mTitleTextView.setText(mAlbum.getTitle());
             mArtistTextView.setText(mAlbum.getArtist());
+            mYearTextView.setText(mAlbum.getYear());
             mGenreTextView.setText(mAlbum.getGenre());
+
+            try {
+                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mAlbum.getThumbDir()));
+                mThumbImageView.setImageBitmap(thumbBitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -191,44 +209,45 @@ public class WantlistListviewFragment extends Fragment {
 
     }
 
-//    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
-//        @Override
-//        protected JSONObject doInBackground(String... params) {
-//            String artistSearchString = params[0];
-//            return new JsonFetcher().fetchArtist(artistSearchString);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(JSONObject jsonObject) {
-//            mArtistResultsJSON = jsonObject;
-//            updateData();
-//        }
-//    }
-//
-//    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
-//        @Override
-//        protected JSONObject doInBackground(String... params) {
-//            String albumReleaseSearchString = params[0];
-//            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(JSONObject jsonObject) {
-//            mAlbumReleaseResultsJSON = jsonObject;
-//            updateData();
-//        }
-//    }
-//
-//    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
-//        @Override
-//        protected JSONObject doInBackground(Void... params) {
-//            return new JsonFetcher().fetchUserIdentity();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(JSONObject jsonObject) {
-//            mUserInfoJSON = jsonObject;
-//        }
-//    }
+    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            String artistSearchString = params[0];
+            return new JsonFetcher().fetchArtist(artistSearchString);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mArtistResultsJSON = jsonObject;
+            updateData();
+        }
+    }
+
+    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            String albumReleaseSearchString = params[0];
+            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mAlbumReleaseResultsJSON = jsonObject;
+            updateData();
+        }
+    }
+
+    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return new JsonFetcher().fetchUserIdentity();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mUserInfoJSON = jsonObject;
+        }
+    }
+
 
 }
