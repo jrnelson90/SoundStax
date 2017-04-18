@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -132,15 +130,6 @@ public class AlbumFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
-            }
-        });
-
-        CheckBox ownedCheckBox = (CheckBox) v.findViewById(R.id.album_owned);
-        ownedCheckBox.setChecked(mAlbum.isOwned());
-        ownedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAlbum.setOwned(isChecked);
             }
         });
 

@@ -58,6 +58,12 @@ class UserWantlistDB {
         mWantlistDatabase.delete(WantlistTable.NAME, selection, selectionArgs);
     }
 
+    void deleteAllAlbums() {
+        // db.delete(String tableName, String whereClause, String[] whereArgs);
+        // If whereClause is null, it will delete all rows.
+        mWantlistDatabase.delete(WantlistTable.NAME, null, null);
+    }
+
     List<Album> getAlbums() {
         List<Album> albums = new ArrayList<>();
 

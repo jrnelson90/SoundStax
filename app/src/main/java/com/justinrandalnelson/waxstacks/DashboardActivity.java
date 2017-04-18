@@ -10,8 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.List;
-
 /**
  * Created by jrnel on 4/14/2017.
  */
@@ -99,18 +97,8 @@ public class DashboardActivity extends SingleFragmentActivity {
                 Preferences.set(Preferences.USERNAME, "");
                 Preferences.set(Preferences.USER_ID, "");
                 Preferences.set(Preferences.USER_PROFILE, "");
-                UserWantlistDB wantlist = UserWantlistDB.get(getApplicationContext());
-                List<Album> wantlistAlbums = wantlist.getAlbums();
-                for (int i = 0; i < wantlistAlbums.size(); i++) {
-                    wantlist.deleteAlbum(wantlistAlbums.get(i));
-                }
-                UserCollectionDB collection = UserCollectionDB.get(getApplicationContext());
-                List<Album> collectionAlbums = collection.getAlbums();
-                for (int i = 0; i < collectionAlbums.size(); i++) {
-                    collection.deleteAlbum(collectionAlbums.get(i));
-                }
-                wantlistAlbums.clear();
-                collectionAlbums.clear();
+                UserWantlistDB.get(getApplicationContext()).deleteAllAlbums();
+                UserCollectionDB.get(getApplicationContext()).deleteAllAlbums();
                 fragmentClass = DashboardFragment.class;
                 break;
             default:
