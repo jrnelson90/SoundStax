@@ -25,18 +25,18 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * Fragment for Discogs Wantlist Album List
+ * Fragment for Discogs Wantlist Release List
  * Created by jrnel on 2/18/2017.
  */
 
 public class WantlistListviewFragment extends Fragment {
 
     private static final String TAG = "WantlistListviewFragment";
-    private RecyclerView mAlbumRecyclerView;
+    private RecyclerView mReleaseRecyclerView;
     private Spinner mGenreFilterSpinner;
-    private AlbumAdapter mAdapter;
+    private ReleaseAdapter mAdapter;
     private JSONObject mArtistResultsJSON = new JSONObject();
-    private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
+    private JSONObject mReleaseReleaseResultsJSON = new JSONObject();
     private JSONObject mUserInfoJSON = new JSONObject();
     private UserWantlistDB mUserWantlistDB;
 
@@ -51,23 +51,23 @@ public class WantlistListviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_album_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_release_list, container, false);
 
-        mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
-        mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
+        mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
+//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
 //        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                if (mAdapter != null) {
 //                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Album> allAlbums = mUserWantlistDB.getAlbums();
-//                        mAdapter.setAlbums(allAlbums);
+//                        List<Release> allReleases = mUserWantlistDB.getReleases();
+//                        mAdapter.setReleases(allReleases);
 //                    } else {
-//                        List<Album> filteredAlbums = mUserWantlistDB.getFilteredAlbums(
+//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
 //                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setAlbums(filteredAlbums);
+//                        mAdapter.setReleases(filteredReleases);
 //                    }
 //
 //                    mAdapter.notifyDataSetChanged();
@@ -94,16 +94,16 @@ public class WantlistListviewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_album_list, menu);
+        inflater.inflate(R.menu.fragment_release_list, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_album:
-                Album album = new Album();
-                UserWantlistDB.get(getActivity()).addAlbum(album);
-                Intent intent = AlbumActivity.newIntent(getActivity(), album.getId());
+            case R.id.menu_item_new_release:
+                Release release = new Release();
+                UserWantlistDB.get(getActivity()).addRelease(release);
+                Intent intent = ReleaseActivity.newIntent(getActivity(), release.getId());
                 startActivity(intent);
                 return true;
             default:
@@ -112,14 +112,14 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-//        UserWantlistDB albumBase = UserWantlistDB.get(getActivity());
-        List<Album> albums = mUserWantlistDB.getAlbums();
+//        UserWantlistDB releaseBase = UserWantlistDB.get(getActivity());
+        List<Release> releases = mUserWantlistDB.getReleases();
 
         if (mAdapter == null) {
-            mAdapter = new AlbumAdapter(albums);
-            mAlbumRecyclerView.setAdapter(mAdapter);
+            mAdapter = new ReleaseAdapter(releases);
+            mReleaseRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setAlbums(albums);
+            mAdapter.setReleases(releases);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -136,7 +136,7 @@ public class WantlistListviewFragment extends Fragment {
         JSONObject currentPlanet = null;
     }
 
-    private class AlbumHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
@@ -144,27 +144,27 @@ public class WantlistListviewFragment extends Fragment {
         private final TextView mGenreTextView;
         private final ImageView mThumbImageView;
 
-        private Album mAlbum;
+        private Release mRelease;
 
-        AlbumHolder(View itemView) {
+        ReleaseHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_album_title_text_view);
-            mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_album_artist_text_view);
-            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_album_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_album_genre_text_view);
-            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_album_thumb_image_view);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
+            mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
+            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
         }
 
-        void bindAlbum(Album album) {
-            mAlbum = album;
-            mTitleTextView.setText(mAlbum.getTitle());
-            mArtistTextView.setText(mAlbum.getArtist());
-            mYearTextView.setText(mAlbum.getYear());
-            mGenreTextView.setText(mAlbum.getGenre());
+        void bindRelease(Release release) {
+            mRelease = release;
+            mTitleTextView.setText(mRelease.getTitle());
+            mArtistTextView.setText(mRelease.getArtist());
+            mYearTextView.setText(mRelease.getYear());
+            mGenreTextView.setText(mRelease.getGenre());
 
             try {
-                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mAlbum.getThumbDir()));
+                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mRelease.getThumbDir()));
                 mThumbImageView.setImageBitmap(thumbBitmap);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -173,38 +173,38 @@ public class WantlistListviewFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = AlbumActivity.newIntent(getActivity(), mAlbum.getId());
+            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId());
             startActivity(intent);
         }
     }
 
-    private class AlbumAdapter extends RecyclerView.Adapter<AlbumHolder> {
-        private List<Album> mAlbums;
+    private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
+        private List<Release> mReleases;
 
-        AlbumAdapter(List<Album> albums) {
-            mAlbums = albums;
+        ReleaseAdapter(List<Release> releases) {
+            mReleases = releases;
         }
 
         @Override
-        public AlbumHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ReleaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.list_item_album, parent, false);
-            return new AlbumHolder(view);
+            View view = layoutInflater.inflate(R.layout.list_item_release, parent, false);
+            return new ReleaseHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(AlbumHolder holder, int position) {
-            Album album = mAlbums.get(position);
-            holder.bindAlbum(album);
+        public void onBindViewHolder(ReleaseHolder holder, int position) {
+            Release release = mReleases.get(position);
+            holder.bindRelease(release);
         }
 
         @Override
         public int getItemCount() {
-            return mAlbums.size();
+            return mReleases.size();
         }
 
-        void setAlbums(List<Album> albums) {
-            mAlbums = albums;
+        void setReleases(List<Release> releases) {
+            mReleases = releases;
         }
 
     }
@@ -223,16 +223,16 @@ public class WantlistListviewFragment extends Fragment {
         }
     }
 
-    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
+    private class FetchReleaseReleaseJSON extends AsyncTask<String, Void, JSONObject> {
         @Override
         protected JSONObject doInBackground(String... params) {
-            String albumReleaseSearchString = params[0];
-            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
+            String releaseReleaseSearchString = params[0];
+            return new JsonFetcher().fetchReleaseRelease(releaseReleaseSearchString);
         }
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            mAlbumReleaseResultsJSON = jsonObject;
+            mReleaseReleaseResultsJSON = jsonObject;
             updateData();
         }
     }

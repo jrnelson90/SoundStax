@@ -94,29 +94,29 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    JSONObject fetchAlbumRelease(String _albumReleaseName) {
+    JSONObject fetchReleaseRelease(String _releaseReleaseName) {
         JSONObject jsonBody = null;
 
         //Parse search into a URL friendly encoding.
-        String album_name_encoded = "";
+        String release_name_encoded = "";
         try {
-            album_name_encoded = URLEncoder.encode(_albumReleaseName, "UTF-8");
+            release_name_encoded = URLEncoder.encode(_releaseReleaseName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getMessage());
         }
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         String searchString =
-                "https://api.discogs.com/database/search?release_title=" + album_name_encoded;
+                "https://api.discogs.com/database/search?release_title=" + release_name_encoded;
         try {
             String jsonStr = getResultStringFromDiscogs(searchString);
-            Log.i(TAG, "Full Received Album JSON: " + jsonStr);
+            Log.i(TAG, "Full Received Release JSON: " + jsonStr);
             jsonBody = new JSONObject(jsonStr);
-            Log.i(TAG, "Successfully parsed Album JSON");
+            Log.i(TAG, "Successfully parsed Release JSON");
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to parse Album JSON", e);
+            Log.e(TAG, "Failed to parse Release JSON", e);
         } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch Album items", ioe);
+            Log.e(TAG, "Failed to fetch Release items", ioe);
         }
         return jsonBody;
     }
@@ -124,7 +124,7 @@ class JsonFetcher {
     JSONObject fetchUserIdentity() {
         JSONObject jsonBody = null;
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         String userIdentityURL = "https://api.discogs.com/oauth/identity";
         try {
 
@@ -183,7 +183,7 @@ class JsonFetcher {
     JSONObject fetchUserCollection() {
         JSONObject jsonBody = null;
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         String userIdentityURL = "https://api.discogs.com/users/" +
                 Preferences.get(Preferences.USERNAME, "") + "/collection/folders/0/releases";
         try {
@@ -243,7 +243,7 @@ class JsonFetcher {
     JSONObject fetchUserWantlist() {
         JSONObject jsonBody = null;
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         String userIdentityURL = "https://api.discogs.com/users/" +
                 Preferences.get(Preferences.USERNAME, "") + "/wants";
         try {
@@ -303,7 +303,7 @@ class JsonFetcher {
     JSONObject fetchUserProfile() {
         JSONObject jsonBody = null;
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         String userIdentityURL = "https://api.discogs.com/users/" +
                 Preferences.get(Preferences.USERNAME, "");
         try {
@@ -363,7 +363,7 @@ class JsonFetcher {
     Bitmap fetchUserProfilePicture(String profilePicUrl) {
         Bitmap profileBitmap = null;
 
-        // Get JSON object for passed album info.
+        // Get JSON object for passed release info.
         try {
 
             HttpsURLConnection connection =

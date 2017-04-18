@@ -143,8 +143,8 @@ public class DashboardActivity extends SingleFragmentActivity {
                 new File(wantlistImageDir, children[i]).delete();
             }
         }
-        UserWantlistDB.get(getApplicationContext()).deleteAllAlbums();
-        UserCollectionDB.get(getApplicationContext()).deleteAllAlbums();
+        UserWantlistDB.get(getApplicationContext()).deleteAllReleases();
+        UserCollectionDB.get(getApplicationContext()).deleteAllReleases();
     }
 
     @Override

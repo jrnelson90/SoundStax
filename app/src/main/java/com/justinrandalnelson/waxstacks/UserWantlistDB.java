@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.WantlistTable;
+import com.justinrandalnelson.waxstacks.database.ReleaseDbSchema.WantlistTable;
 import com.justinrandalnelson.waxstacks.database.UserWantlistDBHelper;
 import com.justinrandalnelson.waxstacks.database.WantlistCursorWrapper;
 
@@ -34,75 +34,76 @@ class UserWantlistDB {
         return sUserWantlistDB;
     }
 
-    private static ContentValues getContentValues(Album album) {
+    private static ContentValues getContentValues(Release release) {
         ContentValues values = new ContentValues();
-        values.put(WantlistTable.Cols.UUID, album.getId().toString());
-        values.put(WantlistTable.Cols.TITLE, album.getTitle());
-        values.put(WantlistTable.Cols.ARTIST, album.getArtist());
-        values.put(WantlistTable.Cols.GENRE, album.getGenre());
-        values.put(WantlistTable.Cols.YEAR, album.getYear());
-        values.put(WantlistTable.Cols.THUMB_URL, album.getThumbUrl());
-        values.put(WantlistTable.Cols.THUMB_DIR, album.getThumbDir());
+        values.put(WantlistTable.Cols.UUID, release.getId().toString());
+        values.put(WantlistTable.Cols.TITLE, release.getTitle());
+        values.put(WantlistTable.Cols.ARTIST, release.getArtist());
+        values.put(WantlistTable.Cols.GENRE, release.getGenre());
+        values.put(WantlistTable.Cols.YEAR, release.getYear());
+        values.put(WantlistTable.Cols.RELEASE_ID, release.getReleaseId());
+        values.put(WantlistTable.Cols.THUMB_URL, release.getThumbUrl());
+        values.put(WantlistTable.Cols.THUMB_DIR, release.getThumbDir());
 
         return values;
     }
 
-    void addAlbum(Album album) {
-        ContentValues values = getContentValues(album);
+    void addRelease(Release release) {
+        ContentValues values = getContentValues(release);
         mWantlistDatabase.insert(WantlistTable.NAME, null, values);
     }
 
-    void deleteAlbum(Album album) {
+    void deleteRelease(Release release) {
         String selection = WantlistTable.Cols.UUID + " = ?";
-        String[] selectionArgs = {album.getId().toString()};
+        String[] selectionArgs = {release.getId().toString()};
         mWantlistDatabase.delete(WantlistTable.NAME, selection, selectionArgs);
     }
 
-    void deleteAllAlbums() {
+    void deleteAllReleases() {
         // db.delete(String tableName, String whereClause, String[] whereArgs);
         // If whereClause is null, it will delete all rows.
         mWantlistDatabase.delete(WantlistTable.NAME, null, null);
     }
 
-    List<Album> getAlbums() {
-        List<Album> albums = new ArrayList<>();
+    List<Release> getReleases() {
+        List<Release> releases = new ArrayList<>();
 
-        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                albums.add(cursor.getAlbum());
+                releases.add(cursor.getRelease());
                 cursor.moveToNext();
             }
         }
 
-        return albums;
+        return releases;
     }
 
-    List<Album> getFilteredAlbums(String filterContraint) {
-        List<Album> albums = new ArrayList<>();
+    List<Release> getFilteredReleases(String filterContraint) {
+        List<Release> releases = new ArrayList<>();
 
-        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if (cursor.getAlbum().getGenre().equals(filterContraint))
-                    albums.add(cursor.getAlbum());
+                if (cursor.getRelease().getGenre().equals(filterContraint))
+                    releases.add(cursor.getRelease());
                 cursor.moveToNext();
             }
         }
 
-        return albums;
+        return releases;
     }
 
     ArrayList<String> getGenreList() {
         ArrayList<String> returnedGenres = new ArrayList<>();
         ArrayList<String> foundGenres = new ArrayList<>();
 
-        try (WantlistCursorWrapper cursor = queryAlbums(null, null)) {
+        try (WantlistCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                String currentGenre = cursor.getAlbum().getGenre();
+                String currentGenre = cursor.getRelease().getGenre();
                 if (!foundGenres.contains(currentGenre)) {
-                    foundGenres.add(cursor.getAlbum().getGenre());
+                    foundGenres.add(cursor.getRelease().getGenre());
                 }
                 cursor.moveToNext();
             }
@@ -116,9 +117,9 @@ class UserWantlistDB {
         return returnedGenres;
     }
 
-    Album getAlbum(UUID id) {
+    Release getRelease(UUID id) {
 
-        try (WantlistCursorWrapper cursor = queryAlbums(
+        try (WantlistCursorWrapper cursor = queryReleases(
                 WantlistTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
         )) {
@@ -126,19 +127,19 @@ class UserWantlistDB {
                 return null;
             }
             cursor.moveToFirst();
-            return cursor.getAlbum();
+            return cursor.getRelease();
         }
     }
 
-    void updateAlbum(Album album) {
-        String uuidString = album.getId().toString();
-        ContentValues values = getContentValues(album);
+    void updateRelease(Release release) {
+        String uuidString = release.getId().toString();
+        ContentValues values = getContentValues(release);
         mWantlistDatabase.update(WantlistTable.NAME, values,
                 WantlistTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
     }
 
-    private WantlistCursorWrapper queryAlbums(String whereClause, String[] whereArgs) {
+    private WantlistCursorWrapper queryReleases(String whereClause, String[] whereArgs) {
         Cursor cursor = mWantlistDatabase.query(
                 WantlistTable.NAME,
                 null,

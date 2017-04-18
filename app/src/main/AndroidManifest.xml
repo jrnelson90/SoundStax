@@ -18,11 +18,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.justinrandalnelson.waxstacks.AlbumListActivity"
+            android:name="com.justinrandalnelson.waxstacks.ReleaseListActivity"
             android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
         <activity
-            android:name="com.justinrandalnelson.waxstacks.AlbumActivity"
+            android:name="com.justinrandalnelson.waxstacks.ReleaseActivity"
             android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
 

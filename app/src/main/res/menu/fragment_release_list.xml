@@ -30,8 +30,8 @@
     <!--</item>-->
 
     <item
-        android:id="@+id/menu_item_new_album"
+        android:id="@+id/menu_item_new_release"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/new_album"
+        android:title="@string/new_release"
         app:showAsAction="always"/>
 </menu>

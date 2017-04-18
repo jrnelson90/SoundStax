@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.CollectionTable;
+import com.justinrandalnelson.waxstacks.database.ReleaseDbSchema.CollectionTable;
 
 /**
  * Created by jrnel on 3/1/2017.
@@ -27,6 +27,7 @@ public class UserCollectionDBHelper extends SQLiteOpenHelper {
                 CollectionTable.Cols.ARTIST + ", " +
                 CollectionTable.Cols.GENRE + ", " +
                 CollectionTable.Cols.YEAR + ", " +
+                CollectionTable.Cols.RELEASE_ID + ", " +
                 CollectionTable.Cols.THUMB_URL + ", " +
                 CollectionTable.Cols.THUMB_DIR +
                 ")"

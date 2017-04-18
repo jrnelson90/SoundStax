@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment {
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
-    private ArrayList<Bitmap> mAlbumBitmaps = new ArrayList<>();
+    private ArrayList<Bitmap> mReleaseBitmaps = new ArrayList<>();
     private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
     private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
     private RequestQueue queue;
@@ -117,7 +117,7 @@ public class DashboardFragment extends Fragment {
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
 
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
-//            if(mUserCollectionDB.getAlbums().size() == 0) {
+//            if(mUserCollectionDB.getReleases().size() == 0) {
             for (int i = 0; i < 10; i++) {
                 ImageView imageView = new ImageView(getContext());
                 imageView.setId(i);
@@ -158,26 +158,28 @@ public class DashboardFragment extends Fragment {
     private void extractCollectionData() {
         try {
             JSONArray UserCollectionArray = (JSONArray) mUserCollectionJSON.get("releases");
-            Log.i("Collection Parse", "Release array created");
+            Log.i("Collection Parse", "ReleaseGSON array created");
 
-            if (UserCollectionArray.length() != mUserCollectionDB.getAlbums().size()) {
+            if (UserCollectionArray.length() != mUserCollectionDB.getReleases().size()) {
                 for (int i = 0; i < UserCollectionArray.length(); i++) {
-                    JSONObject currentAlbum = (JSONObject) UserCollectionArray.get(i);
-                    JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    String albumTitle = basicInfo.getString("title");
-                    String albumYear = basicInfo.getString("year");
-                    String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    Album album = new Album();
-                    album.setArtist(albumArtist);
-                    album.setYear(albumYear);
-                    album.setTitle(albumTitle);
-                    album.setThumbUrl(basicInfo.getString("thumb"));
-                    album.setThumbDir("");
-                    mUserCollectionDB.addAlbum(album);
+                    JSONObject currentRelease = (JSONObject) UserCollectionArray.get(i);
+                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
+                    String releaseTitle = basicInfo.getString("title");
+                    String releaseYear = basicInfo.getString("year");
+                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+                    String releaseId = basicInfo.getString("id");
+                    Release release = new Release();
+                    release.setArtist(releaseArtist);
+                    release.setYear(releaseYear);
+                    release.setTitle(releaseTitle);
+                    release.setReleaseId(releaseId);
+                    release.setThumbUrl(basicInfo.getString("thumb"));
+                    release.setThumbDir("");
+                    mUserCollectionDB.addRelease(release);
                 }
-                Log.i("Collection Parse", "All albums in collection have been parsed to SQLite");
+                Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
             } else {
-                Log.i("Collection Parse", "No new albums to parse to SQLite");
+                Log.i("Collection Parse", "No new releases to parse to SQLite");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -187,26 +189,28 @@ public class DashboardFragment extends Fragment {
     private void extractWantlistData() {
         try {
             JSONArray UserWantlistArray = (JSONArray) mUserWantlistJSON.get("wants");
-            Log.i("Wantlist Parse", "Release array created");
+            Log.i("Wantlist Parse", "ReleaseGSON array created");
 
-            if (UserWantlistArray.length() != mUserWantlistDB.getAlbums().size()) {
+            if (UserWantlistArray.length() != mUserWantlistDB.getReleases().size()) {
                 for (int i = 0; i < UserWantlistArray.length(); i++) {
-                    JSONObject currentAlbum = (JSONObject) UserWantlistArray.get(i);
-                    JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    String albumTitle = basicInfo.getString("title");
-                    String albumYear = basicInfo.getString("year");
-                    String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    Album album = new Album();
-                    album.setArtist(albumArtist);
-                    album.setYear(albumYear);
-                    album.setTitle(albumTitle);
-                    album.setThumbUrl(basicInfo.getString("thumb"));
-                    album.setThumbDir("");
-                    mUserWantlistDB.addAlbum(album);
+                    JSONObject currentRelease = (JSONObject) UserWantlistArray.get(i);
+                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
+                    String releaseTitle = basicInfo.getString("title");
+                    String releaseYear = basicInfo.getString("year");
+                    String releaseId = basicInfo.getString("id");
+                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+                    Release release = new Release();
+                    release.setArtist(releaseArtist);
+                    release.setYear(releaseYear);
+                    release.setTitle(releaseTitle);
+                    release.setReleaseId(releaseId);
+                    release.setThumbUrl(basicInfo.getString("thumb"));
+                    release.setThumbDir("");
+                    mUserWantlistDB.addRelease(release);
                 }
-                Log.i("Wantlist Parse", "All albums in wantlist have been parsed to SQLite");
+                Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
             } else {
-                Log.i("Wantlist Parse", "No new albums to parse to SQLite");
+                Log.i("Wantlist Parse", "No new releases to parse to SQLite");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -215,10 +219,10 @@ public class DashboardFragment extends Fragment {
 
     private void downloadListThumbnails() {
         // Update view with retrieved Collection data
-        if (mUserCollectionDB.getAlbums().get(0).getThumbDir().equals("")) {
+        if (mUserCollectionDB.getReleases().get(0).getThumbDir().equals("")) {
             ThumbDownloader("Collection");
         }
-        if (mUserWantlistDB.getAlbums().get(0).getThumbDir().equals("")) {
+        if (mUserWantlistDB.getReleases().get(0).getThumbDir().equals("")) {
             ThumbDownloader("Wantlist");
         }
     }
@@ -252,17 +256,17 @@ public class DashboardFragment extends Fragment {
 
         int downloadListSize = 0;
         if (_thumbDbName.equals("Collection")) {
-            downloadListSize = mUserCollectionDB.getAlbums().size();
+            downloadListSize = mUserCollectionDB.getReleases().size();
         } else if (_thumbDbName.equals("Wantlist")) {
-            downloadListSize = mUserWantlistDB.getAlbums().size();
+            downloadListSize = mUserWantlistDB.getReleases().size();
         }
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < downloadListSize; i++) {
             String thumbURL = "";
             if (_thumbDbName.equals("Collection")) {
-                thumbURL = mUserCollectionDB.getAlbums().get(i).getThumbUrl();
+                thumbURL = mUserCollectionDB.getReleases().get(i).getThumbUrl();
             } else if (_thumbDbName.equals("Wantlist")) {
-                thumbURL = mUserWantlistDB.getAlbums().get(i).getThumbUrl();
+                thumbURL = mUserWantlistDB.getReleases().get(i).getThumbUrl();
             }
 
             // Instantiate the RequestQueue.
@@ -270,7 +274,7 @@ public class DashboardFragment extends Fragment {
             ImageRequest thumbRequest = new ImageRequest(thumbURL,
                     new Response.Listener<Bitmap>() {
                         @Override
-                        public void onResponse(Bitmap albumCoverBitmap) {
+                        public void onResponse(Bitmap releaseCoverBitmap) {
                             try {
                                 // path to /data/data/yourapp/app_data/imageDir
                                 ContextWrapper cw = new ContextWrapper(getContext());
@@ -289,7 +293,7 @@ public class DashboardFragment extends Fragment {
                                 FileOutputStream fos = null;
                                 try {
                                     fos = new FileOutputStream(filePath);
-                                    albumCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                    releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                 } finally {
@@ -301,18 +305,18 @@ public class DashboardFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-                                Album currentAlbum = null;
+                                Release currentRelease = null;
                                 if (_thumbDbName.equals("Collection")) {
-                                    currentAlbum = mUserCollectionDB.getAlbums().get(finalI);
-                                    currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                                    mUserCollectionDB.updateAlbum(currentAlbum);
+                                    currentRelease = mUserCollectionDB.getReleases().get(finalI);
+                                    currentRelease.setThumbDir(filePath.getAbsolutePath());
+                                    mUserCollectionDB.updateRelease(currentRelease);
                                 } else if (_thumbDbName.equals("Wantlist")) {
-                                    currentAlbum = mUserWantlistDB.getAlbums().get(finalI);
-                                    currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                                    mUserWantlistDB.updateAlbum(currentAlbum);
+                                    currentRelease = mUserWantlistDB.getReleases().get(finalI);
+                                    currentRelease.setThumbDir(filePath.getAbsolutePath());
+                                    mUserWantlistDB.updateRelease(currentRelease);
                                 }
-//                                if (currentAlbum != null) {
-//                                    Log.i(TAG, currentAlbum.getThumbDir());
+//                                if (currentRelease != null) {
+//                                    Log.i(TAG, currentRelease.getThumbDir());
 //                                }
                             } catch (NullPointerException e) {
                                 e.printStackTrace();

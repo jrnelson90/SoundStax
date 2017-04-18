@@ -120,7 +120,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue"
             ],
             "text": "180 gram",
@@ -229,7 +229,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "180g",
             "name": "Vinyl",
@@ -275,7 +275,7 @@
           {
             "descriptions": [
               "12\"",
-              "Mini-Album"
+              "Mini-Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -377,7 +377,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Limited Edition"
             ],
             "text": "Translucent",
@@ -428,7 +428,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "4"
@@ -483,7 +483,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Compilation"
             ],
             "text": "Gatefold",
@@ -530,7 +530,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "Red & Black Blob",
             "name": "Vinyl",
@@ -584,7 +584,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Limited Edition"
             ],
             "text": "Radioactive Yellow",
@@ -631,7 +631,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "Gold",
             "name": "Vinyl",
@@ -695,7 +695,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -840,7 +840,7 @@
             "descriptions": [
               "LP",
               "45 RPM",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "2"
@@ -1010,7 +1010,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Limited Edition",
               "Reissue",
               "Mono"
@@ -1058,7 +1058,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue"
             ],
             "name": "Vinyl",
@@ -1104,7 +1104,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -1149,7 +1149,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "Pinckneyville Pressing",
             "name": "Vinyl",
@@ -1195,7 +1195,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Deluxe Edition"
             ],
             "text": "Blue (Light), 180g, Gatefold",
@@ -1333,7 +1333,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -1378,7 +1378,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -1423,7 +1423,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Limited Edition"
             ],
             "text": "Orange Splatter",
@@ -1561,7 +1561,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -1606,7 +1606,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "180GSM",
             "name": "Vinyl",
@@ -1696,7 +1696,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue"
             ],
             "name": "Vinyl",
@@ -1750,7 +1750,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "180g",
             "name": "Vinyl",
@@ -1804,7 +1804,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -1849,7 +1849,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "Winchester Press",
             "name": "Vinyl",
@@ -1911,7 +1911,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Limited Edition",
               "Remastered"
             ],
@@ -1959,7 +1959,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -2020,7 +2020,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "text": "Gatefold",
             "name": "Vinyl",
@@ -2082,7 +2082,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Stereo"
             ],
             "text": "150g",
@@ -2233,7 +2233,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -2279,7 +2279,7 @@
             "descriptions": [
               "12\"",
               "45 RPM",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
@@ -2324,7 +2324,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue",
               "Remastered"
             ],
@@ -2380,7 +2380,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue",
               "Remastered",
               "Stereo"
@@ -2429,7 +2429,7 @@
           {
             "descriptions": [
               "LP",
-              "Album",
+              "Release",
               "Reissue"
             ],
             "name": "Vinyl",
@@ -2490,7 +2490,7 @@
           {
             "descriptions": [
               "LP",
-              "Album"
+              "Release"
             ],
             "name": "Vinyl",
             "qty": "1"
