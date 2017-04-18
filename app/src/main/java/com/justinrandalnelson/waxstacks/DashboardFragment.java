@@ -21,8 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -130,13 +132,6 @@ public class DashboardFragment extends Fragment {
                 mCollectionPreview.add(imageView);
                 mCollectionLinearLayout.addView(imageView);
             }
-//            } else {
-//                for (int i = 0; i < 10; i++) {
-//
-//                    mCollectionPreview.get(i);
-//                }
-//            }
-
 
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
             for (int i = 0; i < 10; i++) {
@@ -172,7 +167,6 @@ public class DashboardFragment extends Fragment {
             if (UserCollectionArray.length() != mUserCollectionDB.getAlbums().size()) {
                 for (int i = 0; i < UserCollectionArray.length(); i++) {
                     JSONObject currentAlbum = (JSONObject) UserCollectionArray.get(i);
-                    Log.i("Collection Parse", "Parsing album: " + String.valueOf(i + 1));
                     JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
                     String albumTitle = basicInfo.getString("title");
                     String albumYear = basicInfo.getString("year");
@@ -202,7 +196,6 @@ public class DashboardFragment extends Fragment {
             if (UserWantlistArray.length() != mUserWantlistDB.getAlbums().size()) {
                 for (int i = 0; i < UserWantlistArray.length(); i++) {
                     JSONObject currentAlbum = (JSONObject) UserWantlistArray.get(i);
-                    Log.i("Wantlist Parse", "Parsing album: " + String.valueOf(i + 1));
                     JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
                     String albumTitle = basicInfo.getString("title");
                     String albumYear = basicInfo.getString("year");
@@ -242,13 +235,17 @@ public class DashboardFragment extends Fragment {
             e.printStackTrace();
         }
 
-        Glide.with(getContext())
-                .load(userPictureURL)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(true)
-                .fitCenter()
-                .placeholder(R.drawable.loading)
-                .into(mUserProfilePicture);
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        ImageRequest profilePicRequest = new ImageRequest(userPictureURL,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        mUserProfilePicture.setImageBitmap(response);
+                    }
+                }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
+// Add the request to the RequestQueue.
+        queue.add(profilePicRequest);
     }
 
     private void updateUsername() {
@@ -431,12 +428,7 @@ public class DashboardFragment extends Fragment {
                             ", oauth_timestamp=" + ts);
                     connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
 
-                    if (connection.getResponseCode() == 200) {
-//                        Log.i("Connection Type", "Album Cover Image URL Success");
-//                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
-//                        Log.i("Connection Message", connection.getResponseMessage());
-                        // Success
-                    } else {
+                    if (connection.getResponseCode() != 200) {
                         // Error handling code goes here
                         Log.i("Connection Type", "Album Cover Image URL Failed");
                         Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
@@ -457,7 +449,6 @@ public class DashboardFragment extends Fragment {
 
                     albumCoverBitmap = BitmapFactory.
                             decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
-//                    Log.i(TAG, "Received Album Cover Image: Bitmap created");
                 } catch (IOException ioe) {
                     Log.e(TAG, "Error Downloading Album Cover Image: ", ioe);
                     return false;
@@ -492,7 +483,6 @@ public class DashboardFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
-//                    Log.i("Writing image", "Image success");
                     Album currentAlbum = null;
                     if (thumbDbName.equals("Collection")) {
                         currentAlbum = mUserCollectionDB.getAlbums().get(i);
@@ -503,7 +493,7 @@ public class DashboardFragment extends Fragment {
                         currentAlbum.setThumbDir(filePath.getAbsolutePath());
                         mUserWantlistDB.updateAlbum(currentAlbum);
                     }
-                    Log.i("DB Thumb Directory", currentAlbum.getThumbDir());
+//                    Log.i("DB Thumb Directory", currentAlbum.getThumbDir());
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                     return false;
