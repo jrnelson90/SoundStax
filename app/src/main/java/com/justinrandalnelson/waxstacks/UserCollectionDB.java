@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema;
 import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.CollectionTable;
 import com.justinrandalnelson.waxstacks.database.CollectionCursorWrapper;
 import com.justinrandalnelson.waxstacks.database.UserCollectionDBHelper;
@@ -62,7 +61,7 @@ class UserCollectionDB {
     void deleteAllAlbums() {
         // db.delete(String tableName, String whereClause, String[] whereArgs);
         // If whereClause is null, it will delete all rows.
-        mCollectionDatabase.delete(AlbumDbSchema.WantlistTable.NAME, null, null);
+        mCollectionDatabase.delete(CollectionTable.NAME, null, null);
     }
 
     List<Album> getAlbums(){
