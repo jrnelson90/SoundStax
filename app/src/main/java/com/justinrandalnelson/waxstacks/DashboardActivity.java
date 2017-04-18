@@ -10,7 +10,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+
 /**
+ * Dashboard Activity
  * Created by jrnel on 4/14/2017.
  */
 
@@ -92,13 +95,7 @@ public class DashboardActivity extends SingleFragmentActivity {
                 fragmentClass = CollectionListviewFragment.class;
                 break;
             case R.id.logout_nav:
-                Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
-                Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
-                Preferences.set(Preferences.USERNAME, "");
-                Preferences.set(Preferences.USER_ID, "");
-                Preferences.set(Preferences.USER_PROFILE, "");
-                UserWantlistDB.get(getApplicationContext()).deleteAllAlbums();
-                UserCollectionDB.get(getApplicationContext()).deleteAllAlbums();
+                clearAllUserInfo();
                 fragmentClass = DashboardFragment.class;
                 break;
             default:
@@ -121,6 +118,33 @@ public class DashboardActivity extends SingleFragmentActivity {
         setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    private void clearAllUserInfo() {
+        Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+        Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+        Preferences.set(Preferences.USERNAME, "");
+        Preferences.set(Preferences.USER_ID, "");
+        Preferences.set(Preferences.USER_PROFILE, "");
+
+        File collectionImageDir =
+                new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
+        if (collectionImageDir.isDirectory()) {
+            String[] children = collectionImageDir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(collectionImageDir, children[i]).delete();
+            }
+        }
+        File wantlistImageDir =
+                new File("/data/user/0/com.justinrandalnelson.waxstacks/app_WantlistCovers");
+        if (wantlistImageDir.isDirectory()) {
+            String[] children = wantlistImageDir.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(wantlistImageDir, children[i]).delete();
+            }
+        }
+        UserWantlistDB.get(getApplicationContext()).deleteAllAlbums();
+        UserCollectionDB.get(getApplicationContext()).deleteAllAlbums();
     }
 
     @Override
