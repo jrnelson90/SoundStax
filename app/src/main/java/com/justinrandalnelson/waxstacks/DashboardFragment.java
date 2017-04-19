@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -21,9 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -35,6 +39,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Dashboard fragment
@@ -56,6 +62,7 @@ public class DashboardFragment extends Fragment {
     private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
     private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
     private RequestQueue queue;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +113,7 @@ public class DashboardFragment extends Fragment {
                     if (connectivityManager.getActiveNetworkInfo() != null
                             && connectivityManager.getActiveNetworkInfo().isAvailable()
                             && connectivityManager.getActiveNetworkInfo().isConnected()) {
-                        new FetchRequestToken().execute();
+                        FetchRequestToken();
                     }
                 }
             });
@@ -149,8 +156,72 @@ public class DashboardFragment extends Fragment {
         if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() == 0) {
             return false;
         } else {
-            FetchUserIdentityJSON checkUser = new FetchUserIdentityJSON();
-            checkUser.execute();
+            String userIdentityURL = "https://api.discogs.com/oauth/identity";
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                    (Request.Method.GET, userIdentityURL, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            mUserInfoJSON = response;
+
+                            try {
+                                String usernameString = mUserInfoJSON.getString("username");
+                                Preferences.set(Preferences.USERNAME, usernameString);
+                                Log.i("Set Username Pref:", Preferences.get(Preferences.USERNAME, ""));
+                                String userIdString = mUserInfoJSON.getString("id");
+                                Preferences.set(Preferences.USER_ID, userIdString);
+                                Log.i("Set User ID Pref:", Preferences.get(Preferences.USER_ID, ""));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            updateUsername();
+
+                            if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
+                                    Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
+                                mUserCollectionDB = UserCollectionDB.get(getActivity());
+                                mUserWantlistDB = UserWantlistDB.get(getActivity());
+                                Toast.makeText(getContext(),
+                                        "Logged in as " + Preferences.get(Preferences.USERNAME, "")
+                                        , Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+
+                            if (mUserProfileJSON.length() == 0) {
+                                FetchUserProfileJSON();
+                            } else {
+                                Log.i("User Profile", "Already loaded user");
+                                updateProfilePicture();
+                                FetchUserCollectionJSON();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO Auto-generated method stub
+                        }
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    Long tsLong = System.currentTimeMillis() / 1000;
+                    String ts = tsLong.toString();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    params.put("Authorization", "OAuth" +
+                            "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                            ", oauth_nonce=" + ts +
+                            ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                            ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                            Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                            ", oauth_signature_method=PLAINTEXT" +
+                            ", oauth_timestamp=" + ts);
+                    params.put("User-Agent", HttpConst.USER_AGENT);
+                    return params;
+                }
+            };
+
+            // Access the RequestQueue through your singleton class.
+            queue.add(jsObjRequest);
         }
         return true;
     }
@@ -252,7 +323,6 @@ public class DashboardFragment extends Fragment {
     }
 
     private void ThumbDownloader(final String _thumbDbName) {
-        final String TAG = "ThumbDownloader";
 
         int downloadListSize = 0;
         if (_thumbDbName.equals("Collection")) {
@@ -305,7 +375,7 @@ public class DashboardFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-                                Release currentRelease = null;
+                                Release currentRelease;
                                 if (_thumbDbName.equals("Collection")) {
                                     currentRelease = mUserCollectionDB.getReleases().get(finalI);
                                     currentRelease.setThumbDir(filePath.getAbsolutePath());
@@ -315,9 +385,6 @@ public class DashboardFragment extends Fragment {
                                     currentRelease.setThumbDir(filePath.getAbsolutePath());
                                     mUserWantlistDB.updateRelease(currentRelease);
                                 }
-//                                if (currentRelease != null) {
-//                                    Log.i(TAG, currentRelease.getThumbDir());
-//                                }
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                             }
@@ -334,138 +401,200 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
-        @Override
-        protected String[] doInBackground(Void... params) {
-            return new OauthTokenFetcher().fetchRequestToken();
-        }
+    private void FetchRequestToken() {
+        // GET https://api.discogs.com/oauth/request_token
+        StringRequest stringRequest = new StringRequest
+                (Request.Method.GET, HttpConst.REQUEST_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // OnResponse
+                        String[] tokenArray = response.split("&");
+                        if (tokenArray.length == 3 && tokenArray[0] != null) {
+                            OauthVerifyTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
+                            OauthVerifyTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
 
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 3 && tokenArray[0] != null) {
-                OauthVerifyTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
-                OauthVerifyTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
+                            String authUrl = null;
+                            if (OauthVerifyTokens.getOauthRequestToken() != null) {
+                                authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
+                                        OauthVerifyTokens.getOauthRequestToken();
+                                Log.i("Auth URL", authUrl);
+                            } else {
+                                Log.i("Auth Dialog", "No oauth request token values populated");
+                            }
 
-                String authUrl = null;
-                if (OauthVerifyTokens.getOauthRequestToken() != null) {
-                    authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
-                            OauthVerifyTokens.getOauthRequestToken();
-                    Log.i("Auth URL", authUrl);
-                } else {
-                    Log.i("Auth Dialog", "No oauth request token values populated");
+                            if (authUrl != null) {
+                                Uri authUri = Uri.parse(authUrl);
+                                Intent i = AuthPageActivity.newIntent(getActivity(), authUri);
+                                startActivity(i);
+                            }
+                        }
+
                 }
+                }, new Response.ErrorListener() {
 
-                if (authUrl != null) {
-                    Uri authUri = Uri.parse(authUrl);
-                    Intent i = AuthPageActivity.newIntent(getActivity(), authUri);
-                    startActivity(i);
-                }
-            }
-        }
-    }
-
-    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserIdentity();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserInfoJSON = jsonObject;
-
-            try {
-                String usernameString = mUserInfoJSON.getString("username");
-                Preferences.set(Preferences.USERNAME, usernameString);
-                Log.i("Set Username Pref:", Preferences.get(Preferences.USERNAME, ""));
-                String userIdString = mUserInfoJSON.getString("id");
-                Preferences.set(Preferences.USER_ID, userIdString);
-                Log.i("Set User ID Pref:", Preferences.get(Preferences.USER_ID, ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            updateUsername();
-
-            if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
-                    Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
-                mUserCollectionDB = UserCollectionDB.get(getActivity());
-                mUserWantlistDB = UserWantlistDB.get(getActivity());
-                Toast.makeText(getContext(),
-                        "Logged in as " + Preferences.get(Preferences.USERNAME, "")
-                        , Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            if (mUserProfileJSON.length() == 0) {
-                new FetchUserProfileJSON().execute();
-            } else {
-                Log.i("User Profile", "Already loaded user");
-                updateProfilePicture();
-                new FetchUserCollectionJSON().execute();
-            }
-        }
-    }
-
-//    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
-//        @Override
-//        protected Bitmap doInBackground(Void... params) {
-//            String profilePicUrl = null;
-//            try {
-//                profilePicUrl = mUserProfileJSON.getString("avatar_url");
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return new JsonFetcher().fetchUserProfilePicture(profilePicUrl);
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        // Read POST response code
+//        if (connection.getResponseCode() == 200) {
+//            Log.i("Connection Result", "Success");
+//            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+//            Log.i("Connection Message", connection.getResponseMessage());
+//        } else {
+//            // Error handling code goes here
+//            Log.i("Connection Result", "Failed");
+//            Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
+//            Log.i("Connection Message", connection.getResponseMessage());
 //        }
-//
-//        @Override
-//        protected void onPostExecute(Bitmap _userProfilePicBitmap) {
-////            updateProfilePicture(_userProfilePicBitmap);
-////            new FetchUserCollectionJSON().execute();
-//        }
-//    }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts +
+                        ", oauth_callback=" + HttpConst.CALLBACK_URL);
+                return params;
+            }
+        };
 
-    private class FetchUserProfileJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserProfile();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserProfileJSON = jsonObject;
-            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
-            updateProfilePicture();
-            new FetchUserCollectionJSON().execute();
-        }
+        // Access the RequestQueue through your singleton class.
+        queue.add(stringRequest);
     }
 
-    private class FetchUserCollectionJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserCollection();
-        }
+    private void FetchUserProfileJSON() {
+        String userProfileURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "");
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, userProfileURL, null, new Response.Listener<JSONObject>() {
 
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserCollectionJSON = jsonObject;
-            new FetchUserWantlistJSON().execute();
-        }
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mUserProfileJSON = response;
+                        Log.i("Profile Request", "Received User Profile JSON");
+                        Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
+                        updateProfilePicture();
+                        FetchUserCollectionJSON();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
     }
 
-    private class FetchUserWantlistJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserWantlist();
-        }
+    private void FetchUserCollectionJSON() {
+        String userCollectionURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/collection/folders/0/releases";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, userCollectionURL, null, new Response.Listener<JSONObject>() {
 
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserWantlistJSON = jsonObject;
-            extractCollectionData();
-            extractWantlistData();
-            downloadListThumbnails();
-        }
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mUserCollectionJSON = response;
+                        FetchUserWantlistJSON();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
+    }
+
+    private void FetchUserWantlistJSON() {
+        String userWantlistURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/wants";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, userWantlistURL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mUserWantlistJSON = response;
+                        extractCollectionData();
+                        extractWantlistData();
+                        downloadListThumbnails();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
     }
 
 }

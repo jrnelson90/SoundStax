@@ -3,7 +3,6 @@ package com.justinrandalnelson.waxstacks;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,9 +34,6 @@ public class CollectionListviewFragment extends Fragment {
     private RecyclerView mReleaseRecyclerView;
     private Spinner mGenreFilterSpinner;
     private ReleaseAdapter mAdapter;
-    private JSONObject mArtistResultsJSON = new JSONObject();
-    private JSONObject mReleaseReleaseResultsJSON = new JSONObject();
-    private JSONObject mUserInfoJSON = new JSONObject();
     private UserCollectionDB mUserCollectionDB;
 
     @Override
@@ -103,7 +99,7 @@ public class CollectionListviewFragment extends Fragment {
             case R.id.menu_item_new_release:
                 Release release = new Release();
                 UserCollectionDB.get(getActivity()).addRelease(release);
-                Intent intent = ReleaseActivity.newIntent(getActivity(), release.getId());
+                Intent intent = ReleaseActivity.newIntent(getActivity(), release.getId(), "Collection");
                 startActivity(intent);
                 return true;
             default:
@@ -174,7 +170,7 @@ public class CollectionListviewFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId());
+            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Collection");
             startActivity(intent);
         }
     }
@@ -210,32 +206,32 @@ public class CollectionListviewFragment extends Fragment {
 
     }
 
-    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String artistSearchString = params[0];
-            return new JsonFetcher().fetchArtist(artistSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mArtistResultsJSON = jsonObject;
-            updateData();
-        }
-    }
-
-    private class FetchReleaseJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String releaseReleaseSearchString = params[0];
-            return new JsonFetcher().fetchReleaseRelease(releaseReleaseSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mReleaseReleaseResultsJSON = jsonObject;
-            updateData();
-        }
-    }
+//    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
+//        @Override
+//        protected JSONObject doInBackground(String... params) {
+//            String artistSearchString = params[0];
+//            return new JsonFetcher().fetchArtist(artistSearchString);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject jsonObject) {
+//            mArtistResultsJSON = jsonObject;
+//            updateData();
+//        }
+//    }
+//
+//    private class FetchReleaseJSON extends AsyncTask<String, Void, JSONObject> {
+//        @Override
+//        protected JSONObject doInBackground(String... params) {
+//            String releaseReleaseSearchString = params[0];
+//            return new JsonFetcher().fetchReleaseRelease(releaseReleaseSearchString);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(JSONObject jsonObject) {
+//            mReleaseReleaseResultsJSON = jsonObject;
+//            updateData();
+//        }
+//    }
 
 }

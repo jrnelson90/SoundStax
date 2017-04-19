@@ -7,13 +7,14 @@ import android.support.v4.app.Fragment;
 import java.util.UUID;
 
 public class ReleaseActivity extends SingleFragmentActivity {
-
     private static final String EXTRA_RELEASE_ID =
             "com.justinrandalnelson.waxstacks.release_id";
+    private static String parentList;
 
-    public static Intent newIntent(Context packageContext, UUID releaseID) {
+    public static Intent newIntent(Context packageContext, UUID releaseID, String _parentList) {
         Intent intent = new Intent(packageContext, ReleaseActivity.class);
         intent.putExtra(EXTRA_RELEASE_ID, releaseID);
+        parentList = _parentList;
         return intent;
     }
 
@@ -21,6 +22,6 @@ public class ReleaseActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         UUID releaseID = (UUID) getIntent()
                 .getSerializableExtra(EXTRA_RELEASE_ID);
-        return ReleaseFragment.newInstance(releaseID);
+        return ReleaseFragment.newInstance(releaseID, parentList);
     }
 }

@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,17 +33,19 @@ import java.util.UUID;
 
 public class ReleaseFragment extends Fragment {
     private static final String ARG_RELEASE_ID = "release_id";
+    private static String parentList;
     private Release mRelease;
     private TextView mTitleField;
     private ImageView mReleaseCoverView;
     private JSONObject mReleaseJSON;
     private RequestQueue queue;
 
-    public static ReleaseFragment newInstance(UUID releaseID) {
+    public static ReleaseFragment newInstance(UUID releaseID, String _parentList) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_RELEASE_ID, releaseID);
         final ReleaseFragment fragment = new ReleaseFragment();
         fragment.setArguments(args);
+        parentList = _parentList;
         return fragment;
     }
 
@@ -49,7 +53,12 @@ public class ReleaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
-        mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
+        if (parentList.equals("Collection")) {
+            mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
+
+        } else if (parentList.equals("Wantlist")) {
+            mRelease = UserWantlistDB.get(getActivity()).getRelease(releaseID);
+        }
         queue = Volley.newRequestQueue(getContext());
     }
 
@@ -98,8 +107,6 @@ public class ReleaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-
     }
 
     @Override
@@ -128,21 +135,29 @@ public class ReleaseFragment extends Fragment {
         artistField.setText(mRelease.getArtist());
 
         TextView genreField = (TextView) v.findViewById(R.id.release_genre);
-        genreField.setText(mRelease.getGenre());
+//        if(mRelease.getGenre().equals("")){
+        String empty = "(None Specified)";
+        genreField.setText(empty);
+//        } else{
+//            genreField.setText(mRelease.getGenre());
+//        }
 
         TextView yearField = (TextView) v.findViewById(R.id.release_year);
         yearField.setText(mRelease.getYear());
 
 
-//        Button mDeleteReleaseButton = (Button) v.findViewById(R.id.delete_release_button);
-//        mDeleteReleaseButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.", Toast.LENGTH_SHORT).show();
+        Button mDeleteReleaseButton = (Button) v.findViewById(R.id.delete_release_button);
+        String buttonText = "Remove from " + parentList;
+        mDeleteReleaseButton.setText(buttonText);
+        mDeleteReleaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
+                        Toast.LENGTH_SHORT).show();
 //                UserCollectionDB.get(getActivity()).deleteRelease(mRelease);
-//                getActivity().finish();
-//            }
-//        });
+                getActivity().finish();
+            }
+        });
 
         return v;
     }
