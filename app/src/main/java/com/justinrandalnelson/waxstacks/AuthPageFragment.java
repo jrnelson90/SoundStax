@@ -120,29 +120,7 @@ public class AuthPageFragment extends VisibleFragment {
         NavUtils.navigateUpTo(getActivity(), upIntent);
     }
 
-//    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
-//        @Override
-//        protected String[] doInBackground(String[]... params) {
-//            String[] _passedOauth = params[0];
-//            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String[] tokenArray) {
-//            if (tokenArray.length == 2) {
-//                String parsedAccessKey = tokenArray[1].split("=")[1].replace("\n", "");
-//                String parsedAccessSecret = tokenArray[0].split("=")[1];
-//                Preferences.set(Preferences.OAUTH_ACCESS_KEY, parsedAccessKey);
-//                Preferences.set(Preferences.OAUTH_ACCESS_SECRET, parsedAccessSecret);
-//                CookieManager cookieManager = CookieManager.getInstance();
-//                cookieManager.removeAllCookies(null);
-//                navigateBackToList();
-//            }
-//        }
-//    }
-
     private void FetchOauthAccessToken(final String[] _passedOauth) {
-        // GET https://api.discogs.com/oauth/request_token
         StringRequest stringRequest = new StringRequest
                 (Request.Method.GET, HttpConst.ACCESS_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
                     @Override
@@ -157,7 +135,7 @@ public class AuthPageFragment extends VisibleFragment {
                             CookieManager cookieManager = CookieManager.getInstance();
                             cookieManager.removeAllCookies(null);
                             navigateBackToList();
-                        }
+                    }
                     }
                 }, new Response.ErrorListener() {
 
@@ -165,7 +143,9 @@ public class AuthPageFragment extends VisibleFragment {
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
                     }
-                }) {
+                })
+                // Request Headers
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -189,6 +169,4 @@ public class AuthPageFragment extends VisibleFragment {
         // Access the RequestQueue through your singleton class.
         queue.add(stringRequest);
     }
-
-
 }

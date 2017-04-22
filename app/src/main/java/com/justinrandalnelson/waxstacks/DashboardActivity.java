@@ -131,16 +131,18 @@ public class DashboardActivity extends SingleFragmentActivity {
                 new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
         if (collectionImageDir.isDirectory()) {
             String[] children = collectionImageDir.list();
-            for (int i = 0; i < children.length; i++) {
-                new File(collectionImageDir, children[i]).delete();
+            for (String aChildren : children) {
+                File currentImage = new File(collectionImageDir, aChildren);
+                currentImage.delete();
             }
         }
         File wantlistImageDir =
                 new File("/data/user/0/com.justinrandalnelson.waxstacks/app_WantlistCovers");
         if (wantlistImageDir.isDirectory()) {
             String[] children = wantlistImageDir.list();
-            for (int i = 0; i < children.length; i++) {
-                new File(wantlistImageDir, children[i]).delete();
+            for (String aChildren : children) {
+                File currentImage = new File(collectionImageDir, aChildren);
+                currentImage.delete();
             }
         }
         UserWantlistDB.get(getApplicationContext()).deleteAllReleases();

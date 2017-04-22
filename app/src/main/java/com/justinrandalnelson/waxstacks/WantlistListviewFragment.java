@@ -1,5 +1,7 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +19,15 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.json.JSONObject;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,6 +42,8 @@ public class WantlistListviewFragment extends Fragment {
     private Spinner mGenreFilterSpinner;
     private ReleaseAdapter mAdapter;
     private UserWantlistDB mUserWantlistDB;
+    private RequestQueue queue;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class WantlistListviewFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         mUserWantlistDB = UserWantlistDB.get(getActivity());
+        queue = Volley.newRequestQueue(getContext());
     }
 
     @Override
@@ -125,13 +135,6 @@ public class WantlistListviewFragment extends Fragment {
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
-    private void updateData() {
-        String name = "";
-        int index = 0;
-        String data = "";
-        JSONObject currentPlanet = null;
-    }
-
     private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView mTitleTextView;
@@ -150,6 +153,7 @@ public class WantlistListviewFragment extends Fragment {
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
             mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            setIsRecyclable(false);
         }
 
         void bindRelease(Release release) {
@@ -158,13 +162,7 @@ public class WantlistListviewFragment extends Fragment {
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
             mGenreTextView.setText(mRelease.getGenre());
-
-            try {
-                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mRelease.getThumbDir()));
-                mThumbImageView.setImageBitmap(thumbBitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
         @Override
@@ -172,6 +170,8 @@ public class WantlistListviewFragment extends Fragment {
             Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Wantlist");
             startActivity(intent);
         }
+
+
     }
 
     private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
@@ -189,9 +189,53 @@ public class WantlistListviewFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ReleaseHolder holder, int position) {
-            Release release = mReleases.get(position);
-            holder.bindRelease(release);
+        public void onBindViewHolder(final ReleaseHolder holder, int position) {
+            final Release release = mReleases.get(position);
+            if (release.getThumbDir().equals("")) {
+                ImageRequest thumbRequest = new ImageRequest(release.getThumbUrl(),
+                        new Response.Listener<Bitmap>() {
+                            @Override
+                            public void onResponse(Bitmap releaseCoverBitmap) {
+                                try {
+                                    // path to /data/data/yourapp/app_data/imageDir
+                                    ContextWrapper cw = new ContextWrapper(getContext());
+
+                                    String thumbDir = "WantlistCovers";
+                                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                                    // Create imageDir
+                                    File filePath = new File(directory, "release_cover" +
+                                            holder.getAdapterPosition() + ".jpeg");
+
+                                    FileOutputStream fos = null;
+                                    try {
+                                        fos = new FileOutputStream(filePath);
+                                        releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (fos != null) {
+                                                fos.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    release.setThumbDir(filePath.getAbsolutePath());
+                                    mUserWantlistDB.updateRelease(release);
+                                    holder.bindRelease(release);
+
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
+                // Add the request to the RequestQueue.
+                queue.add(thumbRequest);
+            } else {
+                holder.bindRelease(release);
+            }
         }
 
         @Override
@@ -202,6 +246,5 @@ public class WantlistListviewFragment extends Fragment {
         void setReleases(List<Release> releases) {
             mReleases = releases;
         }
-
     }
 }
