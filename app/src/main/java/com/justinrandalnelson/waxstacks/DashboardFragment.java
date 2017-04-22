@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +57,6 @@ public class DashboardFragment extends Fragment {
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
-    private ArrayList<Bitmap> mReleaseBitmaps = new ArrayList<>();
     private RequestQueue queue;
 
     @Override
@@ -213,7 +211,7 @@ public class DashboardFragment extends Fragment {
                                 updateProfilePicture();
                                 String collectionFirstPageURL = "https://api.discogs.com/users/" +
                                         Preferences.get(Preferences.USERNAME, "") +
-                                        "/collection/folders/0/releases?page=1&per_page=100";
+                                        "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
                                 FetchUserCollectionJSON(collectionFirstPageURL);
                             }
                         }
@@ -539,7 +537,7 @@ public class DashboardFragment extends Fragment {
                         updateProfilePicture();
                         String collectionFirstPageURL = "https://api.discogs.com/users/" +
                                 Preferences.get(Preferences.USERNAME, "") +
-                                "/collection/folders/0/releases?page=1&per_page=100";
+                                "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
                         FetchUserCollectionJSON(collectionFirstPageURL);
                     }
                 }, new Response.ErrorListener() {
@@ -601,7 +599,7 @@ public class DashboardFragment extends Fragment {
                                 Log.i("Collection Download", "All collection items have been downloaded");
                                 String userWantlistURL = "https://api.discogs.com/users/" +
                                         Preferences.get(Preferences.USERNAME, "") +
-                                        "/wants?page=1&per_page=100";
+                                        "/wants?page=1&per_page=100&sort=added&sort_order=desc";
                                 FetchUserWantlistJSON(userWantlistURL);
                             }
                         } catch (JSONException e) {
