@@ -121,7 +121,7 @@ public class DashboardFragment extends Fragment {
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
             if (mUserCollectionDB != null && mUserCollectionDB.getReleases().size() > 10) {
                 for (int i = 0; i < 10; i++) {
-                    Release currentRelease = mUserCollectionDB.getReleases().get(i);
+                    final Release currentRelease = mUserCollectionDB.getReleases().get(i);
                     ImageView imageView = new ImageView(getContext());
                     imageView.setPadding(2, 2, 2, 2);
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
@@ -130,6 +130,14 @@ public class DashboardFragment extends Fragment {
                         DownloadPreviewThumbnail("Collection", i, imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        currentRelease.getId(), "Collection");
+                                startActivity(intent);
+                            }
+                        });
                         mCollectionLinearLayout.addView(imageView);
                     }
                 }
@@ -138,7 +146,7 @@ public class DashboardFragment extends Fragment {
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
             if (mUserWantlistDB != null && mUserWantlistDB.getReleases().size() > 10) {
                 for (int i = 0; i < 10; i++) {
-                    Release currentRelease = mUserWantlistDB.getReleases().get(i);
+                    final Release currentRelease = mUserWantlistDB.getReleases().get(i);
                     ImageView imageView = new ImageView(getContext());
                     imageView.setPadding(2, 2, 2, 2);
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
@@ -147,6 +155,14 @@ public class DashboardFragment extends Fragment {
                         DownloadPreviewThumbnail("Wantlist", i, imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        currentRelease.getId(), "Wantlist");
+                                startActivity(intent);
+                            }
+                        });
                         mWantlistLinearLayout.addView(imageView);
                     }
                 }
@@ -303,6 +319,15 @@ public class DashboardFragment extends Fragment {
                 DownloadPreviewThumbnail("Collection", i, imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                final Release finalCurrentRelease = currentRelease;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                finalCurrentRelease.getId(), "Collection");
+                        startActivity(intent);
+                    }
+                });
                 mCollectionLinearLayout.addView(imageView);
             }
         }
@@ -316,6 +341,15 @@ public class DashboardFragment extends Fragment {
                 DownloadPreviewThumbnail("Wantlist", i, imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                final Release finalCurrentRelease = currentRelease;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                finalCurrentRelease.getId(), "Wantlist");
+                        startActivity(intent);
+                    }
+                });
                 mWantlistLinearLayout.addView(imageView);
             }
         }
@@ -390,20 +424,34 @@ public class DashboardFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         }
-                            Release currentRelease;
+                            final Release currentRelease;
                             if (_thumbDbName.equals("Collection")) {
                                 currentRelease = mUserCollectionDB.getReleases().get(dbIndex);
                                 currentRelease.setThumbDir(filePath.getAbsolutePath());
                                 mUserCollectionDB.updateRelease(currentRelease);
                                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                                currentRelease.getId(), "Collection");
+                                        startActivity(intent);
+                                    }
+                                });
                                 mCollectionLinearLayout.addView(imageView);
                             } else if (_thumbDbName.equals("Wantlist")) {
                                 currentRelease = mUserWantlistDB.getReleases().get(dbIndex);
                                 currentRelease.setThumbDir(filePath.getAbsolutePath());
                                 mUserWantlistDB.updateRelease(currentRelease);
                                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                                currentRelease.getId(), "Wantlist");
+                                        startActivity(intent);
+                                    }
+                                });
                                 mWantlistLinearLayout.addView(imageView);
                             }
                         } catch (NullPointerException e) {
