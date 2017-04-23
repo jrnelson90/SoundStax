@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -65,8 +68,7 @@ public class ReleaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        String releaseURL = "https://api.discogs.com/releases/" + mRelease.getReleaseId() + "&token=" +
-                Preferences.get(Preferences.OAUTH_ACCESS_KEY, "");
+        String releaseURL = "https://api.discogs.com/releases/" + mRelease.getReleaseId();
         JsonObjectRequest releaseJSON = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -80,10 +82,26 @@ public class ReleaseFragment extends Fragment {
                 // TODO Auto-generated method stub
 
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
         queue.add(releaseJSON);
-
-
     }
 
     private void loadReleasePicture() {

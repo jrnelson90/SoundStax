@@ -3,7 +3,6 @@ package com.justinrandalnelson.waxstacks;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -116,8 +115,10 @@ public class AuthPageFragment extends VisibleFragment {
     }
 
     private void navigateBackToList() {
-        Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
-        NavUtils.navigateUpTo(getActivity(), upIntent);
+//        Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
+//        NavUtils.navigateUpTo(getActivity(), upIntent);
+        Intent i = new Intent(getActivity(), LoadingSplashScreen.class);
+        startActivity(i);
     }
 
     private void FetchOauthAccessToken(final String[] _passedOauth) {

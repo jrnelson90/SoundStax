@@ -31,6 +31,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
+        <activity
+            android:name=".LoadingSplashScreen">
+        </activity>
     </application>
 
 </manifest>

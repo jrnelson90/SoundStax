@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -77,7 +76,6 @@ public class DashboardFragment extends Fragment {
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             try {
                 mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
-                Log.i("Profile reloaded", "Reloaded " + mUserProfileJSON.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -117,6 +115,9 @@ public class DashboardFragment extends Fragment {
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
 
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
+            if (mCollectionLinearLayout.getChildCount() != 0) {
+                mCollectionLinearLayout.removeAllViews();
+            }
             if (mUserCollectionDB != null && mUserCollectionDB.getReleases().size() > 10) {
                 for (int i = 0; i < 10; i++) {
                     final Release currentRelease = mUserCollectionDB.getReleases().get(i);
@@ -142,6 +143,9 @@ public class DashboardFragment extends Fragment {
             }
 
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
+            if (mWantlistLinearLayout.getChildCount() != 0) {
+                mWantlistLinearLayout.removeAllViews();
+            }
             if (mUserWantlistDB != null && mUserWantlistDB.getReleases().size() > 10) {
                 for (int i = 0; i < 10; i++) {
                     final Release currentRelease = mUserWantlistDB.getReleases().get(i);
@@ -181,39 +185,9 @@ public class DashboardFragment extends Fragment {
                         @Override
                         public void onResponse(JSONObject response) {
                             mUserInfoJSON = response;
-
-                            try {
-                                String usernameString = mUserInfoJSON.getString("username");
-                                Preferences.set(Preferences.USERNAME, usernameString);
-                                Log.i("Set Username Pref:", Preferences.get(Preferences.USERNAME, ""));
-                                String userIdString = mUserInfoJSON.getString("id");
-                                Preferences.set(Preferences.USER_ID, userIdString);
-                                Log.i("Set User ID Pref:", Preferences.get(Preferences.USER_ID, ""));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
                             updateUsername();
-
-                            if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
-                                    Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
-                                mUserCollectionDB = UserCollectionDB.get(getActivity());
-                                mUserWantlistDB = UserWantlistDB.get(getActivity());
-                                Toast.makeText(getContext(),
-                                        "Logged in as " + Preferences.get(Preferences.USERNAME, "")
-                                        , Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-
-                            if (mUserProfileJSON.length() == 0) {
-                                FetchUserProfileJSON();
-                            } else {
-                                Log.i("User Profile", "Already loaded user");
-                                updateProfilePicture();
-                                String collectionFirstPageURL = "https://api.discogs.com/users/" +
-                                        Preferences.get(Preferences.USERNAME, "") +
-                                        "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
-                                FetchUserCollectionJSON(collectionFirstPageURL);
-                            }
+                            Log.i("User Profile", "Already loaded user");
+                            updateProfilePicture();
                         }
                     }, new Response.ErrorListener() {
 
@@ -247,65 +221,71 @@ public class DashboardFragment extends Fragment {
         return true;
     }
 
-    private void extractCollectionData() {
-        try {
-            if (mUserCollectionJSON.length() != mUserCollectionDB.getReleases().size()) {
-                for (int i = 0; i < mUserCollectionJSON.length(); i++) {
-                    JSONObject currentRelease = (JSONObject) mUserCollectionJSON.get(i);
-                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
-                    String releaseTitle = basicInfo.getString("title");
-                    String releaseYear = basicInfo.getString("year");
-                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    String releaseId = basicInfo.getString("id");
-                    Release release = new Release();
-                    release.setArtist(releaseArtist);
-                    release.setYear(releaseYear);
-                    release.setTitle(releaseTitle);
-                    release.setReleaseId(releaseId);
-                    release.setThumbUrl(basicInfo.getString("thumb"));
-                    release.setThumbDir("");
-                    mUserCollectionDB.addRelease(release);
-                }
-                Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
-            } else {
-                Log.i("Collection Parse", "No new releases to parse to SQLite");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void extractWantlistData() {
-        try {
-            if (mUserWantlistJSON.length() != mUserWantlistDB.getReleases().size()) {
-                for (int i = 0; i < mUserWantlistJSON.length(); i++) {
-                    JSONObject currentRelease = (JSONObject) mUserWantlistJSON.get(i);
-                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
-                    String releaseTitle = basicInfo.getString("title");
-                    String releaseYear = basicInfo.getString("year");
-                    String releaseId = basicInfo.getString("id");
-                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    Release release = new Release();
-                    release.setArtist(releaseArtist);
-                    release.setYear(releaseYear);
-                    release.setTitle(releaseTitle);
-                    release.setReleaseId(releaseId);
-                    release.setThumbUrl(basicInfo.getString("thumb"));
-                    release.setThumbDir("");
-                    mUserWantlistDB.addRelease(release);
-                }
-                Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
-            } else {
-                Log.i("Wantlist Parse", "No new releases to parse to SQLite");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void extractCollectionData() {
+//        try {
+//            if (mUserCollectionJSON.length() != mUserCollectionDB.getReleases().size()) {
+//                for (int i = 0; i < mUserCollectionJSON.length(); i++) {
+//                    JSONObject currentRelease = (JSONObject) mUserCollectionJSON.get(i);
+//                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
+//                    String releaseTitle = basicInfo.getString("title");
+//                    String releaseYear = basicInfo.getString("year");
+//                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+//                    String releaseId = basicInfo.getString("id");
+//                    Release release = new Release();
+//                    release.setArtist(releaseArtist);
+//                    release.setYear(releaseYear);
+//                    release.setTitle(releaseTitle);
+//                    release.setReleaseId(releaseId);
+//                    release.setThumbUrl(basicInfo.getString("thumb"));
+//                    release.setThumbDir("");
+//                    mUserCollectionDB.addRelease(release);
+//                }
+//                Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
+//            } else {
+//                Log.i("Collection Parse", "No new releases to parse to SQLite");
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void extractWantlistData() {
+//        try {
+//            if (mUserWantlistJSON.length() != mUserWantlistDB.getReleases().size()) {
+//                for (int i = 0; i < mUserWantlistJSON.length(); i++) {
+//                    JSONObject currentRelease = (JSONObject) mUserWantlistJSON.get(i);
+//                    JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
+//                    String releaseTitle = basicInfo.getString("title");
+//                    String releaseYear = basicInfo.getString("year");
+//                    String releaseId = basicInfo.getString("id");
+//                    String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+//                    Release release = new Release();
+//                    release.setArtist(releaseArtist);
+//                    release.setYear(releaseYear);
+//                    release.setTitle(releaseTitle);
+//                    release.setReleaseId(releaseId);
+//                    release.setThumbUrl(basicInfo.getString("thumb"));
+//                    release.setThumbDir("");
+//                    mUserWantlistDB.addRelease(release);
+//                }
+//                Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
+//            } else {
+//                Log.i("Wantlist Parse", "No new releases to parse to SQLite");
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void setPreviewThumbnails() {
         // Update view with retrieved Collection data
         Release currentRelease;
+        if (mCollectionLinearLayout.getChildCount() != 0) {
+            mCollectionLinearLayout.removeAllViews();
+        }
+        if (mWantlistLinearLayout.getChildCount() != 0) {
+            mWantlistLinearLayout.removeAllViews();
+        }
         for (int i = 0; i < 10; i++) {
             currentRelease = mUserCollectionDB.getReleases().get(i);
             ImageView imageView = new ImageView(getContext());
@@ -368,6 +348,7 @@ public class DashboardFragment extends Fragment {
                     @Override
                     public void onResponse(Bitmap response) {
                         mUserProfilePicture.setImageBitmap(response);
+                        setPreviewThumbnails();
                     }
                 }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
         // Add the request to the RequestQueue.
@@ -523,190 +504,190 @@ public class DashboardFragment extends Fragment {
         queue.add(stringRequest);
     }
 
-    private void FetchUserProfileJSON() {
-        String userProfileURL = "https://api.discogs.com/users/" +
-                Preferences.get(Preferences.USERNAME, "");
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, userProfileURL, null, new Response.Listener<JSONObject>() {
+//    private void FetchUserProfileJSON() {
+//        String userProfileURL = "https://api.discogs.com/users/" +
+//                Preferences.get(Preferences.USERNAME, "");
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+//                (Request.Method.GET, userProfileURL, null, new Response.Listener<JSONObject>() {
+//
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        mUserProfileJSON = response;
+//                        Log.i("Profile Request", "Received User Profile JSON");
+//                        Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
+//                        updateProfilePicture();
+//                        String collectionFirstPageURL = "https://api.discogs.com/users/" +
+//                                Preferences.get(Preferences.USERNAME, "") +
+//                                "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
+//                        FetchUserCollectionJSON(collectionFirstPageURL);
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO Auto-generated method stub
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                Long tsLong = System.currentTimeMillis() / 1000;
+//                String ts = tsLong.toString();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                params.put("Authorization", "OAuth" +
+//                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+//                        ", oauth_nonce=" + ts +
+//                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+//                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+//                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+//                        ", oauth_signature_method=PLAINTEXT" +
+//                        ", oauth_timestamp=" + ts);
+//                params.put("User-Agent", HttpConst.USER_AGENT);
+//                return params;
+//            }
+//        };
+//
+//        // Access the RequestQueue through your singleton class.
+//        queue.add(jsObjRequest);
+//    }
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        mUserProfileJSON = response;
-                        Log.i("Profile Request", "Received User Profile JSON");
-                        Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
-                        updateProfilePicture();
-                        String collectionFirstPageURL = "https://api.discogs.com/users/" +
-                                Preferences.get(Preferences.USERNAME, "") +
-                                "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
-                        FetchUserCollectionJSON(collectionFirstPageURL);
-                    }
-                }, new Response.ErrorListener() {
+//    private void FetchUserCollectionJSON(final String userCollectionURL) {
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+//                (Request.Method.GET, userCollectionURL, null, new Response.Listener<JSONObject>() {
+//
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            JSONArray currentPageArray = (JSONArray) response.get("releases");
+//                            if (mUserCollectionJSON.length() < 100) {
+//                                mUserCollectionJSON = currentPageArray;
+//                            } else {
+//                                mUserCollectionJSON = concatArray(mUserCollectionJSON, currentPageArray);
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            JSONObject paginationInfo = (JSONObject) response.get("pagination");
+//                            int currentListPage = (int) paginationInfo.get("page");
+//                            int totalListPages = (int) paginationInfo.get("pages");
+//                            if (currentListPage < totalListPages) {
+//                                String nextPageURL = userCollectionURL.replace(
+//                                        "page=" + String.valueOf(currentListPage) + "&",
+//                                        "page=" + String.valueOf(currentListPage + 1) + "&");
+//                                FetchUserCollectionJSON(nextPageURL);
+//                            } else {
+//                                Log.i("Collection Download", "All collection items have been downloaded");
+//                                String userWantlistURL = "https://api.discogs.com/users/" +
+//                                        Preferences.get(Preferences.USERNAME, "") +
+//                                        "/wants?page=1&per_page=100&sort=added&sort_order=desc";
+//                                FetchUserWantlistJSON(userWantlistURL);
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO Auto-generated method stub
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                Long tsLong = System.currentTimeMillis() / 1000;
+//                String ts = tsLong.toString();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                params.put("Authorization", "OAuth" +
+//                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+//                        ", oauth_nonce=" + ts +
+//                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+//                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+//                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+//                        ", oauth_signature_method=PLAINTEXT" +
+//                        ", oauth_timestamp=" + ts);
+//                params.put("User-Agent", HttpConst.USER_AGENT);
+//                return params;
+//            }
+//        };
+//
+//        // Access the RequestQueue through your singleton class.
+//        queue.add(jsObjRequest);
+//    }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-                        ", oauth_nonce=" + ts +
-                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-                        ", oauth_signature_method=PLAINTEXT" +
-                        ", oauth_timestamp=" + ts);
-                params.put("User-Agent", HttpConst.USER_AGENT);
-                return params;
-            }
-        };
+//    private void FetchUserWantlistJSON(final String userWantlistURL) {
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+//                (Request.Method.GET, userWantlistURL, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            JSONArray currentPageArray = (JSONArray) response.get("wants");
+//                            if (mUserWantlistJSON.length() < 100) {
+//                                mUserWantlistJSON = currentPageArray;
+//                            } else {
+//                                mUserWantlistJSON = concatArray(mUserWantlistJSON, currentPageArray);
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            JSONObject paginationInfo = (JSONObject) response.get("pagination");
+//                            int currentListPage = (int) paginationInfo.get("page");
+//                            int totalListPages = (int) paginationInfo.get("pages");
+//                            if (currentListPage < totalListPages) {
+//                                String nextPageURL = userWantlistURL.replace(
+//                                        "page=" + String.valueOf(currentListPage) + "&",
+//                                        "page=" + String.valueOf(currentListPage + 1) + "&");
+//                                FetchUserWantlistJSON(nextPageURL);
+//                            } else {
+//                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
+//                                extractCollectionData();
+//                                extractWantlistData();
+//                                setPreviewThumbnails();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO Auto-generated method stub
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                Long tsLong = System.currentTimeMillis() / 1000;
+//                String ts = tsLong.toString();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                params.put("Authorization", "OAuth" +
+//                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+//                        ", oauth_nonce=" + ts +
+//                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+//                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+//                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+//                        ", oauth_signature_method=PLAINTEXT" +
+//                        ", oauth_timestamp=" + ts);
+//                params.put("User-Agent", HttpConst.USER_AGENT);
+//                return params;
+//            }
+//        };
+//
+//        // Access the RequestQueue through your singleton class.
+//        queue.add(jsObjRequest);
+//    }
 
-        // Access the RequestQueue through your singleton class.
-        queue.add(jsObjRequest);
-    }
-
-    private void FetchUserCollectionJSON(final String userCollectionURL) {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, userCollectionURL, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray currentPageArray = (JSONArray) response.get("releases");
-                            if (mUserCollectionJSON.length() < 100) {
-                                mUserCollectionJSON = currentPageArray;
-                            } else {
-                                mUserCollectionJSON = concatArray(mUserCollectionJSON, currentPageArray);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            JSONObject paginationInfo = (JSONObject) response.get("pagination");
-                            int currentListPage = (int) paginationInfo.get("page");
-                            int totalListPages = (int) paginationInfo.get("pages");
-                            if (currentListPage < totalListPages) {
-                                String nextPageURL = userCollectionURL.replace(
-                                        "page=" + String.valueOf(currentListPage) + "&",
-                                        "page=" + String.valueOf(currentListPage + 1) + "&");
-                                FetchUserCollectionJSON(nextPageURL);
-                            } else {
-                                Log.i("Collection Download", "All collection items have been downloaded");
-                                String userWantlistURL = "https://api.discogs.com/users/" +
-                                        Preferences.get(Preferences.USERNAME, "") +
-                                        "/wants?page=1&per_page=100&sort=added&sort_order=desc";
-                                FetchUserWantlistJSON(userWantlistURL);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-                        ", oauth_nonce=" + ts +
-                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-                        ", oauth_signature_method=PLAINTEXT" +
-                        ", oauth_timestamp=" + ts);
-                params.put("User-Agent", HttpConst.USER_AGENT);
-                return params;
-            }
-        };
-
-        // Access the RequestQueue through your singleton class.
-        queue.add(jsObjRequest);
-    }
-
-    private void FetchUserWantlistJSON(final String userWantlistURL) {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, userWantlistURL, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray currentPageArray = (JSONArray) response.get("wants");
-                            if (mUserWantlistJSON.length() < 100) {
-                                mUserWantlistJSON = currentPageArray;
-                            } else {
-                                mUserWantlistJSON = concatArray(mUserWantlistJSON, currentPageArray);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            JSONObject paginationInfo = (JSONObject) response.get("pagination");
-                            int currentListPage = (int) paginationInfo.get("page");
-                            int totalListPages = (int) paginationInfo.get("pages");
-                            if (currentListPage < totalListPages) {
-                                String nextPageURL = userWantlistURL.replace(
-                                        "page=" + String.valueOf(currentListPage) + "&",
-                                        "page=" + String.valueOf(currentListPage + 1) + "&");
-                                FetchUserWantlistJSON(nextPageURL);
-                            } else {
-                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
-                                extractCollectionData();
-                                extractWantlistData();
-                                setPreviewThumbnails();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-                        ", oauth_nonce=" + ts +
-                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-                        ", oauth_signature_method=PLAINTEXT" +
-                        ", oauth_timestamp=" + ts);
-                params.put("User-Agent", HttpConst.USER_AGENT);
-                return params;
-            }
-        };
-
-        // Access the RequestQueue through your singleton class.
-        queue.add(jsObjRequest);
-    }
-
-    private JSONArray concatArray(JSONArray... arrs) throws JSONException {
-        JSONArray result = new JSONArray();
-        for (JSONArray arr : arrs) {
-            for (int i = 0; i < arr.length(); i++) {
-                result.put(arr.get(i));
-            }
-        }
-        return result;
-    }
+//    private JSONArray concatArray(JSONArray... arrs) throws JSONException {
+//        JSONArray result = new JSONArray();
+//        for (JSONArray arr : arrs) {
+//            for (int i = 0; i < arr.length(); i++) {
+//                result.put(arr.get(i));
+//            }
+//        }
+//        return result;
+//    }
 }
