@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Post Login Loading Screen
+ * Post-Login Loading Screen
  * Created by jrnel on 4/23/2017.
  */
 

@@ -89,10 +89,10 @@ public class DashboardActivity extends SingleFragmentActivity {
                 fragmentClass = WantlistListviewFragment.class;
                 break;
             case R.id.lists_fragment_nav:
-                fragmentClass = CollectionListviewFragment.class;
+                fragmentClass = UserListsFragment.class;
                 break;
             case R.id.profile_fragment_nav:
-                fragmentClass = CollectionListviewFragment.class;
+                fragmentClass = UserInfoFragment.class;
                 break;
             case R.id.logout_nav:
                 clearAllUserInfo();
