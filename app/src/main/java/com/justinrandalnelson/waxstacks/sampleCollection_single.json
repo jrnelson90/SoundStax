@@ -1,0 +1,60 @@
+{
+  "pagination": {
+    "per_page": 50,
+    "items": 145,
+    "page": 1,
+    "urls": {
+      "last": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/0\/releases?per_page=50&page=3",
+      "next": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/0\/releases?per_page=50&page=2"
+    },
+    "pages": 3
+  },
+  "releases": [
+    {
+      "instance_id": 128779198,
+      "rating": 0,
+      "basic_information": {
+        "labels": [
+          {
+            "name": "4 Men With Beards",
+            "entity_type": "1",
+            "catno": "4M 528",
+            "resource_url": "https:\/\/api.discogs.com\/labels\/36605",
+            "id": 36605,
+            "entity_type_name": "Label"
+          }
+        ],
+        "formats": [
+          {
+            "descriptions": [
+              "LP",
+              "Reissue"
+            ],
+            "text": "180 Gram",
+            "name": "Vinyl",
+            "qty": "1"
+          }
+        ],
+        "thumb": "https:\/\/api-img.discogs.com\/ugID4kXDQnz0l9vCDaKSOUQCd2g=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3185678-1319579697.jpeg.jpg",
+        "title": "DMZ",
+        "artists": [
+          {
+            "join": ",",
+            "name": "DMZ (2)",
+            "anv": "",
+            "tracks": "",
+            "role": "",
+            "resource_url": "https:\/\/api.discogs.com\/artists\/309782",
+            "id": 309782
+          }
+        ],
+        "resource_url": "https:\/\/api.discogs.com\/releases\/3185678",
+        "year": 2011,
+        "id": 3185678
+      },
+      "folder_id": 1040021,
+      "date_added": "2015-05-04T17:53:43-07:00",
+      "id": 3185678
+    }
+  ]
+}

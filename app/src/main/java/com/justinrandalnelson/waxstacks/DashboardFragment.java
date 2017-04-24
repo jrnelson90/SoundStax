@@ -276,24 +276,60 @@ public class DashboardFragment extends Fragment {
     }
 
     private void updateProfilePicture() {
-        String userPictureURL = null;
-        try {
-            userPictureURL = mUserProfileJSON.getString("avatar_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (Preferences.get(Preferences.USER_PIC_DIR, "").length() == 0) {
+            String userPictureURL = null;
+            try {
+                userPictureURL = mUserProfileJSON.getString("avatar_url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Instantiate the RequestQueue.
+            ImageRequest profilePicRequest = new ImageRequest(userPictureURL,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            // path to /data/data/yourapp/app_data/imageDir
+                            ContextWrapper cw = new ContextWrapper(getContext());
+                            String thumbDir = "ProfilePicture";
+                            File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                            // Create imageDir
+                            File filePath = null;
+                            try {
+                                filePath = new File(directory, mUserProfileJSON.getString("id") + ".jpeg");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            FileOutputStream fos = null;
+                            try {
+                                assert filePath != null;
+                                fos = new FileOutputStream(filePath);
+                                response.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fos != null) {
+                                        fos.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Preferences.set(Preferences.USER_PIC_DIR, filePath.getAbsolutePath());
+                            mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
+                                    Preferences.get(Preferences.USER_PIC_DIR, "")));
+                            setPreviewThumbnails();
+                        }
+                    }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
+            // Add the request to the RequestQueue.
+            queue.add(profilePicRequest);
+        } else {
+            mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
+                    Preferences.get(Preferences.USER_PIC_DIR, "")));
+            setPreviewThumbnails();
         }
 
-        // Instantiate the RequestQueue.
-        ImageRequest profilePicRequest = new ImageRequest(userPictureURL,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        mUserProfilePicture.setImageBitmap(response);
-                        setPreviewThumbnails();
-                    }
-                }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
-        // Add the request to the RequestQueue.
-        queue.add(profilePicRequest);
     }
 
     private void updateUsername() {

@@ -25,4 +25,13 @@
     <string name="collection_dash_label_text">Collection</string>
     <string name="user_name_default">User Name</string>
     <string name="genre_filter_label">Genre Filter</string>
+    <string name="user_info_fragment_releases_label">Releases</string>
+    <string name="user_info_fragment_rated_label">Releases Rated:</string>
+    <string name="user_info_fragment_rating_average_label">Rating Averages:</string>
+    <string name="user_info_fragment_pending_label">Pending:</string>
+    <string name="user_info_fragment_marketplace_label">Marketplace</string>
+    <string name="user_info_fragment_seller_rating_label">Seller Rating:</string>
+    <string name="user_info_fragment_buyer_rating_label">Buyer Rating:</string>
+    <string name="user_info_fragment_seller_ratings_num_label">Seller Ratings:</string>
+    <string name="user_info_fragment_buyer_ratings_num_label">Buyer Ratings:</string>
 </resources>
