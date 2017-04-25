@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -33,6 +35,10 @@ public class LoadingSplashScreen extends Activity {
     private JSONArray mUserWantlistJSON = new JSONArray();
     private JSONObject mUserProfileJSON = new JSONObject();
     private RequestQueue queue;
+    private ProgressBar loadingBar;
+    private TextView loadingText;
+    private int progressTotal = 0;
+    private int progressMade = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,8 @@ public class LoadingSplashScreen extends Activity {
         Log.i("Loading Splash", "Loading started");
         queue = Volley.newRequestQueue(getApplicationContext());
         setContentView(R.layout.activity_splash_screen);
+        loadingBar = (ProgressBar) findViewById(R.id.loading_account_progress_bar);
+        loadingText = (TextView) findViewById(R.id.loading_account_text_view);
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             mUserCollectionDB = UserCollectionDB.get(getApplicationContext());
             mUserWantlistDB = UserWantlistDB.get(getApplicationContext());
@@ -117,13 +125,43 @@ public class LoadingSplashScreen extends Activity {
                     @Override
                     public void onResponse(JSONObject response) {
                         mUserProfileJSON = response;
-                        Log.i("Profile Request", "Received User Profile JSON");
-                        Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
-//                        updateProfilePicture();
-                        String collectionFirstPageURL = "https://api.discogs.com/users/" +
-                                Preferences.get(Preferences.USERNAME, "") +
-                                "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
-                        FetchUserCollectionJSON(collectionFirstPageURL);
+                        int wantlistNum = 0;
+                        int collectionNum = 0;
+                        try {
+                            wantlistNum = mUserProfileJSON.getInt("num_wantlist");
+                            collectionNum = mUserProfileJSON.getInt("num_collection");
+                            progressTotal = 1 + ((collectionNum / 100) + 1) + ((wantlistNum / 100) + 1)
+                                    + 1 + 1;
+//                            if(collectionNum < 10){
+//                                progressTotal += collectionNum;
+//                            } else {
+//                                progressTotal += 10;
+//                            }
+//
+//                            if(wantlistNum < 10) {
+//                                progressTotal += wantlistNum;
+//                            } else {
+//                                progressTotal += 10;
+//                            }
+                            Log.i("Profile Request", "Received User Profile JSON");
+                            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
+
+
+//                            String loadedProfileMessage =
+//                                    "Loaded Profile for " + Preferences.get(Preferences.USERNAME, "");
+//                            loadingText.setText(loadedProfileMessage);
+                            loadingBar.setMax(progressTotal);
+                            loadingBar.setProgress(++progressMade);
+                            String collectionFirstPageURL = "https://api.discogs.com/users/" +
+                                    Preferences.get(Preferences.USERNAME, "") +
+                                    "/collection/folders/0/releases?page=1&per_page=100&sort=added&sort_order=desc";
+                            FetchUserCollectionJSON(collectionFirstPageURL);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 }, new Response.ErrorListener() {
 
@@ -168,13 +206,15 @@ public class LoadingSplashScreen extends Activity {
                             } else {
                                 mUserCollectionJSON = concatArray(mUserCollectionJSON, currentPageArray);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        try {
+
                             JSONObject paginationInfo = (JSONObject) response.get("pagination");
                             int currentListPage = (int) paginationInfo.get("page");
                             int totalListPages = (int) paginationInfo.get("pages");
+//                            String loadedCollectionMessage =
+//                                    "Loaded Collection Page " + String.valueOf(currentListPage)
+//                                            + " of " + String.valueOf(totalListPages);
+//                            loadingText.setText(loadedCollectionMessage);
+                            loadingBar.setProgress(++progressMade);
                             if (currentListPage < totalListPages) {
                                 String nextPageURL = userCollectionURL.replace(
                                         "page=" + String.valueOf(currentListPage) + "&",
@@ -240,6 +280,11 @@ public class LoadingSplashScreen extends Activity {
                             JSONObject paginationInfo = (JSONObject) response.get("pagination");
                             int currentListPage = (int) paginationInfo.get("page");
                             int totalListPages = (int) paginationInfo.get("pages");
+//                            String loadedWantlistMessage =
+//                                    "Loaded Wantlist Page " + String.valueOf(currentListPage)
+//                                            + " of " + String.valueOf(totalListPages);
+//                            loadingText.setText(loadedWantlistMessage);
+                            loadingBar.setProgress(++progressMade);
                             if (currentListPage < totalListPages) {
                                 String nextPageURL = userWantlistURL.replace(
                                         "page=" + String.valueOf(currentListPage) + "&",
@@ -293,6 +338,7 @@ public class LoadingSplashScreen extends Activity {
     private void extractCollectionData() {
         try {
             if (mUserCollectionJSON.length() != mUserCollectionDB.getReleases().size()) {
+                loadingBar.setProgress(++progressMade);
                 for (int i = 0; i < mUserCollectionJSON.length(); i++) {
                     JSONObject currentRelease = (JSONObject) mUserCollectionJSON.get(i);
                     JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
@@ -308,6 +354,10 @@ public class LoadingSplashScreen extends Activity {
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserCollectionDB.addRelease(release);
+//                    String parsedCollectionItemMessage =
+//                            "Parsed Collection Item " + String.valueOf(i)
+//                                    + " of " + String.valueOf(mUserCollectionJSON.length());
+//                    loadingText.setText(parsedCollectionItemMessage);
                 }
                 Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
             } else {
@@ -321,6 +371,7 @@ public class LoadingSplashScreen extends Activity {
     private void extractWantlistData() {
         try {
             if (mUserWantlistJSON.length() != mUserWantlistDB.getReleases().size()) {
+                loadingBar.setProgress(++progressMade);
                 for (int i = 0; i < mUserWantlistJSON.length(); i++) {
                     JSONObject currentRelease = (JSONObject) mUserWantlistJSON.get(i);
                     JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
@@ -336,6 +387,10 @@ public class LoadingSplashScreen extends Activity {
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserWantlistDB.addRelease(release);
+//                    String parsedWantlistItemMessage =
+//                            "Parsed Wantlist Item " + String.valueOf(i)
+//                                    + " of " + String.valueOf(mUserWantlistJSON.length());
+//                    loadingText.setText(parsedWantlistItemMessage);
                 }
                 Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
             } else {

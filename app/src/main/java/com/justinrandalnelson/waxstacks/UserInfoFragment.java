@@ -56,6 +56,15 @@ public class UserInfoFragment extends Fragment {
             e.printStackTrace();
         }
 
+        TextView registeredDateLabel = (TextView) view.findViewById(R.id.user_registered_label);
+        try {
+            String[] dateArray = mUserProfileJSON.getString("registered").split("T")[0].split("-");
+            String registeredDate = dateArray[1] + "/" + dateArray[2] + "/" + dateArray[0];
+            registeredDateLabel.append(" " + registeredDate);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         TextView inCollectionLabel = (TextView) view.findViewById(R.id.user_collection_count_label);
         try {
             inCollectionLabel.append(" " + mUserProfileJSON.getString("num_collection"));

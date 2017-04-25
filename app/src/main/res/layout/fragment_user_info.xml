@@ -23,8 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="2dp"
             android:layout_toRightOf="@id/user_pic_info_fragment"
             android:padding="4dp"
@@ -33,10 +33,21 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/user_collection_count_label"
+            android:id="@+id/user_registered_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_name_infoFragment_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="Registered:"
+            />
+
+        <TextView
+            android:id="@+id/user_collection_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_registered_label"
             android:layout_margin="4dp"
             android:layout_toRightOf="@id/user_pic_info_fragment"
             android:padding="4dp"

@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/loading_account_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -18,24 +18,24 @@
             android:layout_gravity="center_horizontal"
             android:src="@mipmap/disc_vinyl_icon"/>
 
+        <ProgressBar
+            android:id="@+id/loading_account_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loading_account_image_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"/>
+
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/loading_account_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/imageView"
-            android:layout_below="@+id/progressBar"
+            android:layout_below="@+id/loading_account_progress_bar"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
             android:text="Loading account info"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/imageView"
-            android:layout_alignStart="@+id/imageView"
-            android:layout_below="@+id/imageView"
-            android:layout_marginTop="8dp"/>
 
     </RelativeLayout>
 
