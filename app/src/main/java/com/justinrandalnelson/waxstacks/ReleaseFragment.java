@@ -132,7 +132,6 @@ public class ReleaseFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
     }
 
     @Override

@@ -106,11 +106,7 @@ public class WantlistListviewFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_release:
-                Release release = new Release();
-                UserWantlistDB.get(getActivity()).addRelease(release);
-                Intent intent = ReleaseActivity.newIntent(getActivity(), release.getId(), "Wantlist");
-                startActivity(intent);
+            case R.id.menu_item_search:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
