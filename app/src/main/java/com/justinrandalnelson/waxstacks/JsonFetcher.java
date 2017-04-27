@@ -2,6 +2,8 @@ package com.justinrandalnelson.waxstacks;
 
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 class JsonFetcher {
     private static final String TAG = "JsonFetcher";
+    private RequestQueue queue;
     private static String getResultStringFromDiscogs(String url) throws IOException {
 
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
@@ -90,13 +93,13 @@ class JsonFetcher {
         return jsonBody;
     }
 
-    JSONObject fetchReleaseRelease(String _releaseReleaseName) {
+    JSONObject fetchRelease(String _releaseName) {
         JSONObject jsonBody = null;
 
         //Parse search into a URL friendly encoding.
         String release_name_encoded = "";
         try {
-            release_name_encoded = URLEncoder.encode(_releaseReleaseName, "UTF-8");
+            release_name_encoded = URLEncoder.encode(_releaseName, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getMessage());
         }

@@ -12,6 +12,12 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".DashboardActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
 
         <activity android:name=".LoginSplashActivity">
@@ -25,6 +31,12 @@
         <activity
             android:name="com.justinrandalnelson.waxstacks.ReleaseActivity"
             android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
 
         <activity
