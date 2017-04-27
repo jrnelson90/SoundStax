@@ -144,6 +144,8 @@ public class DashboardFragment extends Fragment {
                     }
                 }
             }
+
+            updateProfilePicture();
         } else {
             Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
             Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
@@ -192,7 +194,6 @@ public class DashboardFragment extends Fragment {
                             mUserInfoJSON = response;
                             updateUsername();
                             Log.i("User Profile", "Already loaded user");
-                            updateProfilePicture();
                         }
                     }, new Response.ErrorListener() {
 

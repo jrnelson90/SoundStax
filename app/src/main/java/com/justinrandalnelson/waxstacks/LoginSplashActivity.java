@@ -30,7 +30,6 @@ import java.util.Map;
  */
 
 public class LoginSplashActivity extends Activity {
-    static final int LOGIN_REQUEST = 40;
     private RequestQueue queue;
     private BroadcastReceiver broadcast_reciever;
 
