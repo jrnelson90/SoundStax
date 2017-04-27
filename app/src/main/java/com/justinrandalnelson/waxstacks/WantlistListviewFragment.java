@@ -125,41 +125,6 @@ public class WantlistListviewFragment extends Fragment {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_search:
-//                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                    @Override
-//                    public boolean onQueryTextChange(String newText) {
-//                        // your text view here
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onQueryTextSubmit(String query) {
-//                        fetchQuery(query);
-//                        return true;
-//                    }
-//                });
-//                SearchResultsActivity searchResultsFragment = new SearchResultsActivity();
-////                FragmentTransaction ft = getFragmentManager().beginTransaction();
-////                ft.replace(R.id.content_frame, searchResultsFragment); // f1_container is your FrameLayout container
-////                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-////                ft.addToBackStack(null);
-////                ft.commit();
-//
-//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                fragmentManager.beginTransaction().replace(R.id.content_frame, searchResultsFragment)
-//                        .addToBackStack(null).commit();
-                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
-                startActivity(i);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void updateUI() {
 //        UserWantlistDB releaseBase = UserWantlistDB.get(getActivity());
         List<Release> releases = mUserWantlistDB.getReleases();
