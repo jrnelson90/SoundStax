@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">Wax Stacks</string>
-    <string name="album_title_hint">Enter album title.</string>
-    <string name="album_title_label">Title</string>
+    <string name="release_title_hint">Enter release title.</string>
+    <string name="release_title_label">Title</string>
     <string name="ablum_year_label">Release Year</string>
-    <string name="album_year_hint">Enter album realease year.</string>
+    <string name="release_year_hint">Enter release realease year.</string>
     <string name="ablum_owned_hint">Owned</string>
     <string name="ablum_artist_label">Artist</string>
-    <string name="album_artist_hint">Enter album artist.</string>
-    <string name="album_genre_label">Genre</string>
-    <string name="album_genre_hint">Enter album genre</string>
-    <string name="new_album">New Album</string>
-    <string name="delete_album">Delete Album</string>
+    <string name="release_artist_hint">Enter release artist.</string>
+    <string name="release_genre_label">Genre</string>
+    <string name="release_genre_hint">Enter release genre</string>
+    <string name="new_release">New Release</string>
+    <string name="delete_release">Delete Release</string>
     <string name="sign_in_button_label">Log In to Discogs</string>
     <string name="test_user_button_label">Test User</string>
     <string name="log_out_button_label">Log Out</string>
@@ -25,4 +25,13 @@
     <string name="collection_dash_label_text">Collection</string>
     <string name="user_name_default">User Name</string>
     <string name="genre_filter_label">Genre Filter</string>
+    <string name="user_info_fragment_releases_label">Releases</string>
+    <string name="user_info_fragment_rated_label">Releases Rated:</string>
+    <string name="user_info_fragment_rating_average_label">Rating Averages:</string>
+    <string name="user_info_fragment_pending_label">Pending:</string>
+    <string name="user_info_fragment_marketplace_label">Marketplace</string>
+    <string name="user_info_fragment_seller_rating_label">Seller Rating:</string>
+    <string name="user_info_fragment_buyer_rating_label">Buyer Rating:</string>
+    <string name="user_info_fragment_seller_ratings_num_label">Seller Ratings:</string>
+    <string name="user_info_fragment_buyer_ratings_num_label">Buyer Ratings:</string>
 </resources>

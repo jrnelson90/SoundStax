@@ -5,39 +5,34 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Dashboard fragment
@@ -47,109 +42,144 @@ import javax.net.ssl.HttpsURLConnection;
 public class DashboardFragment extends Fragment {
     private UserCollectionDB mUserCollectionDB;
     private UserWantlistDB mUserWantlistDB;
-    private JSONObject mUserInfoJSON = new JSONObject();
-    private JSONObject mUserCollectionJSON = new JSONObject();
-    private JSONObject mUserWantlistJSON = new JSONObject();
     private JSONObject mUserProfileJSON = new JSONObject();
     private LinearLayout mCollectionLinearLayout;
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
-    private ArrayList<Bitmap> mAlbumBitmaps = new ArrayList<>();
-    private ArrayList<ImageView> mCollectionPreview = new ArrayList<>();
-    private ArrayList<ImageView> mWantlistPreview = new ArrayList<>();
+    private RequestQueue queue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(getContext()));
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             mUserCollectionDB = UserCollectionDB.get(getActivity());
             mUserWantlistDB = UserWantlistDB.get(getActivity());
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             try {
                 mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
-                Log.i("Profile reloaded", "Reloaded " + mUserProfileJSON.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        queue = Volley.newRequestQueue(getContext());
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+//            try {
+//                mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     @Override
     public void onPause() {
         super.onPause();
-//        Bundle bundle = new Bundle();
-//        bundle.putString(JSON_STRING,json.toString());
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         boolean oauthVerified = checkAccessToken();
-        View view;
-        if (!oauthVerified) {
-            view = inflater.inflate(R.layout.fragment_login_splash, container, false);
-
-            Button signInButton = (Button) view.findViewById(R.id.sign_in_button);
-            signInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ConnectivityManager connectivityManager = (ConnectivityManager)
-                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (connectivityManager.getActiveNetworkInfo() != null
-                            && connectivityManager.getActiveNetworkInfo().isAvailable()
-                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
-                        new FetchRequestToken().execute();
-                    }
-                }
-            });
-        } else {
+        View view = null;
+        if (oauthVerified) {
             view = inflater.inflate(R.layout.fragment_dashboard, container, false);
             mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
 
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
 
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
-//            if(mUserCollectionDB.getAlbums().size() == 0) {
-            for (int i = 0; i < 10; i++) {
-                ImageView imageView = new ImageView(getContext());
-                imageView.setId(i);
-                imageView.setPadding(2, 2, 2, 2);
-                imageView.setImageBitmap(BitmapFactory.decodeResource(
-                        getResources(), R.mipmap.disc_vinyl_icon));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                mCollectionPreview.add(imageView);
-                mCollectionLinearLayout.addView(imageView);
+            if (mCollectionLinearLayout.getChildCount() != 0) {
+                mCollectionLinearLayout.removeAllViews();
             }
-//            } else {
-//                for (int i = 0; i < 10; i++) {
-//
-//                    mCollectionPreview.get(i);
-//                }
-//            }
-
+            if (mUserCollectionDB != null && mUserCollectionDB.getReleases().size() > 10) {
+                for (int i = 0; i < 10; i++) {
+                    final Release currentRelease = mUserCollectionDB.getReleases().get(i);
+                    ImageView imageView = new ImageView(getContext());
+                    imageView.setPadding(2, 2, 2, 2);
+                    LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+                    imageView.setLayoutParams(parms);
+                    if (currentRelease.getThumbDir().equals("")) {
+                        DownloadPreviewThumbnail("Collection", i, imageView);
+                    } else {
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        currentRelease.getId(), "Collection");
+                                startActivity(intent);
+                            }
+                        });
+                        mCollectionLinearLayout.addView(imageView);
+                    }
+                }
+            }
 
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
-            for (int i = 0; i < 10; i++) {
-                ImageView imageView = new ImageView(getContext());
-                imageView.setId(i);
-                imageView.setPadding(2, 2, 2, 2);
-                imageView.setImageBitmap(BitmapFactory.decodeResource(
-                        getResources(), R.mipmap.disc_vinyl_icon));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                mWantlistPreview.add(imageView);
-                mWantlistLinearLayout.addView(imageView);
+            if (mWantlistLinearLayout.getChildCount() != 0) {
+                mWantlistLinearLayout.removeAllViews();
             }
-            // Inflate dashboard view
+            if (mUserWantlistDB != null && mUserWantlistDB.getReleases().size() > 10) {
+                for (int i = 0; i < 10; i++) {
+                    final Release currentRelease = mUserWantlistDB.getReleases().get(i);
+                    ImageView imageView = new ImageView(getContext());
+                    imageView.setPadding(2, 2, 2, 2);
+                    LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+                    imageView.setLayoutParams(parms);
+                    if (currentRelease.getThumbDir().equals("")) {
+                        DownloadPreviewThumbnail("Wantlist", i, imageView);
+                    } else {
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        currentRelease.getId(), "Wantlist");
+                                startActivity(intent);
+                            }
+                        });
+                        mWantlistLinearLayout.addView(imageView);
+                    }
+                }
+            }
+            updateProfilePicture();
+        } else {
+            Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+            Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+            Preferences.set(Preferences.USERNAME, "");
+            Preferences.set(Preferences.USER_ID, "");
+            Preferences.set(Preferences.USER_PROFILE, "");
+            Preferences.set(Preferences.USER_PIC_DIR, "");
+
+            File collectionImageDir =
+                    new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
+            if (collectionImageDir.isDirectory()) {
+                String[] children = collectionImageDir.list();
+                for (String aChildren : children) {
+                    File currentImage = new File(collectionImageDir, aChildren);
+                    currentImage.delete();
+                }
+            }
+            File wantlistImageDir =
+                    new File("/data/user/0/com.justinrandalnelson.waxstacks/app_WantlistCovers");
+            if (wantlistImageDir.isDirectory()) {
+                String[] children = wantlistImageDir.list();
+                for (String aChildren : children) {
+                    File currentImage = new File(collectionImageDir, aChildren);
+                    currentImage.delete();
+                }
+            }
+            mUserCollectionDB.deleteAllReleases();
+            mUserWantlistDB.deleteAllReleases();
+            Intent i = new Intent(getActivity(), LoginSplashActivity.class);
+            startActivity(i);
+            getActivity().finish();
         }
         return view;
     }
@@ -158,270 +188,29 @@ public class DashboardFragment extends Fragment {
         if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() == 0) {
             return false;
         } else {
-            FetchUserIdentityJSON checkUser = new FetchUserIdentityJSON();
-            checkUser.execute();
-        }
-        return true;
-    }
+            String userIdentityURL = "https://api.discogs.com/oauth/identity";
+            JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                    (Request.Method.GET, userIdentityURL, null, new Response.Listener<JSONObject>() {
 
-    private void extractCollectionData() {
-        try {
-            JSONArray UserCollectionArray = (JSONArray) mUserCollectionJSON.get("releases");
-            Log.i("Collection Parse", "Release array created");
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            updateUsername();
+                            Log.i("User Profile", "Already loaded user");
+                        }
+                    }, new Response.ErrorListener() {
 
-            if (UserCollectionArray.length() != mUserCollectionDB.getAlbums().size()) {
-                for (int i = 0; i < UserCollectionArray.length(); i++) {
-                    JSONObject currentAlbum = (JSONObject) UserCollectionArray.get(i);
-                    Log.i("Collection Parse", "Parsing album: " + String.valueOf(i + 1));
-                    JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    String albumTitle = basicInfo.getString("title");
-                    String albumYear = basicInfo.getString("year");
-                    String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    Album album = new Album();
-                    album.setArtist(albumArtist);
-                    album.setYear(albumYear);
-                    album.setTitle(albumTitle);
-                    album.setThumbUrl(basicInfo.getString("thumb"));
-                    album.setThumbDir("");
-                    mUserCollectionDB.addAlbum(album);
-                }
-                Log.i("Collection Parse", "All albums in collection have been parsed to SQLite");
-            } else {
-                Log.i("Collection Parse", "No new albums to parse to SQLite");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void extractWantlistData() {
-        try {
-            JSONArray UserWantlistArray = (JSONArray) mUserWantlistJSON.get("wants");
-            Log.i("Wantlist Parse", "Release array created");
-
-            if (UserWantlistArray.length() != mUserWantlistDB.getAlbums().size()) {
-                for (int i = 0; i < UserWantlistArray.length(); i++) {
-                    JSONObject currentAlbum = (JSONObject) UserWantlistArray.get(i);
-                    Log.i("Wantlist Parse", "Parsing album: " + String.valueOf(i + 1));
-                    JSONObject basicInfo = currentAlbum.getJSONObject("basic_information");
-                    String albumTitle = basicInfo.getString("title");
-                    String albumYear = basicInfo.getString("year");
-                    String albumArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-                    Album album = new Album();
-                    album.setArtist(albumArtist);
-                    album.setYear(albumYear);
-                    album.setTitle(albumTitle);
-                    album.setThumbUrl(basicInfo.getString("thumb"));
-                    album.setThumbDir("");
-                    mUserWantlistDB.addAlbum(album);
-                }
-                Log.i("Wantlist Parse", "All albums in wantlist have been parsed to SQLite");
-            } else {
-                Log.i("Wantlist Parse", "No new albums to parse to SQLite");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void downloadListThumbnails() {
-        // Update view with retrieved Collection data
-        if (mUserCollectionDB.getAlbums().get(0).getThumbDir().equals("")) {
-            new ThumbDownloader().execute("Collection");
-        }
-        if (mUserWantlistDB.getAlbums().get(0).getThumbDir().equals("")) {
-            new ThumbDownloader().execute("Wantlist");
-        }
-    }
-
-    private void updateProfilePicture() {
-        String userPictureURL = null;
-        try {
-            userPictureURL = mUserProfileJSON.getString("avatar_url");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Glide.with(getContext())
-                .load(userPictureURL)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(true)
-                .fitCenter()
-                .placeholder(R.drawable.loading)
-                .into(mUserProfilePicture);
-    }
-
-    private void updateUsername() {
-        mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
-    }
-
-    private class FetchRequestToken extends AsyncTask<Void, Void, String[]> {
-        @Override
-        protected String[] doInBackground(Void... params) {
-            return new OauthTokenFetcher().fetchRequestToken();
-        }
-
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 3 && tokenArray[0] != null) {
-                OauthVerifyTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
-                OauthVerifyTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
-
-                String authUrl = null;
-                if (OauthVerifyTokens.getOauthRequestToken() != null) {
-                    authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
-                            OauthVerifyTokens.getOauthRequestToken();
-                    Log.i("Auth URL", authUrl);
-                } else {
-                    Log.i("Auth Dialog", "No oauth request token values populated");
-                }
-
-                if (authUrl != null) {
-                    Uri authUri = Uri.parse(authUrl);
-                    Intent i = AuthPageActivity.newIntent(getActivity(), authUri);
-                    startActivity(i);
-                }
-            }
-        }
-    }
-
-    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserIdentity();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserInfoJSON = jsonObject;
-
-            try {
-                String usernameString = mUserInfoJSON.getString("username");
-                Preferences.set(Preferences.USERNAME, usernameString);
-                Log.i("Set Username Pref:", Preferences.get(Preferences.USERNAME, ""));
-                String userIdString = mUserInfoJSON.getString("id");
-                Preferences.set(Preferences.USER_ID, userIdString);
-                Log.i("Set User ID Pref:", Preferences.get(Preferences.USER_ID, ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            updateUsername();
-
-            if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() != 0 &&
-                    Preferences.get(Preferences.USER_PROFILE, "").length() == 0) {
-                mUserCollectionDB = UserCollectionDB.get(getActivity());
-                mUserWantlistDB = UserWantlistDB.get(getActivity());
-                Toast.makeText(getContext(),
-                        "Logged in as " + Preferences.get(Preferences.USERNAME, "")
-                        , Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            if (mUserProfileJSON.length() == 0) {
-                new FetchUserProfileJSON().execute();
-            } else {
-                Log.i("User Profile", "Already loaded user");
-                updateProfilePicture();
-                new FetchUserCollectionJSON().execute();
-            }
-        }
-    }
-
-    private class FetchUserProfileJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserProfile();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserProfileJSON = jsonObject;
-            Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
-            updateProfilePicture();
-            new FetchUserCollectionJSON().execute();
-        }
-    }
-
-//    private class FetchUserProilePicture extends AsyncTask<Void, Void, Bitmap> {
-//        @Override
-//        protected Bitmap doInBackground(Void... params) {
-//            String profilePicUrl = null;
-//            try {
-//                profilePicUrl = mUserProfileJSON.getString("avatar_url");
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return new JsonFetcher().fetchUserProfilePicture(profilePicUrl);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Bitmap _userProfilePicBitmap) {
-////            updateProfilePicture(_userProfilePicBitmap);
-////            new FetchUserCollectionJSON().execute();
-//        }
-//    }
-
-    private class FetchUserCollectionJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserCollection();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserCollectionJSON = jsonObject;
-            new FetchUserWantlistJSON().execute();
-        }
-    }
-
-    private class FetchUserWantlistJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserWantlist();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserWantlistJSON = jsonObject;
-            extractCollectionData();
-            extractWantlistData();
-            downloadListThumbnails();
-        }
-    }
-
-    private class ThumbDownloader extends AsyncTask<String, Void, Boolean> {
-        private static final String TAG = "ThumbDownloader";
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String thumbDbName = params[0];
-            int downloadListSize = 0;
-            if (thumbDbName.equals("Collection")) {
-                downloadListSize = mUserCollectionDB.getAlbums().size();
-            } else if (thumbDbName.equals("Wantlist")) {
-                downloadListSize = mUserWantlistDB.getAlbums().size();
-            }
-
-            for (int i = 0; i < downloadListSize; i++) {
-                Bitmap albumCoverBitmap;
-                try {
-
-                    String thumbURL = "";
-                    if (thumbDbName.equals("Collection")) {
-                        thumbURL = mUserCollectionDB.getAlbums().get(i).getThumbUrl();
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        thumbURL = mUserWantlistDB.getAlbums().get(i).getThumbUrl();
-                    }
-
-                    HttpsURLConnection connection =
-                            (HttpsURLConnection) new URL(thumbURL).openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(5000);
-                    connection.setReadTimeout(5000);
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO Auto-generated method stub
+                        }
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
                     Long tsLong = System.currentTimeMillis() / 1000;
                     String ts = tsLong.toString();
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setRequestProperty("Authorization", "OAuth" +
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    params.put("Authorization", "OAuth" +
                             "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
                             ", oauth_nonce=" + ts +
                             ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
@@ -429,95 +218,222 @@ public class DashboardFragment extends Fragment {
                             Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                             ", oauth_signature_method=PLAINTEXT" +
                             ", oauth_timestamp=" + ts);
-                    connection.setRequestProperty("User-Agent", HttpConst.USER_AGENT);
-
-                    if (connection.getResponseCode() == 200) {
-//                        Log.i("Connection Type", "Album Cover Image URL Success");
-//                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
-//                        Log.i("Connection Message", connection.getResponseMessage());
-                        // Success
-                    } else {
-                        // Error handling code goes here
-                        Log.i("Connection Type", "Album Cover Image URL Failed");
-                        Log.i("Connection Code", String.valueOf(connection.getResponseCode()));
-                        Log.i("Connection Message", connection.getResponseMessage());
-                        return false;
-                    }
-
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    InputStream in = connection.getInputStream();
-                    int bytesRead;
-                    byte[] buffer = new byte[51200];
-
-                    while ((bytesRead = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                    out.close();
-                    connection.disconnect();
-
-                    albumCoverBitmap = BitmapFactory.
-                            decodeByteArray(out.toByteArray(), 0, out.toByteArray().length);
-//                    Log.i(TAG, "Received Album Cover Image: Bitmap created");
-                } catch (IOException ioe) {
-                    Log.e(TAG, "Error Downloading Album Cover Image: ", ioe);
-                    return false;
+                    params.put("User-Agent", HttpConst.USER_AGENT);
+                    return params;
                 }
+            };
 
-                try {
-                    // path to /data/data/yourapp/app_data/imageDir
-                    ContextWrapper cw = new ContextWrapper(getContext());
+            // Access the RequestQueue through your singleton class.
+            queue.add(jsObjRequest);
+        }
+        return true;
+    }
 
-                    String thumbDir = "";
-                    if (thumbDbName.equals("Collection")) {
-                        thumbDir = "CollectionCovers";
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        thumbDir = "WantlistCovers";
+    private void setPreviewThumbnails() {
+        // Update view with retrieved Collection data
+        Release currentRelease;
+        if (mCollectionLinearLayout.getChildCount() != 0) {
+            mCollectionLinearLayout.removeAllViews();
+        }
+        if (mWantlistLinearLayout.getChildCount() != 0) {
+            mWantlistLinearLayout.removeAllViews();
+        }
+        for (int i = 0; i < 10; i++) {
+            currentRelease = mUserCollectionDB.getReleases().get(i);
+            ImageView imageView = new ImageView(getContext());
+            imageView.setPadding(2, 2, 2, 2);
+            LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+            imageView.setLayoutParams(parms);
+
+            if (currentRelease.getThumbDir().equals("")) {
+                DownloadPreviewThumbnail("Collection", i, imageView);
+            } else {
+                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                final Release finalCurrentRelease = currentRelease;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                finalCurrentRelease.getId(), "Collection");
+                        startActivity(intent);
                     }
+                });
+                mCollectionLinearLayout.addView(imageView);
+            }
+        }
+        for (int i = 0; i < 10; i++) {
+            currentRelease = mUserWantlistDB.getReleases().get(i);
+            ImageView imageView = new ImageView(getContext());
+            imageView.setPadding(2, 2, 2, 2);
+            LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+            imageView.setLayoutParams(parms);
+            if (currentRelease.getThumbDir().equals("")) {
+                DownloadPreviewThumbnail("Wantlist", i, imageView);
+            } else {
+                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                final Release finalCurrentRelease = currentRelease;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                finalCurrentRelease.getId(), "Wantlist");
+                        startActivity(intent);
+                    }
+                });
+                mWantlistLinearLayout.addView(imageView);
+            }
+        }
 
-                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
-                    // Create imageDir
-                    File filePath = new File(directory, "release_cover" + i + ".jpeg");
+    }
 
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(filePath);
-                        albumCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        return false;
-                    } finally {
+    private void updateProfilePicture() {
+        if (Preferences.get(Preferences.USER_PIC_DIR, "").length() == 0) {
+            String userPictureURL = null;
+            try {
+                userPictureURL = mUserProfileJSON.getString("avatar_url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Instantiate the RequestQueue.
+            ImageRequest profilePicRequest = new ImageRequest(userPictureURL,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            // path to /data/data/yourapp/app_data/imageDir
+                            ContextWrapper cw = new ContextWrapper(getContext());
+                            String thumbDir = "ProfilePicture";
+                            File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                            // Create imageDir
+                            File filePath = null;
+                            try {
+                                filePath = new File(directory, mUserProfileJSON.getString("id") + ".jpeg");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            FileOutputStream fos = null;
+                            try {
+                                assert filePath != null;
+                                fos = new FileOutputStream(filePath);
+                                response.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fos != null) {
+                                        fos.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Preferences.set(Preferences.USER_PIC_DIR, filePath.getAbsolutePath());
+                            mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
+                                    Preferences.get(Preferences.USER_PIC_DIR, "")));
+                            setPreviewThumbnails();
+                        }
+                    }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
+            // Add the request to the RequestQueue.
+            queue.add(profilePicRequest);
+        } else {
+            mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
+                    Preferences.get(Preferences.USER_PIC_DIR, "")));
+            setPreviewThumbnails();
+        }
+
+    }
+
+    private void updateUsername() {
+        mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
+    }
+
+    private void DownloadPreviewThumbnail(final String _thumbDbName, final int dbIndex,
+                                          final ImageView imageView) {
+        long startTime = System.currentTimeMillis();
+        String thumbURL = "";
+        if (_thumbDbName.equals("Collection")) {
+            thumbURL = mUserCollectionDB.getReleases().get(dbIndex).getThumbUrl();
+        } else if (_thumbDbName.equals("Wantlist")) {
+            thumbURL = mUserWantlistDB.getReleases().get(dbIndex).getThumbUrl();
+        }
+
+        // Instantiate the RequestQueue.
+        ImageRequest thumbRequest = new ImageRequest(thumbURL,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap releaseCoverBitmap) {
                         try {
-                            fos.close();
-                        } catch (IOException e) {
+                            // path to /data/data/yourapp/app_data/imageDir
+                            ContextWrapper cw = new ContextWrapper(getContext());
+
+                            String thumbDir = "";
+                            if (_thumbDbName.equals("Collection")) {
+                                thumbDir = "CollectionCovers";
+                            } else if (_thumbDbName.equals("Wantlist")) {
+                                thumbDir = "WantlistCovers";
+                            }
+
+                            File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                            // Create imageDir
+                            File filePath = new File(directory, "release_cover" + dbIndex + ".jpeg");
+
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(filePath);
+                                releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fos != null) {
+                                        fos.close();
+                                }
+                                } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                            final Release currentRelease;
+                            if (_thumbDbName.equals("Collection")) {
+                                currentRelease = mUserCollectionDB.getReleases().get(dbIndex);
+                                currentRelease.setThumbDir(filePath.getAbsolutePath());
+                                mUserCollectionDB.updateRelease(currentRelease);
+                                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                                currentRelease.getId(), "Collection");
+                                        startActivity(intent);
+                                    }
+                                });
+                                mCollectionLinearLayout.addView(imageView);
+                            } else if (_thumbDbName.equals("Wantlist")) {
+                                currentRelease = mUserWantlistDB.getReleases().get(dbIndex);
+                                currentRelease.setThumbDir(filePath.getAbsolutePath());
+                                mUserWantlistDB.updateRelease(currentRelease);
+                                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                                currentRelease.getId(), "Wantlist");
+                                        startActivity(intent);
+                                    }
+                                });
+                                mWantlistLinearLayout.addView(imageView);
+                            }
+                        } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
                     }
-//                    Log.i("Writing image", "Image success");
-                    Album currentAlbum = null;
-                    if (thumbDbName.equals("Collection")) {
-                        currentAlbum = mUserCollectionDB.getAlbums().get(i);
-                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                        mUserCollectionDB.updateAlbum(currentAlbum);
-                    } else if (thumbDbName.equals("Wantlist")) {
-                        currentAlbum = mUserWantlistDB.getAlbums().get(i);
-                        currentAlbum.setThumbDir(filePath.getAbsolutePath());
-                        mUserWantlistDB.updateAlbum(currentAlbum);
-                    }
-                    Log.i("DB Thumb Directory", currentAlbum.getThumbDir());
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-            // wait for each item
-            Log.i("ThumbDownloader", "Grabbed all " + thumbDbName + " thumbnail files");
-            return true;
-        }
+                }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
+        // Add the request to the RequestQueue.
+        queue.add(thumbRequest);
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            //
-        }
+        // wait for each item
+        Log.i("DownloadThumbnail", "Grabbed " + _thumbDbName + " thumbnail file " + dbIndex);
+        Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
     }
+
 
 }

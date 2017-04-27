@@ -1,5 +1,6 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,7 +11,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+
 /**
+ * Dashboard Activity
  * Created by jrnel on 4/14/2017.
  */
 
@@ -21,6 +25,7 @@ public class DashboardActivity extends SingleFragmentActivity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private boolean logout = false;
 
     @Override
     protected Fragment createFragment() {
@@ -74,7 +79,7 @@ public class DashboardActivity extends SingleFragmentActivity {
     private void selectItem(MenuItem menuItem) {
         // update the main content by replacing fragments
         Fragment fragment = null;
-        Class fragmentClass;
+        Class fragmentClass = null;
         switch (menuItem.getItemId()) {
             case R.id.dashboard_fragment_nav:
                 fragmentClass = DashboardFragment.class;
@@ -86,41 +91,70 @@ public class DashboardActivity extends SingleFragmentActivity {
                 fragmentClass = WantlistListviewFragment.class;
                 break;
             case R.id.lists_fragment_nav:
-                fragmentClass = CollectionListviewFragment.class;
+                fragmentClass = UserListsFragment.class;
                 break;
             case R.id.profile_fragment_nav:
-                fragmentClass = CollectionListviewFragment.class;
+                fragmentClass = UserInfoFragment.class;
                 break;
             case R.id.logout_nav:
-                Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
-                Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
-                Preferences.set(Preferences.USERNAME, "");
-                Preferences.set(Preferences.USER_ID, "");
-                Preferences.set(Preferences.USER_PROFILE, "");
-                UserWantlistDB.get(getApplicationContext()).deleteAllAlbums();
-                UserCollectionDB.get(getApplicationContext()).deleteAllAlbums();
-                fragmentClass = DashboardFragment.class;
+                clearAllUserInfo();
+                Intent i = new Intent(this, LoginSplashActivity.class);
+                startActivity(i);
+                logout = true;
+                finish();
                 break;
             default:
                 fragmentClass = DashboardFragment.class;
         }
+        if (!logout) {
+            try {
+                assert fragmentClass != null;
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            // Highlight the selected item has been done by NavigationView
+            menuItem.setChecked(true);
+            // Set action bar title
+            setTitle(menuItem.getTitle());
+            // Close the navigation drawer
+            mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    private void clearAllUserInfo() {
+        Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+        Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+        Preferences.set(Preferences.USERNAME, "");
+        Preferences.set(Preferences.USER_ID, "");
+        Preferences.set(Preferences.USER_PROFILE, "");
+        Preferences.set(Preferences.USER_PIC_DIR, "");
 
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawerLayout.closeDrawer(mDrawerList);
+        File collectionImageDir =
+                new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
+        if (collectionImageDir.isDirectory()) {
+            String[] children = collectionImageDir.list();
+            for (String aChildren : children) {
+                File currentImage = new File(collectionImageDir, aChildren);
+                currentImage.delete();
+            }
+        }
+        File wantlistImageDir =
+                new File("/data/user/0/com.justinrandalnelson.waxstacks/app_WantlistCovers");
+        if (wantlistImageDir.isDirectory()) {
+            String[] children = wantlistImageDir.list();
+            for (String aChildren : children) {
+                File currentImage = new File(collectionImageDir, aChildren);
+                currentImage.delete();
+            }
+        }
+        UserWantlistDB.get(getApplicationContext()).deleteAllReleases();
+        UserCollectionDB.get(getApplicationContext()).deleteAllReleases();
     }
 
     @Override

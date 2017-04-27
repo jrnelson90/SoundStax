@@ -6,7 +6,7 @@ import java.util.UUID;
  * Created by jrnel on 2/18/2017.
  */
 
-public class Album {
+public class Release {
     private UUID mId;
     private String mTitle;
     private String mYear;
@@ -14,12 +14,13 @@ public class Album {
     private String mGenre;
     private String mThumbUrl;
     private String mThumbDir;
+    private String mReleaseId;
 
-    public Album() {
+    public Release() {
         this(UUID.randomUUID());
     }
 
-    public Album(UUID id) {
+    public Release(UUID id) {
         mId = id;
     }
 
@@ -79,4 +80,11 @@ public class Album {
         mThumbDir = thumbDir;
     }
 
+    public String getReleaseId() {
+        return mReleaseId;
+    }
+
+    public void setReleaseId(String releaseId) {
+        mReleaseId = releaseId;
+    }
 }

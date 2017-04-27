@@ -5,9 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema;
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.CollectionTable;
 import com.justinrandalnelson.waxstacks.database.CollectionCursorWrapper;
+import com.justinrandalnelson.waxstacks.database.ReleaseDbSchema.CollectionTable;
 import com.justinrandalnelson.waxstacks.database.UserCollectionDBHelper;
 
 import java.util.ArrayList;
@@ -35,75 +34,76 @@ class UserCollectionDB {
         return sUserCollectionDB;
     }
 
-    private static ContentValues getContentValues(Album album) {
+    private static ContentValues getContentValues(Release release) {
         ContentValues values = new ContentValues();
-        values.put(CollectionTable.Cols.UUID, album.getId().toString());
-        values.put(CollectionTable.Cols.TITLE, album.getTitle());
-        values.put(CollectionTable.Cols.ARTIST, album.getArtist());
-        values.put(CollectionTable.Cols.GENRE, album.getGenre());
-        values.put(CollectionTable.Cols.YEAR, album.getYear());
-        values.put(CollectionTable.Cols.THUMB_URL, album.getThumbUrl());
-        values.put(CollectionTable.Cols.THUMB_DIR, album.getThumbDir());
+        values.put(CollectionTable.Cols.UUID, release.getId().toString());
+        values.put(CollectionTable.Cols.TITLE, release.getTitle());
+        values.put(CollectionTable.Cols.ARTIST, release.getArtist());
+        values.put(CollectionTable.Cols.GENRE, release.getGenre());
+        values.put(CollectionTable.Cols.YEAR, release.getYear());
+        values.put(CollectionTable.Cols.RELEASE_ID, release.getReleaseId());
+        values.put(CollectionTable.Cols.THUMB_URL, release.getThumbUrl());
+        values.put(CollectionTable.Cols.THUMB_DIR, release.getThumbDir());
 
         return values;
     }
 
-    void addAlbum(Album album) {
-        ContentValues values = getContentValues(album);
+    void addRelease(Release release) {
+        ContentValues values = getContentValues(release);
         mCollectionDatabase.insert(CollectionTable.NAME, null, values);
     }
 
-    void deleteAlbum(Album album) {
+    void deleteRelease(Release release) {
         String selection = CollectionTable.Cols.UUID + " = ?";
-        String[] selectionArgs = { album.getId().toString() };
+        String[] selectionArgs = {release.getId().toString()};
         mCollectionDatabase.delete(CollectionTable.NAME, selection, selectionArgs);
     }
 
-    void deleteAllAlbums() {
+    void deleteAllReleases() {
         // db.delete(String tableName, String whereClause, String[] whereArgs);
         // If whereClause is null, it will delete all rows.
-        mCollectionDatabase.delete(AlbumDbSchema.WantlistTable.NAME, null, null);
+        mCollectionDatabase.delete(CollectionTable.NAME, null, null);
     }
 
-    List<Album> getAlbums(){
-        List<Album> albums = new ArrayList<>();
+    List<Release> getReleases() {
+        List<Release> releases = new ArrayList<>();
 
-        try (CollectionCursorWrapper cursor = queryAlbums(null, null)) {
+        try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                albums.add(cursor.getAlbum());
+                releases.add(cursor.getRelease());
                 cursor.moveToNext();
             }
         }
 
-        return albums;
+        return releases;
     }
 
-    List<Album> getFilteredAlbums(String filterContraint) {
-            List<Album> albums = new ArrayList<>();
+    List<Release> getFilteredReleases(String filterContraint) {
+        List<Release> releases = new ArrayList<>();
 
-        try (CollectionCursorWrapper cursor = queryAlbums(null, null)) {
+        try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if (cursor.getAlbum().getGenre().equals(filterContraint))
-                    albums.add(cursor.getAlbum());
+                if (cursor.getRelease().getGenre().equals(filterContraint))
+                    releases.add(cursor.getRelease());
                 cursor.moveToNext();
             }
         }
 
-            return albums;
+        return releases;
     }
 
     ArrayList<String> getGenreList() {
         ArrayList<String> returnedGenres = new ArrayList<>();
         ArrayList<String> foundGenres = new ArrayList<>();
 
-        try (CollectionCursorWrapper cursor = queryAlbums(null, null)) {
+        try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                String currentGenre = cursor.getAlbum().getGenre();
+                String currentGenre = cursor.getRelease().getGenre();
                 if (!foundGenres.contains(currentGenre)) {
-                    foundGenres.add(cursor.getAlbum().getGenre());
+                    foundGenres.add(cursor.getRelease().getGenre());
                 }
                 cursor.moveToNext();
             }
@@ -117,9 +117,9 @@ class UserCollectionDB {
         return returnedGenres;
     }
 
-    Album getAlbum(UUID id) {
+    Release getRelease(UUID id) {
 
-        try (CollectionCursorWrapper cursor = queryAlbums(
+        try (CollectionCursorWrapper cursor = queryReleases(
                 CollectionTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
         )) {
@@ -127,19 +127,19 @@ class UserCollectionDB {
                 return null;
             }
             cursor.moveToFirst();
-            return cursor.getAlbum();
+            return cursor.getRelease();
         }
     }
 
-    void updateAlbum(Album album) {
-        String uuidString = album.getId().toString();
-        ContentValues values = getContentValues(album);
+    void updateRelease(Release release) {
+        String uuidString = release.getId().toString();
+        ContentValues values = getContentValues(release);
         mCollectionDatabase.update(CollectionTable.NAME, values,
                 CollectionTable.Cols.UUID + " = ?",
                 new String[] { uuidString });
     }
 
-    private CollectionCursorWrapper queryAlbums(String whereClause, String[] whereArgs) {
+    private CollectionCursorWrapper queryReleases(String whereClause, String[] whereArgs) {
         Cursor cursor = mCollectionDatabase.query(
                 CollectionTable.NAME,
                 null,

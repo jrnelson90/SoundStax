@@ -31,26 +31,25 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Fragment for Discogs Wantlist Release List
+ * Fragment for Discogs Collection Release List
  * Created by jrnel on 2/18/2017.
  */
 
-public class WantlistListviewFragment extends Fragment {
+public class UserListsFragment extends Fragment {
 
-    private static final String TAG = "WantlistListviewFragment";
+    private static final String TAG = "UserListsFragment";
     private RecyclerView mReleaseRecyclerView;
     private Spinner mGenreFilterSpinner;
     private ReleaseAdapter mAdapter;
-    private UserWantlistDB mUserWantlistDB;
+    private UserCollectionDB mUserCollectionDB;
     private RequestQueue queue;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        mUserWantlistDB = UserWantlistDB.get(getActivity());
+        mUserCollectionDB = UserCollectionDB.get(getActivity());
         queue = Volley.newRequestQueue(getContext());
     }
 
@@ -68,10 +67,10 @@ public class WantlistListviewFragment extends Fragment {
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                if (mAdapter != null) {
 //                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserWantlistDB.getReleases();
+//                        List<Release> allReleases = mUserCollectionDB.getReleases();
 //                        mAdapter.setReleases(allReleases);
 //                    } else {
-//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
+//                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
 //                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
 //                        mAdapter.setReleases(filteredReleases);
 //                    }
@@ -87,7 +86,6 @@ public class WantlistListviewFragment extends Fragment {
 //        });
 
         updateUI();
-
         return view;
     }
 
@@ -114,8 +112,8 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-//        UserWantlistDB releaseBase = UserWantlistDB.get(getActivity());
-        List<Release> releases = mUserWantlistDB.getReleases();
+//        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
+        List<Release> releases = mUserCollectionDB.getReleases();
 
         if (mAdapter == null) {
             mAdapter = new ReleaseAdapter(releases);
@@ -126,12 +124,13 @@ public class WantlistListviewFragment extends Fragment {
         }
 
 //        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserWantlistDB.getGenreList());
+//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
 //        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
-    private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ReleaseHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
@@ -163,11 +162,9 @@ public class WantlistListviewFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Wantlist");
+            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Collection");
             startActivity(intent);
         }
-
-
     }
 
     private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
@@ -196,7 +193,7 @@ public class WantlistListviewFragment extends Fragment {
                                     // path to /data/data/yourapp/app_data/imageDir
                                     ContextWrapper cw = new ContextWrapper(getContext());
 
-                                    String thumbDir = "WantlistCovers";
+                                    String thumbDir = "CollectionCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                                     // Create imageDir
                                     File filePath = new File(directory, "release_cover" +
@@ -219,9 +216,8 @@ public class WantlistListviewFragment extends Fragment {
                                     }
 
                                     release.setThumbDir(filePath.getAbsolutePath());
-                                    mUserWantlistDB.updateRelease(release);
+                                    mUserCollectionDB.updateRelease(release);
                                     holder.bindRelease(release);
-
                                 } catch (NullPointerException e) {
                                     e.printStackTrace();
                                 }
@@ -242,5 +238,6 @@ public class WantlistListviewFragment extends Fragment {
         void setReleases(List<Release> releases) {
             mReleases = releases;
         }
+
     }
 }

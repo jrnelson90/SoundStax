@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/basic_user_info_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/user_pic_info_fragment"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
+            android:padding="4dp"/>
+
+        <TextView
+            android:id="@+id/user_name_infoFragment_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="Username"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/user_registered_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_name_infoFragment_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="Registered:"
+            />
+
+        <TextView
+            android:id="@+id/user_collection_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_registered_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="In Collection:"
+            />
+
+        <TextView
+            android:id="@+id/user_wantlist_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_collection_count_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="In Wantlist:"
+            />
+
+        <TextView
+            android:id="@+id/user_contributed_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_wantlist_count_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="Contributed:"
+            />
+
+        <TextView
+            android:id="@+id/user_rank_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_contributed_count_label"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@id/user_pic_info_fragment"
+            android:padding="4dp"
+            android:text="Rank:"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/releases_user_info_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/releases_user_info_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_releases_label"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/pending_releases_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/releases_user_info_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_pending_label"
+            />
+
+        <TextView
+            android:id="@+id/rated_releases_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pending_releases_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_rated_label"
+            />
+
+        <TextView
+            android:id="@+id/rating_average_releases_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rated_releases_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_rating_average_label"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/marketplace_user_info_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/marketplace_user_info_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_marketplace_label"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/seller_rating_marketplace_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/marketplace_user_info_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_seller_rating_label"
+            />
+
+        <TextView
+            android:id="@+id/seller_ratings_num_marketplace_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/seller_rating_marketplace_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_seller_ratings_num_label"
+            />
+
+        <TextView
+            android:id="@+id/buyer_rating_marketplace_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/seller_ratings_num_marketplace_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_buyer_rating_label"
+            />
+
+        <TextView
+            android:id="@+id/buyer_ratings_num_marketplace_group_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buyer_rating_marketplace_group_label"
+            android:layout_margin="4dp"
+            android:padding="4dp"
+            android:text="@string/user_info_fragment_buyer_ratings_num_label"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

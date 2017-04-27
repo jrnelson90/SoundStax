@@ -1,9 +1,10 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,27 +19,30 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.json.JSONObject;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
- * Fragment for Discogs Collection Album List
+ * Fragment for Discogs Collection Release List
  * Created by jrnel on 2/18/2017.
  */
 
 public class CollectionListviewFragment extends Fragment {
 
     private static final String TAG = "CollectionListviewFragment";
-    private RecyclerView mAlbumRecyclerView;
+    private RecyclerView mReleaseRecyclerView;
     private Spinner mGenreFilterSpinner;
-    private AlbumAdapter mAdapter;
-    private JSONObject mArtistResultsJSON = new JSONObject();
-    private JSONObject mAlbumReleaseResultsJSON = new JSONObject();
-    private JSONObject mUserInfoJSON = new JSONObject();
+    private ReleaseAdapter mAdapter;
     private UserCollectionDB mUserCollectionDB;
+    private RequestQueue queue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,28 +50,29 @@ public class CollectionListviewFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         mUserCollectionDB = UserCollectionDB.get(getActivity());
+        queue = Volley.newRequestQueue(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_album_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_release_list, container, false);
 
-        mAlbumRecyclerView = (RecyclerView) view.findViewById(R.id.album_recycler_view);
-        mAlbumRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
+        mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.album_genre_filter_spinner);
+//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
 //        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                if (mAdapter != null) {
 //                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Album> allAlbums = mUserCollectionDB.getAlbums();
-//                        mAdapter.setAlbums(allAlbums);
+//                        List<Release> allReleases = mUserCollectionDB.getReleases();
+//                        mAdapter.setReleases(allReleases);
 //                    } else {
-//                        List<Album> filteredAlbums = mUserCollectionDB.getFilteredAlbums(
+//                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
 //                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setAlbums(filteredAlbums);
+//                        mAdapter.setReleases(filteredReleases);
 //                    }
 //
 //                    mAdapter.notifyDataSetChanged();
@@ -81,7 +86,6 @@ public class CollectionListviewFragment extends Fragment {
 //        });
 
         updateUI();
-
         return view;
     }
 
@@ -94,17 +98,13 @@ public class CollectionListviewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_album_list, menu);
+        inflater.inflate(R.menu.fragment_release_list, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_new_album:
-                Album album = new Album();
-                UserCollectionDB.get(getActivity()).addAlbum(album);
-                Intent intent = AlbumActivity.newIntent(getActivity(), album.getId());
-                startActivity(intent);
+            case R.id.menu_item_search:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,14 +112,14 @@ public class CollectionListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-//        UserCollectionDB albumBase = UserCollectionDB.get(getActivity());
-        List<Album> albums = mUserCollectionDB.getAlbums();
+//        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
+        List<Release> releases = mUserCollectionDB.getReleases();
 
         if (mAdapter == null) {
-            mAdapter = new AlbumAdapter(albums);
-            mAlbumRecyclerView.setAdapter(mAdapter);
+            mAdapter = new ReleaseAdapter(releases);
+            mReleaseRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setAlbums(albums);
+            mAdapter.setReleases(releases);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -129,14 +129,7 @@ public class CollectionListviewFragment extends Fragment {
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
-    private void updateData() {
-        String name = "";
-        int index = 0;
-        String data = "";
-        JSONObject currentPlanet = null;
-    }
-
-    private class AlbumHolder extends RecyclerView.ViewHolder
+    private class ReleaseHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private final TextView mTitleTextView;
@@ -145,110 +138,106 @@ public class CollectionListviewFragment extends Fragment {
         private final TextView mGenreTextView;
         private final ImageView mThumbImageView;
 
-        private Album mAlbum;
+        private Release mRelease;
 
-        AlbumHolder(View itemView) {
+        ReleaseHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_album_title_text_view);
-            mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_album_artist_text_view);
-            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_album_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_album_genre_text_view);
-            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_album_thumb_image_view);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
+            mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
+            mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            setIsRecyclable(false);
         }
 
-        void bindAlbum(Album album) {
-            mAlbum = album;
-            mTitleTextView.setText(mAlbum.getTitle());
-            mArtistTextView.setText(mAlbum.getArtist());
-            mYearTextView.setText(mAlbum.getYear());
-            mGenreTextView.setText(mAlbum.getGenre());
-
-            try {
-                Bitmap thumbBitmap = BitmapFactory.decodeStream(new FileInputStream(mAlbum.getThumbDir()));
-                mThumbImageView.setImageBitmap(thumbBitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        void bindRelease(Release release) {
+            mRelease = release;
+            mTitleTextView.setText(mRelease.getTitle());
+            mArtistTextView.setText(mRelease.getArtist());
+            mYearTextView.setText(mRelease.getYear());
+            mGenreTextView.setText(mRelease.getGenre());
+            mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
         @Override
         public void onClick(View v) {
-            Intent intent = AlbumActivity.newIntent(getActivity(), mAlbum.getId());
+            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Collection");
             startActivity(intent);
         }
     }
 
-    private class AlbumAdapter extends RecyclerView.Adapter<AlbumHolder> {
-        private List<Album> mAlbums;
+    private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
+        private List<Release> mReleases;
 
-        AlbumAdapter(List<Album> albums) {
-            mAlbums = albums;
+        ReleaseAdapter(List<Release> releases) {
+            mReleases = releases;
         }
 
         @Override
-        public AlbumHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ReleaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.list_item_album, parent, false);
-            return new AlbumHolder(view);
+            View view = layoutInflater.inflate(R.layout.list_item_release, parent, false);
+            return new ReleaseHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(AlbumHolder holder, int position) {
-            Album album = mAlbums.get(position);
-            holder.bindAlbum(album);
+        public void onBindViewHolder(final ReleaseHolder holder, int position) {
+            final Release release = mReleases.get(position);
+            if (release.getThumbDir().equals("")) {
+                ImageRequest thumbRequest = new ImageRequest(release.getThumbUrl(),
+                        new Response.Listener<Bitmap>() {
+                            @Override
+                            public void onResponse(Bitmap releaseCoverBitmap) {
+                                try {
+                                    // path to /data/data/yourapp/app_data/imageDir
+                                    ContextWrapper cw = new ContextWrapper(getContext());
+
+                                    String thumbDir = "CollectionCovers";
+                                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+                                    // Create imageDir
+                                    File filePath = new File(directory, "release_cover" +
+                                            holder.getAdapterPosition() + ".jpeg");
+
+                                    FileOutputStream fos = null;
+                                    try {
+                                        fos = new FileOutputStream(filePath);
+                                        releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (fos != null) {
+                                                fos.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    release.setThumbDir(filePath.getAbsolutePath());
+                                    mUserCollectionDB.updateRelease(release);
+                                    holder.bindRelease(release);
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
+                // Add the request to the RequestQueue.
+                queue.add(thumbRequest);
+            } else {
+                holder.bindRelease(release);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return mAlbums.size();
+            return mReleases.size();
         }
 
-        void setAlbums(List<Album> albums) {
-            mAlbums = albums;
+        void setReleases(List<Release> releases) {
+            mReleases = releases;
         }
 
     }
-
-    private class FetchArtistJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String artistSearchString = params[0];
-            return new JsonFetcher().fetchArtist(artistSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mArtistResultsJSON = jsonObject;
-            updateData();
-        }
-    }
-
-    private class FetchAlbumReleaseJSON extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            String albumReleaseSearchString = params[0];
-            return new JsonFetcher().fetchAlbumRelease(albumReleaseSearchString);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mAlbumReleaseResultsJSON = jsonObject;
-            updateData();
-        }
-    }
-
-    private class FetchUserIdentityJSON extends AsyncTask<Void, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            return new JsonFetcher().fetchUserIdentity();
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            mUserInfoJSON = jsonObject;
-        }
-    }
-
-
 }

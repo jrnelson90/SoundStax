@@ -10,26 +10,30 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".DashboardActivity">
+        </activity>
+
+        <activity android:name=".LoginSplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN">
                 </action>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
-            android:name="com.justinrandalnelson.waxstacks.AlbumListActivity"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
-        </activity>
-        <activity
-            android:name="com.justinrandalnelson.waxstacks.AlbumActivity"
+            android:name="com.justinrandalnelson.waxstacks.ReleaseActivity"
             android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
         </activity>
 
         <activity
             android:name="com.justinrandalnelson.waxstacks.AuthPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName="com.justinrandalnelson.waxstacks.DashboardActivity">
+            android:parentActivityName="com.justinrandalnelson.waxstacks.LoginSplashActivity">
+        </activity>
+        <activity
+            android:name=".LoadingSplashActivity">
         </activity>
     </application>
 

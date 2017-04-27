@@ -4,9 +4,9 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="com.justinrandalnelson.waxstacks.AlbumListActivity">
+                tools:context="com.justinrandalnelson.waxstacks.ReleaseListActivity">
     <Spinner
-        android:id="@+id/album_genre_filter_spinner"
+        android:id="@+id/release_genre_filter_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -15,18 +15,18 @@
         android:textAlignment="gravity"/>
 
     <TextView
-        android:id="@+id/album_genre_filter_textview"
+        android:id="@+id/release_genre_filter_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/album_genre_filter_spinner"
-        android:layout_toStartOf="@id/album_genre_filter_spinner"
+        android:layout_alignBaseline="@id/release_genre_filter_spinner"
+        android:layout_toStartOf="@id/release_genre_filter_spinner"
         android:padding="4dp"
         android:text="@string/genre_filter_label"/>
 
     <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/album_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/album_genre_filter_spinner"/>
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/release_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/release_genre_filter_spinner"/>
 </RelativeLayout>

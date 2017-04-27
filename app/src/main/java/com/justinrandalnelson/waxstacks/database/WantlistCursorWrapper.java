@@ -3,8 +3,8 @@ package com.justinrandalnelson.waxstacks.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.justinrandalnelson.waxstacks.Album;
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.WantlistTable;
+import com.justinrandalnelson.waxstacks.Release;
+import com.justinrandalnelson.waxstacks.database.ReleaseDbSchema.WantlistTable;
 
 import java.util.UUID;
 
@@ -17,23 +17,25 @@ public class WantlistCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    public Album getAlbum() {
+    public Release getRelease() {
         String uuidString = getString(getColumnIndex(WantlistTable.Cols.UUID));
         String title = getString(getColumnIndex(WantlistTable.Cols.TITLE));
         String artist = getString(getColumnIndex(WantlistTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(WantlistTable.Cols.GENRE));
         String year = getString(getColumnIndex(WantlistTable.Cols.YEAR));
+        String releaseId = getString(getColumnIndex(WantlistTable.Cols.RELEASE_ID));
         String thumbUrl = getString(getColumnIndex(WantlistTable.Cols.THUMB_URL));
         String thumbDir = getString(getColumnIndex(WantlistTable.Cols.THUMB_DIR));
 
-        Album album = new Album(UUID.fromString(uuidString));
-        album.setTitle(title);
-        album.setArtist(artist);
-        album.setGenre(genre);
-        album.setYear(year);
-        album.setThumbUrl(thumbUrl);
-        album.setThumbDir(thumbDir);
+        Release release = new Release(UUID.fromString(uuidString));
+        release.setTitle(title);
+        release.setArtist(artist);
+        release.setGenre(genre);
+        release.setYear(year);
+        release.setReleaseId(releaseId);
+        release.setThumbUrl(thumbUrl);
+        release.setThumbDir(thumbDir);
 
-        return album;
+        return release;
     }
 }

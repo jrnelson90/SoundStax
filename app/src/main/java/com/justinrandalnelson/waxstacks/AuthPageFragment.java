@@ -2,9 +2,7 @@ package com.justinrandalnelson.waxstacks;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +14,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Fragment for Discogs Login WebView for User Authentication
  * Created by jrnel on 4/14/2017.
@@ -23,10 +32,9 @@ import android.widget.ProgressBar;
 
 public class AuthPageFragment extends VisibleFragment {
     private static final String ARG_URI = "auth_page_url";
-
     private Uri mUri;
     private ProgressBar mProgressBar;
-
+    private RequestQueue queue;
 
     public static AuthPageFragment newInstance(Uri uri) {
         Bundle args = new Bundle();
@@ -40,8 +48,8 @@ public class AuthPageFragment extends VisibleFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mUri = getArguments().getParcelable(ARG_URI);
+        queue = Volley.newRequestQueue(getContext());
     }
 
     @Override
@@ -84,10 +92,9 @@ public class AuthPageFragment extends VisibleFragment {
                     OauthVerifyTokens.setOauthUserVerifier(verifyString);
                     Log.i("Oauth Success", "Verifier received");
 
-                    new FetchOauthAccessToken().execute(new String[]{
+                    FetchOauthAccessToken(new String[]{
                             OauthVerifyTokens.getOauthRequestToken(),
-                            OauthVerifyTokens.getOauthUserVerifier()
-                    });
+                            OauthVerifyTokens.getOauthUserVerifier()});
                 } else {
                     view.loadUrl(url);
                 }
@@ -107,29 +114,59 @@ public class AuthPageFragment extends VisibleFragment {
         return v;
     }
 
-    private void navigateBackToList() {
-        Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
-        NavUtils.navigateUpTo(getActivity(), upIntent);
+    private void openLoadingActivity() {
+        Intent i = new Intent(getActivity(), LoadingSplashActivity.class);
+        startActivity(i);
+        getActivity().finish();
     }
 
-    private class FetchOauthAccessToken extends AsyncTask<String[], Void, String[]> {
-        @Override
-        protected String[] doInBackground(String[]... params) {
-            String[] _passedOauth = params[0];
-            return new OauthTokenFetcher().fetchOauthAccessToken(_passedOauth);
-        }
+    private void FetchOauthAccessToken(final String[] _passedOauth) {
+        StringRequest stringRequest = new StringRequest
+                (Request.Method.GET, HttpConst.ACCESS_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String[] tokenArray = response.split("&");
+                        // OnResponse
+                        if (tokenArray.length == 2) {
+                            String parsedAccessKey = tokenArray[1].split("=")[1].replace("\n", "");
+                            String parsedAccessSecret = tokenArray[0].split("=")[1];
+                            Preferences.set(Preferences.OAUTH_ACCESS_KEY, parsedAccessKey);
+                            Preferences.set(Preferences.OAUTH_ACCESS_SECRET, parsedAccessSecret);
+                            CookieManager cookieManager = CookieManager.getInstance();
+                            cookieManager.removeAllCookies(null);
+                            openLoadingActivity();
+                    }
+                    }
+                }, new Response.ErrorListener() {
 
-        @Override
-        protected void onPostExecute(String[] tokenArray) {
-            if (tokenArray.length == 2) {
-                String parsedAccessKey = tokenArray[1].split("=")[1].replace("\n", "");
-                String parsedAccessSecret = tokenArray[0].split("=")[1];
-                Preferences.set(Preferences.OAUTH_ACCESS_KEY, parsedAccessKey);
-                Preferences.set(Preferences.OAUTH_ACCESS_SECRET, parsedAccessSecret);
-                CookieManager cookieManager = CookieManager.getInstance();
-                cookieManager.removeAllCookies(null);
-                navigateBackToList();
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                })
+                // Request Headers
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + _passedOauth[0] +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        OauthVerifyTokens.getOauthRequestTokenSecret() +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts +
+                        ", oauth_verifier=" + _passedOauth[1]);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
             }
-        }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(stringRequest);
     }
 }

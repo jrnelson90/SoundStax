@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.justinrandalnelson.waxstacks.database.AlbumDbSchema.WantlistTable;
+import com.justinrandalnelson.waxstacks.database.ReleaseDbSchema.WantlistTable;
 
 /**
  * Created by jrnel on 3/1/2017.
@@ -27,6 +27,7 @@ public class UserWantlistDBHelper extends SQLiteOpenHelper {
                 WantlistTable.Cols.ARTIST + ", " +
                 WantlistTable.Cols.GENRE + ", " +
                 WantlistTable.Cols.YEAR + ", " +
+                WantlistTable.Cols.RELEASE_ID + ", " +
                 WantlistTable.Cols.THUMB_URL + ", " +
                 WantlistTable.Cols.THUMB_DIR +
                 ")"
