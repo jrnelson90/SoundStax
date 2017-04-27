@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -99,19 +98,25 @@ public class CollectionListviewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_release_list, menu);
+        inflater.inflate(R.menu.fragment_search_results_list, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_search_icon:
-                SearchResultsFragment searchResultsFragment = new SearchResultsFragment();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, searchResultsFragment); // f1_container is your FrameLayout container
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                ft.commit();
+            case R.id.menu_item_search:
+//                SearchResultsActivity searchResultsFragment = new SearchResultsActivity();
+////                FragmentTransaction ft = getFragmentManager().beginTransaction();
+////                ft.replace(R.id.content_frame, searchResultsFragment); // f1_container is your FrameLayout container
+////                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+////                ft.addToBackStack(null);
+////                ft.commit();
+//
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                fragmentManager.beginTransaction().replace(R.id.content_frame, searchResultsFragment)
+//                        .addToBackStack(null).commit();
+                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
+                startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

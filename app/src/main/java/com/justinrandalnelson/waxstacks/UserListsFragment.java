@@ -98,13 +98,13 @@ public class UserListsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_release_list, menu);
+        inflater.inflate(R.menu.fragment_search_results_list, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_search_icon:
+            case R.id.menu_item_search:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

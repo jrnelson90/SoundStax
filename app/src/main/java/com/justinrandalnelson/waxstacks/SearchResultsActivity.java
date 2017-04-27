@@ -1,12 +1,12 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -45,10 +45,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Activity for displaying search results
  * Created by jrnel on 4/26/2017.
  */
 
-public class SearchResultsFragment extends Fragment {
+public class SearchResultsActivity extends Activity {
     private static final String TAG = "SearchResults";
     private RecyclerView mResultsRecyclerView;
     private JSONObject mSearchResults = null;
@@ -59,24 +60,16 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
-        queue = Volley.newRequestQueue(getContext());
+        queue = Volley.newRequestQueue(getApplicationContext());
+        setContentView(R.layout.fragment_release_list);
+        mResultsRecyclerView = (RecyclerView) findViewById(R.id.release_recycler_view);
+        mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        fetchQuery("The Beatles");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_release_list, container, false);
-
-        mResultsRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
-        mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.fragment_search_results_list, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) searchItem.getActionView();
@@ -93,6 +86,7 @@ public class SearchResultsFragment extends Fragment {
                 return true;
             }
         });
+        return true;
     }
 
     //    @Override
@@ -225,7 +219,7 @@ public class SearchResultsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Search");
+            Intent intent = ReleaseActivity.newIntent(getApplicationContext(), mRelease.getId(), "Search");
             startActivity(intent);
         }
     }
@@ -239,7 +233,7 @@ public class SearchResultsFragment extends Fragment {
 
         @Override
         public ReleaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
             View view = layoutInflater.inflate(R.layout.list_item_release, parent, false);
             return new ReleaseHolder(view);
         }
@@ -254,7 +248,7 @@ public class SearchResultsFragment extends Fragment {
                             public void onResponse(Bitmap releaseCoverBitmap) {
                                 try {
                                     // path to /data/data/yourapp/app_data/imageDir
-                                    ContextWrapper cw = new ContextWrapper(getContext());
+                                    ContextWrapper cw = new ContextWrapper(getApplicationContext());
 
                                     String thumbDir = "SearchCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
