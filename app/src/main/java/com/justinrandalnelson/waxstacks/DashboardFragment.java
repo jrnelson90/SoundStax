@@ -42,7 +42,6 @@ import java.util.Map;
 public class DashboardFragment extends Fragment {
     private UserCollectionDB mUserCollectionDB;
     private UserWantlistDB mUserWantlistDB;
-    private JSONObject mUserInfoJSON = new JSONObject();
     private JSONObject mUserProfileJSON = new JSONObject();
     private LinearLayout mCollectionLinearLayout;
     private LinearLayout mWantlistLinearLayout;
@@ -191,7 +190,6 @@ public class DashboardFragment extends Fragment {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            mUserInfoJSON = response;
                             updateUsername();
                             Log.i("User Profile", "Already loaded user");
                         }

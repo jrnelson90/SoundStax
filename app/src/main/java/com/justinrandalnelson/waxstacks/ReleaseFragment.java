@@ -13,12 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -173,7 +175,53 @@ public class ReleaseFragment extends Fragment {
                 Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
                         Toast.LENGTH_SHORT).show();
 //                UserCollectionDB.get(getActivity()).deleteRelease(mRelease);
-                getActivity().finish();
+                if (parentList.equals("Wantlist")) {
+                    String releaseURL = "https://api.discogs.com/users/" +
+                            Preferences.get(Preferences.USERNAME, "") + "/wants/" + mRelease.getReleaseId();
+                    StringRequest stringRequest = new StringRequest(Request.Method.DELETE, releaseURL,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO Auto-generated method stub
+                        }
+                    })
+
+                    {
+                        @Override
+                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                            int mStatusCode = response.statusCode;
+                            if (mStatusCode == 204) {
+                                UserWantlistDB.get(getActivity()).deleteRelease(mRelease);
+                                getActivity().finish();
+                            }
+                            return super.parseNetworkResponse(response);
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            Long tsLong = System.currentTimeMillis() / 1000;
+                            String ts = tsLong.toString();
+                            params.put("Content-Type", "application/x-www-form-urlencoded");
+                            params.put("Authorization", "OAuth" +
+                                    "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                    ", oauth_nonce=" + ts +
+                                    ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                                    ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                    Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                                    ", oauth_signature_method=PLAINTEXT" +
+                                    ", oauth_timestamp=" + ts);
+                            params.put("User-Agent", HttpConst.USER_AGENT);
+                            return params;
+                        }
+                    };
+                    queue.add(stringRequest);
+                }
             }
         });
 
