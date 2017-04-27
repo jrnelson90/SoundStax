@@ -104,8 +104,25 @@ public class WantlistListviewFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_search_results_list, menu);
-//        final MenuItem searchItem = menu.findItem(R.id.menu_item_search_icon);
-//        mSearchView = (SearchView) searchItem.getActionView();
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // your text view here
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
+                Bundle args = new Bundle();
+                args.putString("query", query);
+                i.putExtras(args);
+                startActivity(i);
+                return true;
+            }
+        });
     }
 
     @Override

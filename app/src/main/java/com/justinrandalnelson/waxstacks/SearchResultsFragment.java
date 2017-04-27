@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,42 +18,53 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Fragment for Discogs Collection Release List
- * Created by jrnel on 2/18/2017.
+ * Activity for displaying search results
+ * Created by jrnel on 4/26/2017.
  */
 
-public class CollectionListviewFragment extends Fragment {
-
-    private static final String TAG = "CollectionListviewFragment";
-    private RecyclerView mReleaseRecyclerView;
-    private Spinner mGenreFilterSpinner;
-    private ReleaseAdapter mAdapter;
-    private UserCollectionDB mUserCollectionDB;
-    private RequestQueue queue;
+public class SearchResultsFragment extends Fragment {
+    private static final String TAG = "SearchResults";
+    private static final String QUERY_ARG = "query";
+    private RecyclerView mResultsRecyclerView;
+    private JSONObject mSearchResults = null;
     private SearchView mSearchView;
+    private RequestQueue queue;
+    private ReleaseAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        setHasOptionsMenu(true);
-        mUserCollectionDB = UserCollectionDB.get(getActivity());
         queue = Volley.newRequestQueue(getContext());
+        Bundle args = getActivity().getIntent().getExtras();
+        String queryString = args.getString(QUERY_ARG);
+        fetchQuery(queryString);
     }
 
     @Override
@@ -60,8 +72,8 @@ public class CollectionListviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_release_list, container, false);
 
-        mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
-        mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mResultsRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
+        mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 //        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
 //        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -69,10 +81,10 @@ public class CollectionListviewFragment extends Fragment {
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                if (mAdapter != null) {
 //                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserCollectionDB.getReleases();
+//                        List<Release> allReleases = mUserWantlistDB.getReleases();
 //                        mAdapter.setReleases(allReleases);
 //                    } else {
-//                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
+//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
 //                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
 //                        mAdapter.setReleases(filteredReleases);
 //                    }
@@ -86,21 +98,15 @@ public class CollectionListviewFragment extends Fragment {
 //
 //            }
 //        });
-
-        updateUI();
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUI();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_search_results_list, menu);
+//        final MenuItem searchItem = menu.findItem(R.id.menu_item_search_icon);
+//        mSearchView = (SearchView) searchItem.getActionView();
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -112,56 +118,107 @@ public class CollectionListviewFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
-                Bundle args = new Bundle();
-                args.putString("query", query);
-                i.putExtras(args);
-                startActivity(i);
+                fetchQuery(query);
                 return true;
             }
         });
     }
 
-//    @Override
+    //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
 //            case R.id.menu_item_search:
-//                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                    @Override
-//                    public boolean onQueryTextChange(String newText) {
-//                        // your text view here
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onQueryTextSubmit(String query) {
-//                        fetchQuery(query);
-//                        return true;
-//                    }
-//                });
 //
 //                return true;
 //            default:
 //                return super.onOptionsItemSelected(item);
 //        }
 //    }
-
     private void updateUI() {
-//        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
-        List<Release> releases = mUserCollectionDB.getReleases();
-
-        if (mAdapter == null) {
-            mAdapter = new ReleaseAdapter(releases);
-            mReleaseRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setReleases(releases);
-            mAdapter.notifyDataSetChanged();
+        List<Release> releases = null;
+        try {
+            releases = searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
+            if (mAdapter == null) {
+                mAdapter = new ReleaseAdapter(releases);
+                mResultsRecyclerView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setReleases(releases);
+                mAdapter.notifyDataSetChanged();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+    }
 
-//        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
-//        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mGenreFilterSpinner.setAdapter(genreAdpater);
+    void fetchQuery(String _queryString) {
+        //Parse search into a URL friendly encoding.
+        String query_string_encoded = "";
+        try {
+            query_string_encoded = URLEncoder.encode(_queryString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(e.getMessage());
+        }
+        // Get JSON object for passed release info.
+        String searchString = "https://api.discogs.com/database/search?q=" + query_string_encoded;
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mSearchResults = response;
+                        Log.i(TAG, "Received Search JSON:");
+                        updateUI();
+                        // TODO Call and populate results view
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Auto-generated method stub
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
+    }
+
+    private List<Release> searchJsonToReleaseList(JSONArray _searchResults) throws JSONException {
+        List<Release> returnList = new ArrayList<>();
+        for (int i = 0; i < _searchResults.length(); i++) {
+            JSONObject currentRelease = (JSONObject) _searchResults.get(i);
+            if (currentRelease != null && currentRelease.getString("type").equals("release")) {
+//                JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
+                String releaseTitle = currentRelease.getString("title").split("-")[1];
+                String releaseYear = currentRelease.getString("year");
+                String releaseArtist = currentRelease.getString("title").split("-")[0];
+                String releaseId = currentRelease.getString("id");
+                Release release = new Release();
+                release.setArtist(releaseArtist);
+                release.setYear(releaseYear);
+                release.setTitle(releaseTitle);
+                release.setReleaseId(releaseId);
+                release.setThumbUrl(currentRelease.getString("thumb"));
+                release.setThumbDir("");
+                returnList.add(release);
+            }
+        }
+        return returnList;
     }
 
     private class ReleaseHolder extends RecyclerView.ViewHolder
@@ -197,7 +254,7 @@ public class CollectionListviewFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Collection");
+            Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Search");
             startActivity(intent);
         }
     }
@@ -226,9 +283,9 @@ public class CollectionListviewFragment extends Fragment {
                             public void onResponse(Bitmap releaseCoverBitmap) {
                                 try {
                                     // path to /data/data/yourapp/app_data/imageDir
-                                    ContextWrapper cw = new ContextWrapper(getContext());
+                                    ContextWrapper cw = new ContextWrapper(getActivity());
 
-                                    String thumbDir = "CollectionCovers";
+                                    String thumbDir = "SearchCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                                     // Create imageDir
                                     File filePath = new File(directory, "release_cover" +
@@ -251,7 +308,7 @@ public class CollectionListviewFragment extends Fragment {
                                     }
 
                                     release.setThumbDir(filePath.getAbsolutePath());
-                                    mUserCollectionDB.updateRelease(release);
+//                                    mUserCollectionDB.updateRelease(release);
                                     holder.bindRelease(release);
                                 } catch (NullPointerException e) {
                                     e.printStackTrace();
