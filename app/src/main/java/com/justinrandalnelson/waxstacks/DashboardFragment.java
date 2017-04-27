@@ -56,21 +56,26 @@ public class DashboardFragment extends Fragment {
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             mUserCollectionDB = UserCollectionDB.get(getActivity());
             mUserWantlistDB = UserWantlistDB.get(getActivity());
-        }
-        queue = Volley.newRequestQueue(getContext());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             try {
                 mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        queue = Volley.newRequestQueue(getContext());
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+//            try {
+//                mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     @Override
     public void onPause() {
@@ -143,7 +148,6 @@ public class DashboardFragment extends Fragment {
                     }
                 }
             }
-
             updateProfilePicture();
         } else {
             Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
