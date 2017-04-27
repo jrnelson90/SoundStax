@@ -104,7 +104,7 @@ public class UserListsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_item_search:
+            case R.id.menu_item_search_icon:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

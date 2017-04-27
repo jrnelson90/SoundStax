@@ -53,6 +53,7 @@ public class DashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             mUserCollectionDB = UserCollectionDB.get(getActivity());
             mUserWantlistDB = UserWantlistDB.get(getActivity());

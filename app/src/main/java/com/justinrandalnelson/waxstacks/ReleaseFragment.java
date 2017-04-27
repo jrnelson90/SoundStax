@@ -60,9 +60,10 @@ public class ReleaseFragment extends Fragment {
         UUID releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
         if (parentList.equals("Collection")) {
             mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
-
         } else if (parentList.equals("Wantlist")) {
             mRelease = UserWantlistDB.get(getActivity()).getRelease(releaseID);
+        } else if (parentList.equals("Search")) {
+
         }
         queue = Volley.newRequestQueue(getContext());
     }
