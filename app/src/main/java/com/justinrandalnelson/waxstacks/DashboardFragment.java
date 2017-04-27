@@ -5,16 +5,12 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,7 +22,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -59,7 +54,6 @@ public class DashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(getContext()));
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             mUserCollectionDB = UserCollectionDB.get(getActivity());
             mUserWantlistDB = UserWantlistDB.get(getActivity());
@@ -88,24 +82,8 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         boolean oauthVerified = checkAccessToken();
-        View view;
-        if (!oauthVerified) {
-            view = inflater.inflate(R.layout.fragment_login_splash, container, false);
-
-            Button signInButton = (Button) view.findViewById(R.id.sign_in_button);
-            signInButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ConnectivityManager connectivityManager = (ConnectivityManager)
-                            getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-                    if (connectivityManager.getActiveNetworkInfo() != null
-                            && connectivityManager.getActiveNetworkInfo().isAvailable()
-                            && connectivityManager.getActiveNetworkInfo().isConnected()) {
-                        FetchRequestToken();
-                    }
-                }
-            });
-        } else {
+        View view = null;
+        if (oauthVerified) {
             view = inflater.inflate(R.layout.fragment_dashboard, container, false);
             mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
 
@@ -166,7 +144,37 @@ public class DashboardFragment extends Fragment {
                     }
                 }
             }
-            // Inflate dashboard view
+        } else {
+            Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
+            Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
+            Preferences.set(Preferences.USERNAME, "");
+            Preferences.set(Preferences.USER_ID, "");
+            Preferences.set(Preferences.USER_PROFILE, "");
+            Preferences.set(Preferences.USER_PIC_DIR, "");
+
+            File collectionImageDir =
+                    new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
+            if (collectionImageDir.isDirectory()) {
+                String[] children = collectionImageDir.list();
+                for (String aChildren : children) {
+                    File currentImage = new File(collectionImageDir, aChildren);
+                    currentImage.delete();
+                }
+            }
+            File wantlistImageDir =
+                    new File("/data/user/0/com.justinrandalnelson.waxstacks/app_WantlistCovers");
+            if (wantlistImageDir.isDirectory()) {
+                String[] children = wantlistImageDir.list();
+                for (String aChildren : children) {
+                    File currentImage = new File(collectionImageDir, aChildren);
+                    currentImage.delete();
+                }
+            }
+            mUserCollectionDB.deleteAllReleases();
+            mUserWantlistDB.deleteAllReleases();
+            Intent i = new Intent(getActivity(), LoginSplashActivity.class);
+            startActivity(i);
+            getActivity().finish();
         }
         return view;
     }
@@ -424,62 +432,5 @@ public class DashboardFragment extends Fragment {
         Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
     }
 
-    private void FetchRequestToken() {
-        // GET https://api.discogs.com/oauth/request_token
-        StringRequest stringRequest = new StringRequest
-                (Request.Method.GET, HttpConst.REQUEST_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // OnResponse
-                        String[] tokenArray = response.split("&");
-                        if (tokenArray.length == 3 && tokenArray[0] != null) {
-                            OauthVerifyTokens.setOauthRequestTokenSecret(tokenArray[0].split("=")[1]);
-                            OauthVerifyTokens.setOauthRequestToken(tokenArray[1].split("=")[1]);
-
-                            String authUrl = null;
-                            if (OauthVerifyTokens.getOauthRequestToken() != null) {
-                                authUrl = HttpConst.AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
-                                        OauthVerifyTokens.getOauthRequestToken();
-                                Log.i("Auth URL", authUrl);
-                            } else {
-                                Log.i("Auth Dialog", "No oauth request token values populated");
-                            }
-
-                            if (authUrl != null) {
-                                Uri authUri = Uri.parse(authUrl);
-                                Intent i = AuthPageActivity.newIntent(getActivity(), authUri);
-                                startActivity(i);
-                            }
-                        }
-
-                }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                        // Read POST response code
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-                        ", oauth_nonce=" + ts +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-                        ", oauth_signature_method=PLAINTEXT" +
-                        ", oauth_timestamp=" + ts +
-                        ", oauth_callback=" + HttpConst.CALLBACK_URL);
-                return params;
-            }
-        };
-
-        // Access the RequestQueue through your singleton class.
-        queue.add(stringRequest);
-    }
 
 }

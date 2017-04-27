@@ -18,8 +18,6 @@ public class Preferences extends PreferenceActivity {
     protected static String USER_ID = "userId";
     protected static String USER_PROFILE = "userProfile";
     protected static String USER_PIC_DIR = "userPicDir";
-    protected static String IS_LOGGED_IN = "isLoggedIn";
-    protected static String FIRST_RUN = "firstRun";
 
     protected static void setPreferenceContext(SharedPreferences preferences) {
         appPreferences = preferences;

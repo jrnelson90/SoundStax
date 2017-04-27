@@ -28,7 +28,7 @@ import java.util.Map;
  * Created by jrnel on 4/23/2017.
  */
 
-public class LoadingSplashScreen extends Activity {
+public class LoadingSplashActivity extends Activity {
     private UserCollectionDB mUserCollectionDB;
     private UserWantlistDB mUserWantlistDB;
     private JSONArray mUserCollectionJSON = new JSONArray();
@@ -130,8 +130,7 @@ public class LoadingSplashScreen extends Activity {
                         try {
                             wantlistNum = mUserProfileJSON.getInt("num_wantlist");
                             collectionNum = mUserProfileJSON.getInt("num_collection");
-                            progressTotal = 1 + ((collectionNum / 100) + 1) + ((wantlistNum / 100) + 1)
-                                    + 1 + 1;
+                            progressTotal = 5 + (collectionNum / 100) + (wantlistNum / 100);
 //                            if(collectionNum < 10){
 //                                progressTotal += collectionNum;
 //                            } else {
@@ -147,9 +146,9 @@ public class LoadingSplashScreen extends Activity {
                             Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
 
 
-//                            String loadedProfileMessage =
-//                                    "Loaded Profile for " + Preferences.get(Preferences.USERNAME, "");
-//                            loadingText.setText(loadedProfileMessage);
+                            String loadedProfileMessage =
+                                    "Loaded Profile for " + Preferences.get(Preferences.USERNAME, "");
+                            loadingText.setText(loadedProfileMessage);
                             loadingBar.setMax(progressTotal);
                             loadingBar.setProgress(++progressMade);
                             String collectionFirstPageURL = "https://api.discogs.com/users/" +
@@ -210,10 +209,10 @@ public class LoadingSplashScreen extends Activity {
                             JSONObject paginationInfo = (JSONObject) response.get("pagination");
                             int currentListPage = (int) paginationInfo.get("page");
                             int totalListPages = (int) paginationInfo.get("pages");
-//                            String loadedCollectionMessage =
-//                                    "Loaded Collection Page " + String.valueOf(currentListPage)
-//                                            + " of " + String.valueOf(totalListPages);
-//                            loadingText.setText(loadedCollectionMessage);
+                            String loadedCollectionMessage =
+                                    "Loaded Collection Page " + String.valueOf(currentListPage)
+                                            + " of " + String.valueOf(totalListPages);
+                            loadingText.setText(loadedCollectionMessage);
                             loadingBar.setProgress(++progressMade);
                             if (currentListPage < totalListPages) {
                                 String nextPageURL = userCollectionURL.replace(
@@ -280,10 +279,10 @@ public class LoadingSplashScreen extends Activity {
                             JSONObject paginationInfo = (JSONObject) response.get("pagination");
                             int currentListPage = (int) paginationInfo.get("page");
                             int totalListPages = (int) paginationInfo.get("pages");
-//                            String loadedWantlistMessage =
-//                                    "Loaded Wantlist Page " + String.valueOf(currentListPage)
-//                                            + " of " + String.valueOf(totalListPages);
-//                            loadingText.setText(loadedWantlistMessage);
+                            String loadedWantlistMessage =
+                                    "Loaded Wantlist Page " + String.valueOf(currentListPage)
+                                            + " of " + String.valueOf(totalListPages);
+                            loadingText.setText(loadedWantlistMessage);
                             loadingBar.setProgress(++progressMade);
                             if (currentListPage < totalListPages) {
                                 String nextPageURL = userWantlistURL.replace(
@@ -295,7 +294,7 @@ public class LoadingSplashScreen extends Activity {
                                 extractCollectionData();
                                 extractWantlistData();
                                 Log.i("Loading Splash", "Loading complete");
-                                Intent i = new Intent(LoadingSplashScreen.this, DashboardActivity.class);
+                                Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
                                 startActivity(i);
                                 // close this activity
                                 finish();

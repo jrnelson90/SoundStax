@@ -114,11 +114,10 @@ public class AuthPageFragment extends VisibleFragment {
         return v;
     }
 
-    private void navigateBackToList() {
-//        Intent upIntent = NavUtils.getParentActivityIntent(getActivity());
-//        NavUtils.navigateUpTo(getActivity(), upIntent);
-        Intent i = new Intent(getActivity(), LoadingSplashScreen.class);
+    private void openLoadingActivity() {
+        Intent i = new Intent(getActivity(), LoadingSplashActivity.class);
         startActivity(i);
+        getActivity().finish();
     }
 
     private void FetchOauthAccessToken(final String[] _passedOauth) {
@@ -135,7 +134,7 @@ public class AuthPageFragment extends VisibleFragment {
                             Preferences.set(Preferences.OAUTH_ACCESS_SECRET, parsedAccessSecret);
                             CookieManager cookieManager = CookieManager.getInstance();
                             cookieManager.removeAllCookies(null);
-                            navigateBackToList();
+                            openLoadingActivity();
                     }
                     }
                 }, new Response.ErrorListener() {

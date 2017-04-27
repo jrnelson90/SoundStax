@@ -20,4 +20,11 @@ public class AuthPageActivity extends SingleFragmentActivity {
     public Fragment createFragment() {
         return AuthPageFragment.newInstance(getIntent().getData());
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent("finish_activity");
+        sendBroadcast(intent);
+    }
 }

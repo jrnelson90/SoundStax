@@ -1,5 +1,6 @@
 package com.justinrandalnelson.waxstacks;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ public class DashboardActivity extends SingleFragmentActivity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private boolean logout = false;
 
     @Override
     protected Fragment createFragment() {
@@ -77,7 +79,7 @@ public class DashboardActivity extends SingleFragmentActivity {
     private void selectItem(MenuItem menuItem) {
         // update the main content by replacing fragments
         Fragment fragment = null;
-        Class fragmentClass;
+        Class fragmentClass = null;
         switch (menuItem.getItemId()) {
             case R.id.dashboard_fragment_nav:
                 fragmentClass = DashboardFragment.class;
@@ -96,28 +98,33 @@ public class DashboardActivity extends SingleFragmentActivity {
                 break;
             case R.id.logout_nav:
                 clearAllUserInfo();
-                fragmentClass = DashboardFragment.class;
+                Intent i = new Intent(this, LoginSplashActivity.class);
+                startActivity(i);
+                logout = true;
+                finish();
                 break;
             default:
                 fragmentClass = DashboardFragment.class;
         }
+        if (!logout) {
+            try {
+                assert fragmentClass != null;
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            // Highlight the selected item has been done by NavigationView
+            menuItem.setChecked(true);
+            // Set action bar title
+            setTitle(menuItem.getTitle());
+            // Close the navigation drawer
+            mDrawerLayout.closeDrawer(mDrawerList);
         }
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     private void clearAllUserInfo() {
@@ -126,6 +133,7 @@ public class DashboardActivity extends SingleFragmentActivity {
         Preferences.set(Preferences.USERNAME, "");
         Preferences.set(Preferences.USER_ID, "");
         Preferences.set(Preferences.USER_PROFILE, "");
+        Preferences.set(Preferences.USER_PIC_DIR, "");
 
         File collectionImageDir =
                 new File("/data/user/0/com.justinrandalnelson.waxstacks/app_CollectionCovers");
