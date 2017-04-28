@@ -38,6 +38,7 @@ import java.util.UUID;
 
 public class ReleaseFragment extends Fragment {
     private static final String ARG_RELEASE_ID = "release_id";
+    private static final String ARG_RELEASE = "release";
     private static String parentList;
     private Release mRelease;
     private TextView mTitleField;
@@ -57,13 +58,16 @@ public class ReleaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
+        UUID releaseID;
         if (parentList.equals("Collection")) {
+            releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
             mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
         } else if (parentList.equals("Wantlist")) {
+            releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
             mRelease = UserWantlistDB.get(getActivity()).getRelease(releaseID);
         } else if (parentList.equals("Search")) {
-
+            Bundle args = getActivity().getIntent().getExtras();
+            mRelease = (Release) args.getSerializable(ARG_RELEASE);
         }
         queue = Volley.newRequestQueue(getContext());
     }

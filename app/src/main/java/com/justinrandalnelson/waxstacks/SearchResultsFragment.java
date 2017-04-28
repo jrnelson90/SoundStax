@@ -106,9 +106,7 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_search_results_list, menu);
-//        final MenuItem searchItem = menu.findItem(R.id.menu_item_search_icon);
-//        mSearchView = (SearchView) searchItem.getActionView();
+        inflater.inflate(R.menu.search_toolbar_layout, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -126,18 +124,8 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
-    //    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_item_search:
-//
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
     private void updateUI() {
-        List<Release> releases = null;
+        List<Release> releases;
         try {
             releases = searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
             if (mAdapter == null) {
@@ -205,7 +193,6 @@ public class SearchResultsFragment extends Fragment {
         for (int i = 0; i < _searchResults.length(); i++) {
             JSONObject currentRelease = (JSONObject) _searchResults.get(i);
             if (currentRelease != null && currentRelease.getString("type").equals("release")) {
-//                JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
                 String releaseTitle = currentRelease.getString("title").split("-")[1];
                 String releaseYear;
                 if (currentRelease.has("year")) {
@@ -228,9 +215,7 @@ public class SearchResultsFragment extends Fragment {
         return returnList;
     }
 
-    private class ReleaseHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
-
+    private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
         private final TextView mYearTextView;
@@ -262,6 +247,9 @@ public class SearchResultsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Search");
+            Bundle args = new Bundle();
+            args.putSerializable("release", mRelease);
+            intent.putExtras(args);
             startActivity(intent);
         }
     }
@@ -315,7 +303,6 @@ public class SearchResultsFragment extends Fragment {
                                     }
 
                                     release.setThumbDir(filePath.getAbsolutePath());
-//                                    mUserCollectionDB.updateRelease(release);
                                     holder.bindRelease(release);
                                 } catch (NullPointerException e) {
                                     e.printStackTrace();

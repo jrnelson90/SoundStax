@@ -98,7 +98,7 @@ public class UserListsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_search_results_list, menu);
+        inflater.inflate(R.menu.search_toolbar_layout, menu);
     }
 
     @Override
