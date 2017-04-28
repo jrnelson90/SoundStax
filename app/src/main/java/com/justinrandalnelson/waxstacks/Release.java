@@ -16,6 +16,7 @@ public class Release implements Serializable {
     private String mThumbUrl;
     private String mThumbDir;
     private String mReleaseId;
+    private String mInstanceId;
 
     public Release() {
         this(UUID.randomUUID());
@@ -87,5 +88,13 @@ public class Release implements Serializable {
 
     public void setReleaseId(String releaseId) {
         mReleaseId = releaseId;
+    }
+
+    public String getInstanceId() {
+        return mInstanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        mInstanceId = instanceId;
     }
 }

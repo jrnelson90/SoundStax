@@ -7,8 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,6 +51,7 @@ public class DashboardFragment extends Fragment {
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
+    private SearchView mSearchView;
     private RequestQueue queue;
 
     @Override
@@ -183,6 +188,31 @@ public class DashboardFragment extends Fragment {
             getActivity().finish();
         }
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.search_toolbar_layout, menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // your text view here
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
+                Bundle args = new Bundle();
+                args.putString("query", query);
+                i.putExtras(args);
+                startActivity(i);
+                return true;
+            }
+        });
     }
 
     private boolean checkAccessToken() {
