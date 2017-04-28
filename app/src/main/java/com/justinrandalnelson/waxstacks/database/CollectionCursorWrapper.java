@@ -24,6 +24,7 @@ public class CollectionCursorWrapper extends CursorWrapper {
         String genre = getString(getColumnIndex(CollectionTable.Cols.GENRE));
         String year = getString(getColumnIndex(CollectionTable.Cols.YEAR));
         String releaseId = getString(getColumnIndex(CollectionTable.Cols.RELEASE_ID));
+        String instanceID = getString(getColumnIndex(CollectionTable.Cols.INSTANCE_ID));
         String thumbUrl = getString(getColumnIndex(CollectionTable.Cols.THUMB_URL));
         String thumbDir = getString(getColumnIndex(CollectionTable.Cols.THUMB_DIR));
 
@@ -33,6 +34,7 @@ public class CollectionCursorWrapper extends CursorWrapper {
         release.setGenre(genre);
         release.setYear(year);
         release.setReleaseId(releaseId);
+        release.setInstanceId(instanceID);
         release.setThumbUrl(thumbUrl);
         release.setThumbDir(thumbDir);
 

@@ -177,59 +177,60 @@ public class ReleaseFragment extends Fragment {
                 removeButtonText = "Remove from " + parentList;
                 mModifyListActionOneButton.setText(removeButtonText);
                 mModifyListActionTwoButton.setVisibility(View.INVISIBLE);
-//                mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
-//                                Toast.LENGTH_SHORT).show();
-//                        String releaseURL = "https://api.discogs.com/users/" +
-//                                Preferences.get(Preferences.USERNAME, "") + "/wants/" + mRelease.getReleaseId();
-//                        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, releaseURL,
-//                                new Response.Listener<String>() {
-//                                    @Override
-//                                    public void onResponse(String response) {
-//
-//                                    }
-//                                }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                // TODO Auto-generated method stub
-//                            }
-//                        })
-//
-//                        {
-//                            @Override
-//                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                                int mStatusCode = response.statusCode;
-//                                if (mStatusCode == 204) {
-//                                    UserWantlistDB.get(getActivity()).deleteRelease(mRelease);
-//                                    getActivity().finish();
-//                                }
-//                                return super.parseNetworkResponse(response);
-//                            }
-//
-//                            @Override
-//                            public Map<String, String> getHeaders() throws AuthFailureError {
-//                                Map<String, String> params = new HashMap<>();
-//                                Long tsLong = System.currentTimeMillis() / 1000;
-//                                String ts = tsLong.toString();
-//                                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                                params.put("Authorization", "OAuth" +
-//                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-//                                        ", oauth_nonce=" + ts +
-//                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-//                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-//                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-//                                        ", oauth_signature_method=PLAINTEXT" +
-//                                        ", oauth_timestamp=" + ts);
-//                                params.put("User-Agent", HttpConst.USER_AGENT);
-//                                return params;
-//                            }
-//                        };
-//                        queue.add(stringRequest);
-//                    }
-//
-//                });
+                mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
+                                Toast.LENGTH_SHORT).show();
+                        String releaseURL = "https://api.discogs.com/users/" +
+                                Preferences.get(Preferences.USERNAME, "") + "/collection/folders/0/releases/" +
+                                mRelease.getReleaseId() + "/instances/" + mRelease.getInstanceId();
+                        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, releaseURL,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO Auto-generated method stub
+                            }
+                        })
+
+                        {
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                int mStatusCode = response.statusCode;
+                                if (mStatusCode == 204) {
+                                    UserCollectionDB.get(getActivity()).deleteRelease(mRelease);
+                                    getActivity().finish();
+                                }
+                                return super.parseNetworkResponse(response);
+                            }
+
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                Long tsLong = System.currentTimeMillis() / 1000;
+                                String ts = tsLong.toString();
+                                params.put("Content-Type", "application/x-www-form-urlencoded");
+                                params.put("Authorization", "OAuth" +
+                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        ", oauth_nonce=" + ts +
+                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                                        ", oauth_signature_method=PLAINTEXT" +
+                                        ", oauth_timestamp=" + ts);
+                                params.put("User-Agent", HttpConst.USER_AGENT);
+                                return params;
+                            }
+                        };
+                        queue.add(stringRequest);
+                    }
+
+                });
                 break;
             case "Wantlist":
                 removeButtonText = "Remove from " + parentList;

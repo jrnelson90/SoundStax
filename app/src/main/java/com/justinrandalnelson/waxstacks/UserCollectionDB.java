@@ -42,6 +42,7 @@ class UserCollectionDB {
         values.put(CollectionTable.Cols.GENRE, release.getGenre());
         values.put(CollectionTable.Cols.YEAR, release.getYear());
         values.put(CollectionTable.Cols.RELEASE_ID, release.getReleaseId());
+        values.put(CollectionTable.Cols.INSTANCE_ID, release.getInstanceId());
         values.put(CollectionTable.Cols.THUMB_URL, release.getThumbUrl());
         values.put(CollectionTable.Cols.THUMB_DIR, release.getThumbDir());
 

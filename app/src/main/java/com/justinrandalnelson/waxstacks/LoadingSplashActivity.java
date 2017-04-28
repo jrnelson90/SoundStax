@@ -345,11 +345,13 @@ public class LoadingSplashActivity extends Activity {
                     String releaseYear = basicInfo.getString("year");
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
                     String releaseId = basicInfo.getString("id");
+                    String instanceId = currentRelease.getString("instance_id");
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
+                    release.setInstanceId(instanceId);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserCollectionDB.addRelease(release);
