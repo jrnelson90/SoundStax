@@ -61,6 +61,8 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
         queue = Volley.newRequestQueue(getContext());
         Bundle args = getActivity().getIntent().getExtras();
         String queryString = args.getString(QUERY_ARG);
@@ -205,7 +207,12 @@ public class SearchResultsFragment extends Fragment {
             if (currentRelease != null && currentRelease.getString("type").equals("release")) {
 //                JSONObject basicInfo = currentRelease.getJSONObject("basic_information");
                 String releaseTitle = currentRelease.getString("title").split("-")[1];
-                String releaseYear = currentRelease.getString("year");
+                String releaseYear;
+                if (currentRelease.has("year")) {
+                    releaseYear = currentRelease.getString("year");
+                } else {
+                    releaseYear = "Year Unknown";
+                }
                 String releaseArtist = currentRelease.getString("title").split("-")[0];
                 String releaseId = currentRelease.getString("id");
                 Release release = new Release();
