@@ -169,8 +169,8 @@ public class ReleaseFragment extends Fragment {
         TextView yearField = (TextView) v.findViewById(R.id.release_year);
         yearField.setText(mRelease.getYear());
 
-        Button mModifyListActionOneButton = (Button) v.findViewById(R.id.modify_release_one_button);
-        Button mModifyListActionTwoButton = (Button) v.findViewById(R.id.modify_release_two_button);
+        final Button mModifyListActionOneButton = (Button) v.findViewById(R.id.modify_release_one_button);
+        final Button mModifyListActionTwoButton = (Button) v.findViewById(R.id.modify_release_two_button);
         String removeButtonText;
         switch (parentList) {
             case "Collection":
@@ -291,117 +291,133 @@ public class ReleaseFragment extends Fragment {
                 });
                 break;
             case "Search":
-                String collectionButtonText = "Add to Collection";
+                final String collectionButtonText = "Add to Collection";
                 String wantlistButtonText = "Add to Wantlist";
                 mModifyListActionOneButton.setText(collectionButtonText);
                 mModifyListActionTwoButton.setText(wantlistButtonText);
-//                mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
-//                                Toast.LENGTH_SHORT).show();
-//                        String releaseURL = "https://api.discogs.com/users/" +
-//                                Preferences.get(Preferences.USERNAME, "") + "/wants/" + mRelease.getReleaseId();
-//                        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, releaseURL,
-//                                new Response.Listener<String>() {
-//                                    @Override
-//                                    public void onResponse(String response) {
+                mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
+                    int mStatusCode;
+
+                    @Override
+                    public void onClick(View view) {
+
+                        String releaseURL = "https://api.discogs.com/users/" +
+                                Preferences.get(Preferences.USERNAME, "") +
+                                "/collection/folders/1/releases/" + mRelease.getReleaseId();
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, releaseURL, null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        if (mStatusCode == 201) {
+                                            String instanceId = null;
+                                            try {
+                                                instanceId = response.getString("instance_id");
+                                                mRelease.setInstanceId(instanceId);
+                                                UserCollectionDB.get(getActivity()).addRelease(mRelease);
+                                                Toast.makeText(getActivity(), mTitleField.getText().toString()
+                                                                + " added to Collection.",
+                                                        Toast.LENGTH_SHORT).show();
+                                                mModifyListActionOneButton.setActivated(false);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            // getActivity().finish();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO Auto-generated method stub
+                            }
+                        })
+
+                        {
+                            @Override
+                            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                                mStatusCode = response.statusCode;
+                                return super.parseNetworkResponse(response);
+                            }
+
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                Long tsLong = System.currentTimeMillis() / 1000;
+                                String ts = tsLong.toString();
+                                params.put("Content-Type", "application/x-www-form-urlencoded");
+                                params.put("Authorization", "OAuth" +
+                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        ", oauth_nonce=" + ts +
+                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                                        ", oauth_signature_method=PLAINTEXT" +
+                                        ", oauth_timestamp=" + ts);
+                                params.put("User-Agent", HttpConst.USER_AGENT);
+                                return params;
+                            }
+                        };
+                        queue.add(stringRequest);
+                    }
+
+                });
 //
-//                                    }
-//                                }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                // TODO Auto-generated method stub
-//                            }
-//                        })
-//
-//                        {
-//                            @Override
-//                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                                int mStatusCode = response.statusCode;
-//                                if (mStatusCode == 204) {
-//                                    UserWantlistDB.get(getActivity()).deleteRelease(mRelease);
-//                                    getActivity().finish();
-//                                }
-//                                return super.parseNetworkResponse(response);
-//                            }
-//
-//                            @Override
-//                            public Map<String, String> getHeaders() throws AuthFailureError {
-//                                Map<String, String> params = new HashMap<>();
-//                                Long tsLong = System.currentTimeMillis() / 1000;
-//                                String ts = tsLong.toString();
-//                                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                                params.put("Authorization", "OAuth" +
-//                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-//                                        ", oauth_nonce=" + ts +
-//                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-//                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-//                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-//                                        ", oauth_signature_method=PLAINTEXT" +
-//                                        ", oauth_timestamp=" + ts);
-//                                params.put("User-Agent", HttpConst.USER_AGENT);
-//                                return params;
-//                            }
-//                        };
-//                        queue.add(stringRequest);
-//                    }
-//
-//                });
-//
-//                mModifyListActionTwoButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Toast.makeText(getActivity(), mTitleField.getText().toString() + " deleted.",
-//                                Toast.LENGTH_SHORT).show();
-//                        String releaseURL = "https://api.discogs.com/users/" +
-//                                Preferences.get(Preferences.USERNAME, "") + "/wants/" + mRelease.getReleaseId();
-//                        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, releaseURL,
-//                                new Response.Listener<String>() {
-//                                    @Override
-//                                    public void onResponse(String response) {
-//
-//                                    }
-//                                }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                // TODO Auto-generated method stub
-//                            }
-//                        })
-//
-//                        {
-//                            @Override
-//                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                                int mStatusCode = response.statusCode;
-//                                if (mStatusCode == 204) {
-//                                    UserWantlistDB.get(getActivity()).deleteRelease(mRelease);
-//                                    getActivity().finish();
-//                                }
-//                                return super.parseNetworkResponse(response);
-//                            }
-//
-//                            @Override
-//                            public Map<String, String> getHeaders() throws AuthFailureError {
-//                                Map<String, String> params = new HashMap<>();
-//                                Long tsLong = System.currentTimeMillis() / 1000;
-//                                String ts = tsLong.toString();
-//                                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                                params.put("Authorization", "OAuth" +
-//                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
-//                                        ", oauth_nonce=" + ts +
-//                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-//                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
-//                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-//                                        ", oauth_signature_method=PLAINTEXT" +
-//                                        ", oauth_timestamp=" + ts);
-//                                params.put("User-Agent", HttpConst.USER_AGENT);
-//                                return params;
-//                            }
-//                        };
-//                        queue.add(stringRequest);
-//                    }
-//
-//                });
+                mModifyListActionTwoButton.setOnClickListener(new View.OnClickListener() {
+                    int mStatusCode;
+
+                    @Override
+                    public void onClick(View view) {
+
+                        String releaseURL = "https://api.discogs.com/users/" +
+                                Preferences.get(Preferences.USERNAME, "") +
+                                "/wants/" + mRelease.getReleaseId();
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.PUT, releaseURL, null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        if (mStatusCode == 201) {
+                                            UserWantlistDB.get(getActivity()).addRelease(mRelease);
+                                            Toast.makeText(getActivity(), mTitleField.getText().toString()
+                                                            + " added to Wantlist.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            mModifyListActionTwoButton.setActivated(false);
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO Auto-generated method stub
+                            }
+                        })
+
+                        {
+                            @Override
+                            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                                mStatusCode = response.statusCode;
+                                return super.parseNetworkResponse(response);
+                            }
+
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                Long tsLong = System.currentTimeMillis() / 1000;
+                                String ts = tsLong.toString();
+                                params.put("Content-Type", "application/x-www-form-urlencoded");
+                                params.put("Authorization", "OAuth" +
+                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        ", oauth_nonce=" + ts +
+                                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                                        ", oauth_signature_method=PLAINTEXT" +
+                                        ", oauth_timestamp=" + ts);
+                                params.put("User-Agent", HttpConst.USER_AGENT);
+                                return params;
+                            }
+                        };
+                        queue.add(stringRequest);
+                    }
+
+                });
                 break;
         }
 
