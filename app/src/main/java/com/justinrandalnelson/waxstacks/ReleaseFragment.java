@@ -310,9 +310,12 @@ public class ReleaseFragment extends Fragment {
                                     public void onResponse(JSONObject response) {
                                         if (mStatusCode == 201) {
                                             String instanceId = null;
+                                            String dateAdded = null;
                                             try {
                                                 instanceId = response.getString("instance_id");
                                                 mRelease.setInstanceId(instanceId);
+                                                dateAdded = response.getString("date_added");
+                                                mRelease.setDateAdded(dateAdded);
                                                 UserCollectionDB.get(getActivity()).addRelease(mRelease);
                                                 Toast.makeText(getActivity(), mTitleField.getText().toString()
                                                                 + " added to Collection.",

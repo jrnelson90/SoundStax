@@ -16,6 +16,7 @@ public class ReleaseDbSchema {
             public static final String YEAR = "year";
             public static final String RELEASE_ID = "releaseId";
             public static final String INSTANCE_ID = "instanceId";
+            public static final String DATE_ADDED = "dateAdded";
             public static final String THUMB_URL = "thumbUrl";
             public static final String THUMB_DIR = "thumbDir";
         }

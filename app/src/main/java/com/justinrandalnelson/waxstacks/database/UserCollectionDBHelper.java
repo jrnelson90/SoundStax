@@ -29,6 +29,7 @@ public class UserCollectionDBHelper extends SQLiteOpenHelper {
                 CollectionTable.Cols.YEAR + ", " +
                 CollectionTable.Cols.RELEASE_ID + ", " +
                 CollectionTable.Cols.INSTANCE_ID + ", " +
+                CollectionTable.Cols.DATE_ADDED + ", " +
                 CollectionTable.Cols.THUMB_URL + ", " +
                 CollectionTable.Cols.THUMB_DIR +
                 ")"

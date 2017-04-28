@@ -346,12 +346,14 @@ public class LoadingSplashActivity extends Activity {
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
                     String releaseId = basicInfo.getString("id");
                     String instanceId = currentRelease.getString("instance_id");
+                    String dateAdded = currentRelease.getString("date_added");
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
                     release.setInstanceId(instanceId);
+                    release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserCollectionDB.addRelease(release);
@@ -380,6 +382,7 @@ public class LoadingSplashActivity extends Activity {
                     String releaseYear = basicInfo.getString("year");
                     String releaseId = basicInfo.getString("id");
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+//                    String dateAdded = currentRelease.getString("date_added");
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
