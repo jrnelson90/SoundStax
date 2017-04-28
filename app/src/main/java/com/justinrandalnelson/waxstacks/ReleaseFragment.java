@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -314,8 +316,12 @@ public class ReleaseFragment extends Fragment {
                                             try {
                                                 instanceId = response.getString("instance_id");
                                                 mRelease.setInstanceId(instanceId);
-                                                dateAdded = response.getString("date_added");
-                                                mRelease.setDateAdded(dateAdded);
+//                                                dateAdded = response.getString("date_added");
+                                                //       "date_added": "2015-11-30T10:54:13-08:00",
+                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
+                                                Date now = new Date();
+                                                String strDate = sdf.format(now);
+                                                mRelease.setDateAdded(strDate);
                                                 UserCollectionDB.get(getActivity()).addRelease(mRelease);
                                                 Toast.makeText(getActivity(), mTitleField.getText().toString()
                                                                 + " added to Collection.",

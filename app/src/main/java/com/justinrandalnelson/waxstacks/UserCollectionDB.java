@@ -149,7 +149,7 @@ class UserCollectionDB {
                 whereArgs,
                 null,
                 null,
-                null,
+                CollectionTable.Cols.DATE_ADDED + " DESC",
                 null
         );
 
