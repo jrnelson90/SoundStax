@@ -19,13 +19,6 @@ public class ReleaseActivity extends SingleFragmentActivity {
         parentList = _parentList;
         return intent;
     }
-//
-//    public static Intent newIntent(Context packageContext, Release release, String _parentList) {
-//        Intent intent = new Intent(packageContext, ReleaseActivity.class);
-//        intent.putExtra(EXTRA_RELEASE, release);
-//        parentList = _parentList;
-//        return intent;
-//    }
 
     @Override
     protected Fragment createFragment() {
