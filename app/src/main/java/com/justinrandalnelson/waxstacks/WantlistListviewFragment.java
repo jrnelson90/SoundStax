@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,14 +39,14 @@ import java.util.List;
  */
 
 public class WantlistListviewFragment extends Fragment {
-
-    private static final String TAG = "WantlistListviewFragment";
+    private static final String TAG = "WantlistListview";
     private RecyclerView mReleaseRecyclerView;
     private Spinner mGenreFilterSpinner;
     private ReleaseAdapter mAdapter;
     private UserWantlistDB mUserWantlistDB;
     private RequestQueue queue;
-
+    private JSONObject mSearchResults;
+    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,17 +103,26 @@ public class WantlistListviewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_release_list, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_search:
+        inflater.inflate(R.menu.search_toolbar_layout, menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // your text view here
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
+                Bundle args = new Bundle();
+                args.putString("query", query);
+                i.putExtras(args);
+                startActivity(i);
+                return true;
+            }
+        });
     }
 
     private void updateUI() {
@@ -130,6 +142,55 @@ public class WantlistListviewFragment extends Fragment {
 //        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
+
+//    void fetchQuery(String _queryString) {
+//        //Parse search into a URL friendly encoding.
+//        String query_string_encoded = "";
+//        try {
+//            query_string_encoded = URLEncoder.encode(_queryString, "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        // Get JSON object for passed release info.
+//        String searchString = "https://api.discogs.com/database/search?q=" + query_string_encoded;
+//        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+//                (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        mSearchResults = response;
+//                        Log.i(TAG, "Received Search JSON:");
+//
+//                        // TODO Call and populate results view
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // Auto-generated method stub
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                Long tsLong = System.currentTimeMillis() / 1000;
+//                String ts = tsLong.toString();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                params.put("Authorization", "OAuth" +
+//                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+//                        ", oauth_nonce=" + ts +
+//                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+//                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+//                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+//                        ", oauth_signature_method=PLAINTEXT" +
+//                        ", oauth_timestamp=" + ts);
+//                params.put("User-Agent", HttpConst.USER_AGENT);
+//                return params;
+//            }
+//        };
+//        // Access the RequestQueue through your singleton class.
+//        queue.add(jsObjRequest);
+//
+//    }
 
     private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

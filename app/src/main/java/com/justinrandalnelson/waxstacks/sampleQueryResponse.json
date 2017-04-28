@@ -1,0 +1,694 @@
+{
+  "pagination": {
+    "per_page": 50,
+    "items": 17,
+    "page": 1,
+    "urls": {
+    },
+    "pages": 1
+  },
+  "results": [
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/CafcSA17a_ipf_kZI8mcQ95efhQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8325107-1461715268-2010.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album",
+        "Deluxe Edition",
+        "Limited Edition"
+      ],
+      "country": "Australia & New Zealand",
+      "barcode": [
+        "9332727058646",
+        "140970E1\/A PIRATES PRESS - 0882250010 A",
+        "140970E2\/A PIRATES PRESS - 0882250010 B"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/master\/992310",
+      "community": {
+        "have": 3724,
+        "want": 1577
+      },
+      "label": [
+        "Flightless",
+        "Daptone Studios",
+        "A Secret Location Sound Recorders",
+        "Remote Control",
+        "Mushroom Music",
+        "Inertia Pty. Ltd.",
+        "Pirates Press",
+        "GZ Media",
+        "Flightless"
+      ],
+      "catno": "FLT-025",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/masters\/992310",
+      "type": "master",
+      "id": 992310
+    },
+    {
+      "style": [
+        "Alternative Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/Il1z4cF5xqoehklgjTNohY3ZzGE=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8443539-1493206220-9669.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album"
+      ],
+      "country": "US",
+      "barcode": [
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity-\/release\/8443539",
+      "community": {
+        "have": 1011,
+        "want": 261
+      },
+      "label": [
+        "ATO Records"
+      ],
+      "catno": "AT00301",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity ",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8443539",
+      "type": "release",
+      "id": 8443539
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/CafcSA17a_ipf_kZI8mcQ95efhQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8325107-1461715268-2010.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album",
+        "Deluxe Edition",
+        "Limited Edition"
+      ],
+      "country": "Australia & New Zealand",
+      "barcode": [
+        "9332727058646",
+        "140970E1\/A PIRATES PRESS - 0882250010 A",
+        "140970E2\/A PIRATES PRESS - 0882250010 B"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8325107",
+      "community": {
+        "have": 438,
+        "want": 324
+      },
+      "label": [
+        "Flightless",
+        "Daptone Studios",
+        "A Secret Location Sound Recorders",
+        "Remote Control",
+        "Mushroom Music",
+        "Inertia Pty. Ltd.",
+        "Pirates Press",
+        "GZ Media",
+        "Flightless"
+      ],
+      "catno": "FLT-025",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8325107",
+      "type": "release",
+      "id": 8325107
+    },
+    {
+      "style": [
+        "Alternative Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/DgzYEK-0e2KWJIRsuFeXbKPV68M=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8618197-1465245128-6884.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album"
+      ],
+      "country": "US",
+      "barcode": [
+        "880882250010",
+        "PIRATES PRESS - 0882250010 A 140970E1\/B",
+        "PIRATES PRESS - 0882250010 B 140970E2\/B"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity-\/release\/8618197",
+      "community": {
+        "have": 670,
+        "want": 181
+      },
+      "label": [
+        "ATO Records",
+        "ATO Records, LLC.",
+        "Flightless Records",
+        "Flightless Records",
+        "Daptone Studios",
+        "A Secret Location Sound Recorders"
+      ],
+      "catno": "AT00301",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity ",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8618197",
+      "type": "release",
+      "id": 8618197
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/B4vTMBEIoD__XsmXDxnGMwBEBbg=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8452534-1461893194-4937.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album"
+      ],
+      "country": "UK",
+      "barcode": [
+        "5 414939 937330",
+        "5414939937330",
+        "HVNLP127 BG23574-01 A1 KR",
+        "HVNLP127 BG23574-01 b1 KR",
+        "HVNLP127 BG23574-01 A2 MK",
+        "HVNLP127 BG23574-01 B1 KR"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8452534",
+      "community": {
+        "have": 616,
+        "want": 161
+      },
+      "label": [
+        "Heavenly Recordings",
+        "Heavenly Recordings",
+        "Heavenly Recordings",
+        "[PIAS]",
+        "Daptone Studios",
+        "A Secret Location Sound Recorders",
+        "Flightless"
+      ],
+      "catno": "HVNLP127",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8452534",
+      "type": "release",
+      "id": 8452534
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/JjMJZ4oNdLZBRYitUCsx4x6Mvf4=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8440100-1461649730-1624.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album",
+        "Deluxe Edition",
+        "Limited Edition"
+      ],
+      "country": "Australia",
+      "barcode": [
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8440100",
+      "community": {
+        "have": 307,
+        "want": 216
+      },
+      "label": [
+        "Flightless"
+      ],
+      "catno": "FLT-025",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8440100",
+      "type": "release",
+      "id": 8440100
+    },
+    {
+      "style": [
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/-XQSurr5PEJkJPS9vvMmHMss2Ls=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8650995-1465932350-7170.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "10\"",
+        "Shape",
+        "Album",
+        "Limited Edition",
+        "Picture Disc"
+      ],
+      "country": "US",
+      "barcode": [
+        "880882250119"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8650995",
+      "community": {
+        "have": 291,
+        "want": 152
+      },
+      "label": [
+        "Flightless",
+        "Flightless Records",
+        "Flightless Records",
+        "ATO Records, LLC.",
+        "ATO Records"
+      ],
+      "catno": "ATLP164",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8650995",
+      "type": "release",
+      "id": 8650995
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/K4mi8-oSFeaNJ34cTEWqoIj6h0Q=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8439969-1461643683-5542.jpeg.jpg",
+      "format": [
+        "Vinyl",
+        "LP",
+        "Album",
+        "Limited Edition"
+      ],
+      "country": "Australia & New Zealand",
+      "barcode": [
+        "9 332727 058646"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8439969",
+      "community": {
+        "have": 258,
+        "want": 157
+      },
+      "label": [
+        "Flightless"
+      ],
+      "catno": "FLT-025",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8439969",
+      "type": "release",
+      "id": 8439969
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/QYuw0anM-y86uJ_fl4An9MKvZqM=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8446597-1461772022-4516.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album"
+      ],
+      "country": "US",
+      "barcode": [
+        "880882250027"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8446597",
+      "community": {
+        "have": 57,
+        "want": 39
+      },
+      "label": [
+        "ATO Records"
+      ],
+      "catno": "ATO0301",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8446597",
+      "type": "release",
+      "id": 8446597
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/n3I12T1iwwGUSmQkCDVMYkfwJQc=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8489238-1462624871-3045.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album"
+      ],
+      "country": "UK",
+      "barcode": [
+        "5414939937323"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8489238",
+      "community": {
+        "have": 52,
+        "want": 31
+      },
+      "label": [
+        "Heavenly"
+      ],
+      "catno": "HVNLP127CD",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8489238",
+      "type": "release",
+      "id": 8489238
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/fHZB5JNemoStPmM2qXLz0-kA4Qs=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8479035-1462414403-5604.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album"
+      ],
+      "country": "Australia & New Zealand",
+      "barcode": [
+        "9332727058653"
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8479035",
+      "community": {
+        "have": 20,
+        "want": 31
+      },
+      "label": [
+        "Flightless",
+        "Daptone Studios",
+        "A Secret Location Sound Recorders"
+      ],
+      "catno": "FLT-025",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8479035",
+      "type": "release",
+      "id": 8479035
+    },
+    {
+      "style": [
+        "Garage Rock",
+        "Indie Rock",
+        "Psychedelic Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/D4aCaAYtkXYr6nKhsY5OOQ4Ff2A=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-8486797-1462567849-7421.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album",
+        "Promo"
+      ],
+      "country": "UK",
+      "barcode": [
+      ],
+      "uri": "\/King-Gizzard-And-The-Lizard-Wizard-Nonagon-Infinity\/release\/8486797",
+      "community": {
+        "have": 4,
+        "want": 24
+      },
+      "label": [
+        "Heavenly Recordings"
+      ],
+      "catno": "none",
+      "year": "2016",
+      "genre": [
+        "Rock"
+      ],
+      "title": "King Gizzard And The Lizard Wizard - Nonagon Infinity",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/8486797",
+      "type": "release",
+      "id": 8486797
+    },
+    {
+      "style": [
+        "Alternative Rock",
+        "Novelty",
+        "Pop Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/kQlAB-ymnQseJhoDvZ05BMHvfZ8=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2274564-1273794077.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album",
+        "Enhanced",
+        "DVD",
+        "DVD-Video"
+      ],
+      "country": "US",
+      "barcode": [
+        "050087107840",
+        "Z85248 D000068202 068100 ECD01",
+        "4B 068309.1.A VCD2",
+        "M 3071 D00068202 E70830-04",
+        "4B 068309.1.A VC02"
+      ],
+      "uri": "\/They-Might-Be-Giants-Here-Come-The-123s\/master\/247373",
+      "community": {
+        "have": 80,
+        "want": 20
+      },
+      "label": [
+        "Walt Disney Records",
+        "Disney Sound",
+        "Idlewild Recordings"
+      ],
+      "catno": "D000068100",
+      "year": "2008",
+      "genre": [
+        "Rock",
+        "Pop",
+        "Children's"
+      ],
+      "title": "They Might Be Giants - Here Come The 123s",
+      "resource_url": "https:\/\/api.discogs.com\/masters\/247373",
+      "type": "master",
+      "id": 247373
+    },
+    {
+      "style": [
+        "Alternative Rock",
+        "Novelty",
+        "Pop Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/kQlAB-ymnQseJhoDvZ05BMHvfZ8=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2274564-1273794077.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album",
+        "Enhanced",
+        "DVD",
+        "DVD-Video"
+      ],
+      "country": "US",
+      "barcode": [
+        "050087107840",
+        "Z85248 D000068202 068100 ECD01",
+        "4B 068309.1.A VCD2",
+        "M 3071 D00068202 E70830-04",
+        "4B 068309.1.A VC02"
+      ],
+      "uri": "\/They-Might-Be-Giants-Here-Come-The-123s\/release\/2274564",
+      "community": {
+        "have": 43,
+        "want": 9
+      },
+      "label": [
+        "Walt Disney Records",
+        "Disney Sound",
+        "Idlewild Recordings"
+      ],
+      "catno": "D000068100",
+      "year": "2008",
+      "genre": [
+        "Rock",
+        "Pop",
+        "Children's"
+      ],
+      "title": "They Might Be Giants - Here Come The 123s",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/2274564",
+      "type": "release",
+      "id": 2274564
+    },
+    {
+      "style": [
+        "Alternative Rock",
+        "Novelty",
+        "Pop Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/S9dwYoXVbQCr1baRPdTc6S7E728=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-1279976-1205989764.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album",
+        "DVD",
+        "DVD-Video"
+      ],
+      "country": "US",
+      "barcode": [
+        "0 50087 11127 4",
+        "B000VDDCLK",
+        "D000100202",
+        "M 3071 D000100202 F70828-13",
+        "L384",
+        "IFPI6100",
+        "D000100309",
+        "4B 100309.1.A VC01 M1S1",
+        "IFPI L908",
+        "M1S1 4B 100309.1.B VB01",
+        "IFPI L907",
+        "IFPI 2U03"
+      ],
+      "uri": "\/They-Might-Be-Giants-Here-Come-The-123s\/release\/1279976",
+      "community": {
+        "have": 21,
+        "want": 7
+      },
+      "label": [
+        "Disney Sound",
+        "Idlewild Recordings",
+        "Walt Disney Records",
+        "Disney",
+        "Kampo Studios",
+        "Loho Studios",
+        "Collyer Brothers Studio",
+        "Mr. Sniffles Room Of Gloom",
+        "Sterling Sound",
+        "TMBG Music",
+        "Poplives",
+        "Wonderland Music Company, Inc.",
+        "Skee-Ball",
+        "DJ SOLDIER PRODUCTIONS"
+      ],
+      "catno": "D000098900",
+      "year": "2008",
+      "genre": [
+        "Rock",
+        "Pop",
+        "Children's"
+      ],
+      "title": "They Might Be Giants - Here Come The 123s",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/1279976",
+      "type": "release",
+      "id": 1279976
+    },
+    {
+      "style": [
+        "Alternative Rock",
+        "Pop Rock",
+        "Novelty"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/cxL_I32mNnyRNJPuWsl1k3mfA4U=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-3079845-1314742291.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album",
+        "Enhanced",
+        "DVD",
+        "DVD-Video"
+      ],
+      "country": "Europe",
+      "barcode": [
+        "5099951072827",
+        "",
+        ""
+      ],
+      "uri": "\/They-Might-Be-Giants-Here-Come-The-123s\/release\/3079845",
+      "community": {
+        "have": 9,
+        "want": 3
+      },
+      "label": [
+        "Walt Disney Records",
+        "Disney Sound",
+        "Idlewild Recordings"
+      ],
+      "catno": "5099951072827",
+      "year": "2008",
+      "genre": [
+        "Rock",
+        "Pop",
+        "Children's"
+      ],
+      "title": "They Might Be Giants - Here Come The 123s",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/3079845",
+      "type": "release",
+      "id": 3079845
+    },
+    {
+      "style": [
+        "Alternative Rock",
+        "Novelty",
+        "Pop Rock"
+      ],
+      "thumb": "https:\/\/api-img.discogs.com\/CHbdNoo1qfdzox_DHv9sMslXuzU=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-4485296-1366352954-4858.jpeg.jpg",
+      "format": [
+        "CD",
+        "Album"
+      ],
+      "country": "India",
+      "barcode": [
+        "8 902633 112278",
+        "IFPI Y6SA"
+      ],
+      "uri": "\/They-Might-Be-Giants-Here-Come-The-123s\/release\/4485296",
+      "community": {
+        "have": 7,
+        "want": 1
+      },
+      "label": [
+        "Disney Sound",
+        "Times Music",
+        "Times Music",
+        "Walt Disney Records",
+        "Walt Disney Records",
+        "Sagarika Acoustronics Pvt. Ltd."
+      ],
+      "catno": "TDFWD048C",
+      "year": "2008",
+      "genre": [
+        "Rock",
+        "Pop",
+        "Children's"
+      ],
+      "title": "They Might Be Giants - Here Come The 123s",
+      "resource_url": "https:\/\/api.discogs.com\/releases\/4485296",
+      "type": "release",
+      "id": 4485296
+    }
+  ]
+}

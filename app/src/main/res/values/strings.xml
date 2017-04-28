@@ -34,4 +34,5 @@
     <string name="user_info_fragment_buyer_rating_label">Buyer Rating:</string>
     <string name="user_info_fragment_seller_ratings_num_label">Seller Ratings:</string>
     <string name="user_info_fragment_buyer_ratings_num_label">Buyer Ratings:</string>
+    <string name="search_hint">Search Artists and Releases...</string>
 </resources>

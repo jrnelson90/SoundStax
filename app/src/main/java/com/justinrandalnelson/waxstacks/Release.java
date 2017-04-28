@@ -1,12 +1,13 @@
 package com.justinrandalnelson.waxstacks;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Created by jrnel on 2/18/2017.
  */
 
-public class Release {
+public class Release implements Serializable {
     private UUID mId;
     private String mTitle;
     private String mYear;

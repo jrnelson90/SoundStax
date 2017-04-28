@@ -90,9 +90,9 @@ public class DashboardActivity extends SingleFragmentActivity {
             case R.id.wantlist_fragment_nav:
                 fragmentClass = WantlistListviewFragment.class;
                 break;
-            case R.id.lists_fragment_nav:
-                fragmentClass = UserListsFragment.class;
-                break;
+//            case R.id.lists_fragment_nav:
+//                fragmentClass = UserListsFragment.class;
+//                break;
             case R.id.profile_fragment_nav:
                 fragmentClass = UserInfoFragment.class;
                 break;

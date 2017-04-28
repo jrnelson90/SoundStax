@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +44,7 @@ public class CollectionListviewFragment extends Fragment {
     private ReleaseAdapter mAdapter;
     private UserCollectionDB mUserCollectionDB;
     private RequestQueue queue;
+    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,18 +100,51 @@ public class CollectionListviewFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_release_list, menu);
+        inflater.inflate(R.menu.search_toolbar_layout, menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // your text view here
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent i = new Intent(getActivity(), SearchResultsActivity.class);
+                Bundle args = new Bundle();
+                args.putString("query", query);
+                i.putExtras(args);
+                startActivity(i);
+                return true;
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_search:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_item_search:
+//                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                    @Override
+//                    public boolean onQueryTextChange(String newText) {
+//                        // your text view here
+//                        return true;
+//                    }
+//
+//                    @Override
+//                    public boolean onQueryTextSubmit(String query) {
+//                        fetchQuery(query);
+//                        return true;
+//                    }
+//                });
+//
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     private void updateUI() {
 //        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());

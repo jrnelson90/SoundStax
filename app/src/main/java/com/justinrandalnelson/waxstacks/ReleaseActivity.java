@@ -9,6 +9,8 @@ import java.util.UUID;
 public class ReleaseActivity extends SingleFragmentActivity {
     private static final String EXTRA_RELEASE_ID =
             "com.justinrandalnelson.waxstacks.release_id";
+    private static final String EXTRA_RELEASE =
+            "com.justinrandalnelson.waxstacks.release";
     private static String parentList;
 
     public static Intent newIntent(Context packageContext, UUID releaseID, String _parentList) {
@@ -17,6 +19,13 @@ public class ReleaseActivity extends SingleFragmentActivity {
         parentList = _parentList;
         return intent;
     }
+//
+//    public static Intent newIntent(Context packageContext, Release release, String _parentList) {
+//        Intent intent = new Intent(packageContext, ReleaseActivity.class);
+//        intent.putExtra(EXTRA_RELEASE, release);
+//        parentList = _parentList;
+//        return intent;
+//    }
 
     @Override
     protected Fragment createFragment() {
