@@ -122,7 +122,7 @@ public class AuthPageFragment extends VisibleFragment {
 
     private void FetchOauthAccessToken(final String[] _passedOauth) {
         StringRequest stringRequest = new StringRequest
-                (Request.Method.GET, HttpConst.ACCESS_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
+                (Request.Method.GET, HttpConst.DISCOGS_ACCESS_TOKEN_ENDPOINT_URL, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         String[] tokenArray = response.split("&");
@@ -153,10 +153,10 @@ public class AuthPageFragment extends VisibleFragment {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + _passedOauth[0] +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         OauthVerifyTokens.getOauthRequestTokenSecret() +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts +

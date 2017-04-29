@@ -35,7 +35,7 @@ class JsonFetcher {
                     Preferences.get(Preferences.USERNAME, ""));
         } else {
             connection.addRequestProperty("Authorization", "Discogs key=" +
-                    HttpConst.CONSUMER_KEY + ", secret=" + HttpConst.CONSUMER_SECRET);
+                    HttpConst.DISCOGS_CONSUMER_KEY + ", secret=" + HttpConst.DISCOGS_CONSUMER_SECRET);
         }
 
         if (connection.getResponseCode() == 200) {

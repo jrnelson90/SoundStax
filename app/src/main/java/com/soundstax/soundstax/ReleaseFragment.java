@@ -1,7 +1,9 @@
 package com.soundstax.soundstax;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +50,9 @@ public class ReleaseFragment extends Fragment {
     private ImageView mReleaseCoverView;
     private JSONObject mReleaseJSON;
     private RequestQueue queue;
+    private String mSpotifyLink;
+    private JSONObject mSpotifyReleaseInfo;
+    private Button mSpotifyButton;
 
     public static ReleaseFragment newInstance(UUID releaseID, String _parentList) {
         Bundle args = new Bundle();
@@ -83,6 +89,7 @@ public class ReleaseFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         mReleaseJSON = response;
+                        getSpotifyLink();
                         loadReleasePicture();
                     }
                 }, new Response.ErrorListener() {
@@ -99,10 +106,10 @@ public class ReleaseFragment extends Fragment {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -218,10 +225,10 @@ public class ReleaseFragment extends Fragment {
                                 String ts = tsLong.toString();
                                 params.put("Content-Type", "application/x-www-form-urlencoded");
                                 params.put("Authorization", "OAuth" +
-                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                                         ", oauth_nonce=" + ts +
                                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                                         ", oauth_signature_method=PLAINTEXT" +
                                         ", oauth_timestamp=" + ts);
@@ -276,10 +283,10 @@ public class ReleaseFragment extends Fragment {
                                 String ts = tsLong.toString();
                                 params.put("Content-Type", "application/x-www-form-urlencoded");
                                 params.put("Authorization", "OAuth" +
-                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                                         ", oauth_nonce=" + ts +
                                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                                         ", oauth_signature_method=PLAINTEXT" +
                                         ", oauth_timestamp=" + ts);
@@ -354,10 +361,10 @@ public class ReleaseFragment extends Fragment {
                                 String ts = tsLong.toString();
                                 params.put("Content-Type", "application/x-www-form-urlencoded");
                                 params.put("Authorization", "OAuth" +
-                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                                         ", oauth_nonce=" + ts +
                                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                                         ", oauth_signature_method=PLAINTEXT" +
                                         ", oauth_timestamp=" + ts);
@@ -412,10 +419,10 @@ public class ReleaseFragment extends Fragment {
                                 String ts = tsLong.toString();
                                 params.put("Content-Type", "application/x-www-form-urlencoded");
                                 params.put("Authorization", "OAuth" +
-                                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                                         ", oauth_nonce=" + ts +
                                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                                         ", oauth_signature_method=PLAINTEXT" +
                                         ", oauth_timestamp=" + ts);
@@ -430,6 +437,79 @@ public class ReleaseFragment extends Fragment {
                 break;
         }
 
+        mSpotifyButton = (Button) v.findViewById(R.id.spotify_play_button);
+//        mSpotifyButton.setText("Listen on Spotify");
+        mSpotifyButton.setVisibility(View.INVISIBLE);
+
         return v;
+    }
+
+
+    private void getSpotifyLink() {
+
+        // https://api.spotify.com/v1/search?q=album:arrival%20artist:abba&type=album
+        final String parsedArtist = mRelease.getArtist().split(" \\(")[0];
+        final String releaseTitle = mRelease.getTitle();
+        String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
+                Uri.encode(releaseTitle) + "+artist:" + Uri.encode(parsedArtist) + "&type=album";
+        int mStatusCode = 0;
+        final int[] finalMStatusCode = {mStatusCode};
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (finalMStatusCode[0] == 200) {
+                            mSpotifyReleaseInfo = response;
+                            try {
+                                JSONObject albums = mSpotifyReleaseInfo.getJSONObject("albums");
+                                JSONArray items = albums.getJSONArray("items");
+                                if (items.length() > 0) {
+                                    for (int i = 0; i < items.length(); i++) {
+                                        JSONObject currentResult = (JSONObject) items.get(i);
+                                        String title = currentResult.getString("name").split(" \\(")[0];
+                                        JSONArray artistsArray = currentResult.getJSONArray("artists");
+                                        for (int j = 0; j < artistsArray.length(); j++) {
+                                            JSONObject currentArtist = (JSONObject) artistsArray.get(i);
+                                            String artistName = currentArtist.getString("name");
+                                            if (title.equals(releaseTitle) && artistName.equals(parsedArtist)) {
+//                                            JSONObject externalURLs = currentResult.getJSONObject("external_urls");
+//                                            mSpotifyLink = externalURLs.getString("spotify");
+                                                String albumURI = currentResult.getString("uri");
+                                                setSpotifyButton(albumURI);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO Auto-generated method stub
+            }
+        })
+
+        {
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                finalMStatusCode[0] = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
+        };
+        queue.add(stringRequest);
+    }
+
+    private void setSpotifyButton(final String _albumURI) {
+        mSpotifyButton.setVisibility(View.VISIBLE);
+        mSpotifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(_albumURI));
+                startActivity(launcher);
+            }
+        });
     }
 }

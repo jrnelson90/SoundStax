@@ -99,10 +99,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -176,10 +176,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -244,10 +244,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -318,10 +318,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);

@@ -1,0 +1,204 @@
+{
+  "albums": {
+    "href": "https:\/\/api.spotify.com\/v1\/search?query=album%3ALos+Angeles+artist%3AX&type=album&offset=0&limit=20",
+    "items": [
+      {
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https:\/\/open.spotify.com\/artist\/54NqjhP2rT524Mi2GicG4K"
+            },
+            "href": "https:\/\/api.spotify.com\/v1\/artists\/54NqjhP2rT524Mi2GicG4K",
+            "id": "54NqjhP2rT524Mi2GicG4K",
+            "name": "X",
+            "type": "artist",
+            "uri": "spotify:artist:54NqjhP2rT524Mi2GicG4K"
+          }
+        ],
+        "available_markets": [
+          "AD",
+          "AR",
+          "AT",
+          "AU",
+          "BE",
+          "BG",
+          "BO",
+          "BR",
+          "CA",
+          "CH",
+          "CL",
+          "CO",
+          "CR",
+          "CY",
+          "CZ",
+          "DE",
+          "DK",
+          "DO",
+          "EC",
+          "EE",
+          "ES",
+          "FI",
+          "FR",
+          "GB",
+          "GR",
+          "GT",
+          "HK",
+          "HN",
+          "HU",
+          "ID",
+          "IE",
+          "IS",
+          "IT",
+          "JP",
+          "LI",
+          "LT",
+          "LU",
+          "LV",
+          "MC",
+          "MT",
+          "MX",
+          "MY",
+          "NI",
+          "NL",
+          "NO",
+          "NZ",
+          "PA",
+          "PE",
+          "PH",
+          "PL",
+          "PT",
+          "PY",
+          "SE",
+          "SG",
+          "SK",
+          "SV",
+          "TR",
+          "TW",
+          "US",
+          "UY"
+        ],
+        "external_urls": {
+          "spotify": "https:\/\/open.spotify.com\/album\/4lgW2v8MOtBxyuQ7erHLgj"
+        },
+        "href": "https:\/\/api.spotify.com\/v1\/albums\/4lgW2v8MOtBxyuQ7erHLgj",
+        "id": "4lgW2v8MOtBxyuQ7erHLgj",
+        "images": [
+          {
+            "height": 640,
+            "url": "https:\/\/i.scdn.co\/image\/118b5917e1c03c9a3aea7eefb4f9fb38d32972ff",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https:\/\/i.scdn.co\/image\/0ca04fd586d3de862ea1bdcc2b0d415d877943c7",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https:\/\/i.scdn.co\/image\/dd8ba1d7f42cc5b6f4b364cbb4f6714e3c2b0475",
+            "width": 64
+          }
+        ],
+        "name": "Los Angeles",
+        "type": "album",
+        "uri": "spotify:album:4lgW2v8MOtBxyuQ7erHLgj"
+      },
+      {
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https:\/\/open.spotify.com\/artist\/54NqjhP2rT524Mi2GicG4K"
+            },
+            "href": "https:\/\/api.spotify.com\/v1\/artists\/54NqjhP2rT524Mi2GicG4K",
+            "id": "54NqjhP2rT524Mi2GicG4K",
+            "name": "X",
+            "type": "artist",
+            "uri": "spotify:artist:54NqjhP2rT524Mi2GicG4K"
+          }
+        ],
+        "available_markets": [
+          "AU",
+          "CA",
+          "MY",
+          "US"
+        ],
+        "external_urls": {
+          "spotify": "https:\/\/open.spotify.com\/album\/3J6NVMcyORqDXLVQOlZD4T"
+        },
+        "href": "https:\/\/api.spotify.com\/v1\/albums\/3J6NVMcyORqDXLVQOlZD4T",
+        "id": "3J6NVMcyORqDXLVQOlZD4T",
+        "images": [
+          {
+            "height": 640,
+            "url": "https:\/\/i.scdn.co\/image\/6d79b7e84c23aab29ee05274d04e39b2c8b8ada6",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https:\/\/i.scdn.co\/image\/f28291fffa00433cd1ca97c8f2e256278e622c35",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https:\/\/i.scdn.co\/image\/a27b410f2b667687dc2244496bb18ff612d9a22a",
+            "width": 64
+          }
+        ],
+        "name": "Los Angeles (Deluxe)",
+        "type": "album",
+        "uri": "spotify:album:3J6NVMcyORqDXLVQOlZD4T"
+      },
+      {
+        "album_type": "album",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https:\/\/open.spotify.com\/artist\/54NqjhP2rT524Mi2GicG4K"
+            },
+            "href": "https:\/\/api.spotify.com\/v1\/artists\/54NqjhP2rT524Mi2GicG4K",
+            "id": "54NqjhP2rT524Mi2GicG4K",
+            "name": "X",
+            "type": "artist",
+            "uri": "spotify:artist:54NqjhP2rT524Mi2GicG4K"
+          }
+        ],
+        "available_markets": [
+          "CA",
+          "US"
+        ],
+        "external_urls": {
+          "spotify": "https:\/\/open.spotify.com\/album\/12aXyTYRFUfFw2OJjjKDm2"
+        },
+        "href": "https:\/\/api.spotify.com\/v1\/albums\/12aXyTYRFUfFw2OJjjKDm2",
+        "id": "12aXyTYRFUfFw2OJjjKDm2",
+        "images": [
+          {
+            "height": 640,
+            "url": "https:\/\/i.scdn.co\/image\/72d80f09a77eb6464846947c2c528d229d799aed",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https:\/\/i.scdn.co\/image\/626f881e718f400d3ace281797e3896b90a8ba03",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https:\/\/i.scdn.co\/image\/e97bd9bd370aa40da6f4acfeca377f6aee26d080",
+            "width": 64
+          }
+        ],
+        "name": "Live In Los Angeles",
+        "type": "album",
+        "uri": "spotify:album:12aXyTYRFUfFw2OJjjKDm2"
+      }
+    ],
+    "limit": 20,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total": 3
+  }
+}
