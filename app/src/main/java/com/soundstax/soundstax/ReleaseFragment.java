@@ -63,6 +63,15 @@ public class ReleaseFragment extends Fragment {
         return fragment;
     }
 
+    public static boolean stringContainsItemFromList(String inputStr, String[] items) {
+        for (int i = 0; i < items.length; i++) {
+            if (inputStr.contains(items[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -444,62 +453,126 @@ public class ReleaseFragment extends Fragment {
         return v;
     }
 
-
     private void getSpotifyLink() {
 
         // https://api.spotify.com/v1/search?q=album:arrival%20artist:abba&type=album
-        final String parsedArtist = mRelease.getArtist().split(" \\(")[0];
-        final String releaseTitle = mRelease.getTitle();
-        String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
-                Uri.encode(releaseTitle) + "+artist:" + Uri.encode(parsedArtist) + "&type=album";
-        int mStatusCode = 0;
-        final int[] finalMStatusCode = {mStatusCode};
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (finalMStatusCode[0] == 200) {
-                            mSpotifyReleaseInfo = response;
-                            try {
-                                JSONObject albums = mSpotifyReleaseInfo.getJSONObject("albums");
-                                JSONArray items = albums.getJSONArray("items");
-                                if (items.length() > 0) {
-                                    for (int i = 0; i < items.length(); i++) {
-                                        JSONObject currentResult = (JSONObject) items.get(i);
-                                        String title = currentResult.getString("name").split(" \\(")[0];
-                                        JSONArray artistsArray = currentResult.getJSONArray("artists");
-                                        for (int j = 0; j < artistsArray.length(); j++) {
-                                            JSONObject currentArtist = (JSONObject) artistsArray.get(i);
-                                            String artistName = currentArtist.getString("name");
-                                            if (title.equals(releaseTitle) && artistName.equals(parsedArtist)) {
+        final String parsedArtist = mRelease.getArtist().split(" \\(")[0].toLowerCase().replace("and ", "").replace("& ", "");
+        String releaseTitle = mRelease.getTitle().toLowerCase().replace("-", " ")
+                .replaceAll("[+.^:,()\\[\\]\"]", "").replace("   ", "  ").replace("  ", " ");
+        if (stringContainsItemFromList(releaseTitle, new String[]{"original", "motion", "picture", "movie", "cast", "recording", "broadway", "soundtrack"})) {
+            String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
+                    Uri.encode(releaseTitle) + "&type=album";
+            int mStatusCode = 0;
+            final int[] finalMStatusCode = {mStatusCode};
+            final String finalReleaseTitle1 = releaseTitle;
+            JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (finalMStatusCode[0] == 200) {
+                                mSpotifyReleaseInfo = response;
+                                try {
+                                    JSONObject albums = mSpotifyReleaseInfo.getJSONObject("albums");
+                                    JSONArray items = albums.getJSONArray("items");
+                                    if (items.length() > 0) {
+                                        for (int i = 0; i < items.length(); i++) {
+                                            JSONObject currentResult = (JSONObject) items.get(i);
+                                            String title = currentResult.getString("name").toLowerCase()
+                                                    .replaceAll("[-+.^:,()\\[\\]\"]", "").replace("remastered", "").replace("version", "")
+                                                    .replace("edition", "").replace("  ", " ");
+                                            if (title.replace(" ", "").equals(finalReleaseTitle1.replace(" ", ""))) {
 //                                            JSONObject externalURLs = currentResult.getJSONObject("external_urls");
 //                                            mSpotifyLink = externalURLs.getString("spotify");
                                                 String albumURI = currentResult.getString("uri");
                                                 setSpotifyButton(albumURI);
                                             }
+
                                         }
                                     }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // TODO Auto-generated method stub
-            }
-        })
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO Auto-generated method stub
+                }
+            })
 
-        {
-            @Override
-            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                finalMStatusCode[0] = response.statusCode;
-                return super.parseNetworkResponse(response);
-            }
-        };
-        queue.add(stringRequest);
+            {
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                    finalMStatusCode[0] = response.statusCode;
+                    return super.parseNetworkResponse(response);
+                }
+            };
+            queue.add(stringRequest);
+        } else {
+            releaseTitle = releaseTitle.split("\\(")[0].split(":")[0];
+            String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
+                    Uri.encode(releaseTitle) + "+artist:" + Uri.encode(parsedArtist) + "&type=album";
+            int mStatusCode = 0;
+            final int[] finalMStatusCode = {mStatusCode};
+            final String finalReleaseTitle = releaseTitle;
+            JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            if (finalMStatusCode[0] == 200) {
+                                mSpotifyReleaseInfo = response;
+                                try {
+                                    JSONObject albums = mSpotifyReleaseInfo.getJSONObject("albums");
+                                    JSONArray items = albums.getJSONArray("items");
+                                    if (items.length() > 0) {
+                                        for (int i = 0; i < items.length(); i++) {
+                                            JSONObject currentResult = (JSONObject) items.get(i);
+                                            String title = currentResult.getString("name");
+                                            title = title.split(" \\(")[0].split(":")[0].toLowerCase().replaceAll("[+.^:,()\\[\\]\"]", "").replace("remastered", "").replace("version", "")
+                                                    .replace("edition", "").replace("  ", " ");
+                                            JSONArray artistsArray = currentResult.getJSONArray("artists");
+                                            for (int j = 0; j < artistsArray.length(); j++) {
+                                                JSONObject currentArtist = (JSONObject) artistsArray.get(i);
+                                                String artistName = currentArtist.getString("name")
+                                                        .toLowerCase().replace(".", "")
+                                                        .replace("and ", "").replace("& ", "");
+                                                if (artistName.equals("various artists")) {
+                                                    artistName = "various";
+                                                }
+                                                if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
+                                                        && artistName.replace(" ", "").equals(parsedArtist.replace(" ", ""))) {
+//                                            JSONObject externalURLs = currentResult.getJSONObject("external_urls");
+//                                            mSpotifyLink = externalURLs.getString("spotify");
+                                                    String albumURI = currentResult.getString("uri");
+                                                    setSpotifyButton(albumURI);
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO Auto-generated method stub
+                }
+            })
+
+            {
+                @Override
+                protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                    finalMStatusCode[0] = response.statusCode;
+                    return super.parseNetworkResponse(response);
+                }
+            };
+            queue.add(stringRequest);
+        }
+
+
     }
 
     private void setSpotifyButton(final String _albumURI) {
