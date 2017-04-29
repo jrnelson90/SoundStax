@@ -41,6 +41,10 @@ class UserCollectionDB {
         values.put(CollectionTable.Cols.ARTIST, release.getArtist());
         values.put(CollectionTable.Cols.GENRE, release.getGenre());
         values.put(CollectionTable.Cols.YEAR, release.getYear());
+        values.put(CollectionTable.Cols.FORMAT_NAME, release.getFormatName());
+        values.put(CollectionTable.Cols.FORMAT_QTY, release.getFormatQty());
+        values.put(CollectionTable.Cols.FORMAT_DESCRIPTIONS, release.getFormatDescriptions());
+        values.put(CollectionTable.Cols.FORMAT_TEXT, release.getFormatText());
         values.put(CollectionTable.Cols.RELEASE_ID, release.getReleaseId());
         values.put(CollectionTable.Cols.INSTANCE_ID, release.getInstanceId());
         values.put(CollectionTable.Cols.DATE_ADDED, release.getDateAdded());

@@ -23,6 +23,10 @@ public class CollectionCursorWrapper extends CursorWrapper {
         String artist = getString(getColumnIndex(CollectionTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(CollectionTable.Cols.GENRE));
         String year = getString(getColumnIndex(CollectionTable.Cols.YEAR));
+        String formatName = getString(getColumnIndex(CollectionTable.Cols.FORMAT_NAME));
+        String formatQty = getString(getColumnIndex(CollectionTable.Cols.FORMAT_QTY));
+        String formatDescriptions = getString(getColumnIndex(CollectionTable.Cols.FORMAT_DESCRIPTIONS));
+        String formatText = getString(getColumnIndex(CollectionTable.Cols.FORMAT_TEXT));
         String releaseId = getString(getColumnIndex(CollectionTable.Cols.RELEASE_ID));
         String instanceID = getString(getColumnIndex(CollectionTable.Cols.INSTANCE_ID));
         String dateAdded = getString(getColumnIndex(CollectionTable.Cols.DATE_ADDED));
@@ -34,6 +38,10 @@ public class CollectionCursorWrapper extends CursorWrapper {
         release.setArtist(artist);
         release.setGenre(genre);
         release.setYear(year);
+        release.setFormatName(formatName);
+        release.setFormatQty(formatQty);
+        release.setFormatDescriptions(formatDescriptions);
+        release.setFormatText(formatText);
         release.setReleaseId(releaseId);
         release.setInstanceId(instanceID);
         release.setDateAdded(dateAdded);

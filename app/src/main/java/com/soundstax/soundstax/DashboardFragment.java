@@ -466,5 +466,4 @@ public class DashboardFragment extends Fragment {
         Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
     }
 
-
 }

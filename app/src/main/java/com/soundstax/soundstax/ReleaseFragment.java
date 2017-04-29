@@ -107,6 +107,7 @@ public class ReleaseFragment extends Fragment {
                         mReleaseJSON = response;
                         getSpotifyLink();
                         loadReleasePicture();
+                        loadTrackInfo();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -133,6 +134,10 @@ public class ReleaseFragment extends Fragment {
             }
         };
         queue.add(releaseJSON);
+    }
+
+    private void loadTrackInfo() {
+        // TODO: Create method for parsing track info
     }
 
     private void loadReleasePicture() {

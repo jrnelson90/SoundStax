@@ -23,6 +23,10 @@ public class WantlistCursorWrapper extends CursorWrapper {
         String artist = getString(getColumnIndex(WantlistTable.Cols.ARTIST));
         String genre = getString(getColumnIndex(WantlistTable.Cols.GENRE));
         String year = getString(getColumnIndex(WantlistTable.Cols.YEAR));
+        String formatName = getString(getColumnIndex(WantlistTable.Cols.FORMAT_NAME));
+        String formatQty = getString(getColumnIndex(WantlistTable.Cols.FORMAT_QTY));
+        String formatDescriptions = getString(getColumnIndex(WantlistTable.Cols.FORMAT_DESCRIPTIONS));
+        String formatText = getString(getColumnIndex(WantlistTable.Cols.FORMAT_TEXT));
         String releaseId = getString(getColumnIndex(WantlistTable.Cols.RELEASE_ID));
         String dateAdded = getString(getColumnIndex(WantlistTable.Cols.DATE_ADDED));
         String thumbUrl = getString(getColumnIndex(WantlistTable.Cols.THUMB_URL));
@@ -33,6 +37,10 @@ public class WantlistCursorWrapper extends CursorWrapper {
         release.setArtist(artist);
         release.setGenre(genre);
         release.setYear(year);
+        release.setFormatName(formatName);
+        release.setFormatQty(formatQty);
+        release.setFormatDescriptions(formatDescriptions);
+        release.setFormatText(formatText);
         release.setReleaseId(releaseId);
         release.setDateAdded(dateAdded);
         release.setThumbUrl(thumbUrl);

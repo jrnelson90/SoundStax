@@ -129,7 +129,6 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-//        UserWantlistDB releaseBase = UserWantlistDB.get(getActivity());
         List<Release> releases = mUserWantlistDB.getReleases();
 
         if (mAdapter == null) {
@@ -146,73 +145,26 @@ public class WantlistListviewFragment extends Fragment {
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
-//    void fetchQuery(String _queryString) {
-//        //Parse search into a URL friendly encoding.
-//        String query_string_encoded = "";
-//        try {
-//            query_string_encoded = URLEncoder.encode(_queryString, "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        // Get JSON object for passed release info.
-//        String searchString = "https://api.discogs.com/database/search?q=" + query_string_encoded;
-//        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-//                (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        mSearchResults = response;
-//                        Log.i(TAG, "Received Search JSON:");
-//
-//                        // TODO Call and populate results view
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // Auto-generated method stub
-//                    }
-//                }) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                Long tsLong = System.currentTimeMillis() / 1000;
-//                String ts = tsLong.toString();
-//                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                params.put("Authorization", "OAuth" +
-//                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
-//                        ", oauth_nonce=" + ts +
-//                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-//                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
-//                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-//                        ", oauth_signature_method=PLAINTEXT" +
-//                        ", oauth_timestamp=" + ts);
-//                params.put("User-Agent", HttpConst.USER_AGENT);
-//                return params;
-//            }
-//        };
-//        // Access the RequestQueue through your singleton class.
-//        queue.add(jsObjRequest);
-//
-//    }
-
     private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private final ImageView mThumbImageView;
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
         private final TextView mYearTextView;
         private final TextView mGenreTextView;
-        private final ImageView mThumbImageView;
+        private final TextView mFormatInfo;
 
         private Release mRelease;
 
         ReleaseHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
-            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
 
@@ -221,7 +173,23 @@ public class WantlistListviewFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-            mGenreTextView.setText(mRelease.getGenre());
+//            mGenreTextView.setText(mRelease.getGenre());
+            mGenreTextView.setVisibility(View.GONE);
+            mFormatInfo.setText(mRelease.getFormatName());
+            String formatInfoParsed = "";
+            for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+                formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+                if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                        i != mRelease.getFormatDescriptionsArray().length - 1) {
+                    formatInfoParsed += " ";
+                }
+            }
+            mFormatInfo.append(" (" + formatInfoParsed);
+            if (mRelease.getFormatText().length() > 0) {
+                mFormatInfo.append(" " + mRelease.getFormatText() + ")");
+            } else {
+                mFormatInfo.append(")");
+            }
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
@@ -230,7 +198,6 @@ public class WantlistListviewFragment extends Fragment {
             Intent intent = ReleaseActivity.newIntent(getActivity(), mRelease.getId(), "Wantlist");
             startActivity(intent);
         }
-
 
     }
 
@@ -262,9 +229,8 @@ public class WantlistListviewFragment extends Fragment {
 
                                     String thumbDir = "WantlistCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
                                     // Create imageDir
-//                                    File filePath = new File(directory, "release_cover" +
-//                                            holder.getAdapterPosition() + ".jpeg");
                                     File filePath = new File(directory, "release_" +
                                             release.getReleaseId() + "_cover.jpeg");
 

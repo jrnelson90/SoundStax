@@ -133,17 +133,6 @@ public class LoadingSplashActivity extends Activity {
                             wantlistNum = mUserProfileJSON.getInt("num_wantlist");
                             collectionNum = mUserProfileJSON.getInt("num_collection");
                             progressTotal = 5 + (collectionNum / 100) + (wantlistNum / 100);
-//                            if(collectionNum < 10){
-//                                progressTotal += collectionNum;
-//                            } else {
-//                                progressTotal += 10;
-//                            }
-//
-//                            if(wantlistNum < 10) {
-//                                progressTotal += wantlistNum;
-//                            } else {
-//                                progressTotal += 10;
-//                            }
                             Log.i("Profile Request", "Received User Profile JSON");
                             Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
 
@@ -349,20 +338,30 @@ public class LoadingSplashActivity extends Activity {
                     String releaseId = basicInfo.getString("id");
                     String instanceId = currentRelease.getString("instance_id");
                     String dateAdded = currentRelease.getString("date_added");
+                    JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
+                    String formatName = formatInfo.getString("name");
+                    String formatQty = formatInfo.getString("qty");
+                    JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                    String formatDescriptions = formatDescriptionsArray.toString();
+                    String formatText = "";
+                    if (formatInfo.has("text")) {
+                        formatText = formatInfo.getString("text");
+                    }
+
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
                     release.setInstanceId(instanceId);
+                    release.setFormatName(formatName);
+                    release.setFormatQty(formatQty);
+                    release.setFormatDescriptions(formatDescriptions);
+                    release.setFormatText(formatText);
                     release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserCollectionDB.addRelease(release);
-//                    String parsedCollectionItemMessage =
-//                            "Parsed Collection Item " + String.valueOf(i)
-//                                    + " of " + String.valueOf(mUserCollectionJSON.length());
-//                    loadingText.setText(parsedCollectionItemMessage);
                 }
                 Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
             } else {
@@ -384,22 +383,32 @@ public class LoadingSplashActivity extends Activity {
                     String releaseYear = basicInfo.getString("year");
                     String releaseId = basicInfo.getString("id");
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
+                    JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
+                    String formatName = formatInfo.getString("name");
+                    String formatQty = formatInfo.getString("qty");
+                    JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                    String formatDescriptions = formatDescriptionsArray.toString();
+                    String formatText = "";
+                    if (formatInfo.has("text")) {
+                        formatText = formatInfo.getString("text");
+                    }
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
                     Date now = new Date();
                     String dateAdded = sdf.format(now);
+
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
+                    release.setFormatName(formatName);
+                    release.setFormatQty(formatQty);
+                    release.setFormatDescriptions(formatDescriptions);
+                    release.setFormatText(formatText);
                     release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserWantlistDB.addRelease(release);
-//                    String parsedWantlistItemMessage =
-//                            "Parsed Wantlist Item " + String.valueOf(i)
-//                                    + " of " + String.valueOf(mUserWantlistJSON.length());
-//                    loadingText.setText(parsedWantlistItemMessage);
                 }
                 Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
             } else {

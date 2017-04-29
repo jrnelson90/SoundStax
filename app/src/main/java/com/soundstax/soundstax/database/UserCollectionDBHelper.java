@@ -27,6 +27,10 @@ public class UserCollectionDBHelper extends SQLiteOpenHelper {
                 CollectionTable.Cols.ARTIST + ", " +
                 CollectionTable.Cols.GENRE + ", " +
                 CollectionTable.Cols.YEAR + ", " +
+                CollectionTable.Cols.FORMAT_NAME + ", " +
+                CollectionTable.Cols.FORMAT_QTY + ", " +
+                CollectionTable.Cols.FORMAT_DESCRIPTIONS + ", " +
+                CollectionTable.Cols.FORMAT_TEXT + ", " +
                 CollectionTable.Cols.RELEASE_ID + ", " +
                 CollectionTable.Cols.INSTANCE_ID + ", " +
                 CollectionTable.Cols.DATE_ADDED + ", " +

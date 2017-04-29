@@ -202,11 +202,16 @@ public class SearchResultsFragment extends Fragment {
                 }
                 String releaseArtist = currentRelease.getString("title").split("-")[0];
                 String releaseId = currentRelease.getString("id");
+                JSONArray formatInfo = currentRelease.getJSONArray("formats");
+                String formatName = formatInfo.getString(0);
+                String formatDescriptions = formatInfo.getString(1) + ", " + formatInfo.getString(2);
                 Release release = new Release();
                 release.setArtist(releaseArtist);
                 release.setYear(releaseYear);
                 release.setTitle(releaseTitle);
                 release.setReleaseId(releaseId);
+                release.setFormatName(formatName);
+                release.setFormatDescriptions(formatDescriptions);
                 release.setThumbUrl(currentRelease.getString("thumb"));
                 release.setThumbDir("");
                 returnList.add(release);

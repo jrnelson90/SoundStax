@@ -125,30 +125,6 @@ public class CollectionListviewFragment extends Fragment {
         });
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_item_search:
-//                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                    @Override
-//                    public boolean onQueryTextChange(String newText) {
-//                        // your text view here
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onQueryTextSubmit(String query) {
-//                        fetchQuery(query);
-//                        return true;
-//                    }
-//                });
-//
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-
     private void updateUI() {
 //        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
         List<Release> releases = mUserCollectionDB.getReleases();
@@ -167,25 +143,26 @@ public class CollectionListviewFragment extends Fragment {
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
-    private class ReleaseHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private final ImageView mThumbImageView;
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
         private final TextView mYearTextView;
         private final TextView mGenreTextView;
-        private final ImageView mThumbImageView;
+        private final TextView mFormatInfo;
 
         private Release mRelease;
 
         ReleaseHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
-            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
 
@@ -194,7 +171,23 @@ public class CollectionListviewFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-            mGenreTextView.setText(mRelease.getGenre());
+//            mGenreTextView.setText(mRelease.getGenre());
+            mGenreTextView.setVisibility(View.GONE);
+            mFormatInfo.setText(mRelease.getFormatName());
+            String formatInfoParsed = "";
+            for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+                formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+                if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                        i != mRelease.getFormatDescriptionsArray().length - 1) {
+                    formatInfoParsed += " ";
+                }
+            }
+            mFormatInfo.append(" (" + formatInfoParsed);
+            if (mRelease.getFormatText().length() > 0) {
+                mFormatInfo.append(" " + mRelease.getFormatText() + ")");
+            } else {
+                mFormatInfo.append(")");
+            }
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
@@ -233,9 +226,8 @@ public class CollectionListviewFragment extends Fragment {
 
                                     String thumbDir = "CollectionCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
                                     // Create imageDir
-//                                    File filePath = new File(directory, "release_cover" +
-//                                            holder.getAdapterPosition() + ".jpeg");
                                     File filePath = new File(directory, "release_" +
                                             release.getReleaseId() + "_cover.jpeg");
 

@@ -41,6 +41,10 @@ class UserWantlistDB {
         values.put(WantlistTable.Cols.ARTIST, release.getArtist());
         values.put(WantlistTable.Cols.GENRE, release.getGenre());
         values.put(WantlistTable.Cols.YEAR, release.getYear());
+        values.put(WantlistTable.Cols.FORMAT_NAME, release.getFormatName());
+        values.put(WantlistTable.Cols.FORMAT_QTY, release.getFormatQty());
+        values.put(WantlistTable.Cols.FORMAT_DESCRIPTIONS, release.getFormatDescriptions());
+        values.put(WantlistTable.Cols.FORMAT_TEXT, release.getFormatText());
         values.put(WantlistTable.Cols.RELEASE_ID, release.getReleaseId());
         values.put(WantlistTable.Cols.DATE_ADDED, release.getDateAdded());
         values.put(WantlistTable.Cols.THUMB_URL, release.getThumbUrl());
