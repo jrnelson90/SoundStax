@@ -1,6 +1,7 @@
 package com.soundstax.soundstax;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,14 +51,19 @@ public class ReleaseFragment extends Fragment {
     private static final String ARG_RELEASE_ID = "release_id";
     private static final String ARG_RELEASE = "release";
     private static String parentList;
+    private static boolean loadedReleaseInfo;
+    private static boolean loadedHighRes;
     private Release mRelease;
     private TextView mTitleField;
     private ImageView mReleaseCoverView;
     private JSONObject mReleaseJSON;
     private RequestQueue queue;
-    private String mSpotifyLink;
     private JSONObject mSpotifyReleaseInfo;
     private Button mSpotifyButton;
+    private TextView mReleaseFormatInfo;
+    private TextView mReleaseLabels;
+    private android.widget.TableLayout mTrackInfoTable;
+    private TextView mReleaseGenre;
 
     public static ReleaseFragment newInstance(UUID releaseID, String _parentList) {
         Bundle args = new Bundle();
@@ -63,6 +71,8 @@ public class ReleaseFragment extends Fragment {
         final ReleaseFragment fragment = new ReleaseFragment();
         fragment.setArguments(args);
         parentList = _parentList;
+        loadedReleaseInfo = false;
+        loadedHighRes = false;
         return fragment;
     }
 
@@ -99,85 +109,135 @@ public class ReleaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        String releaseURL = "https://api.discogs.com/releases/" + mRelease.getReleaseId();
-        JsonObjectRequest releaseJSON = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        mReleaseJSON = response;
-                        getSpotifyLink();
-                        loadReleasePicture();
-                        loadTrackInfo();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        if (!loadedReleaseInfo) {
+            String releaseURL = "https://api.discogs.com/releases/" + mRelease.getReleaseId();
+            JsonObjectRequest releaseJSON = new JsonObjectRequest(Request.Method.GET, releaseURL, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            mReleaseJSON = response;
+                            loadedReleaseInfo = true;
+                            getSpotifyLink();
+                            loadReleasePicture();
+                            loadReleaseInfo();
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                params.put("Content-Type", "application/x-www-form-urlencoded");
-                params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
-                        ", oauth_nonce=" + ts +
-                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
-                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-                        ", oauth_signature_method=PLAINTEXT" +
-                        ", oauth_timestamp=" + ts);
-                params.put("User-Agent", HttpConst.USER_AGENT);
-                return params;
-            }
-        };
-        queue.add(releaseJSON);
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    Long tsLong = System.currentTimeMillis() / 1000;
+                    String ts = tsLong.toString();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    params.put("Authorization", "OAuth" +
+                            "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
+                            ", oauth_nonce=" + ts +
+                            ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                            ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
+                            Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                            ", oauth_signature_method=PLAINTEXT" +
+                            ", oauth_timestamp=" + ts);
+                    params.put("User-Agent", HttpConst.USER_AGENT);
+                    return params;
+                }
+            };
+            queue.add(releaseJSON);
+        }
     }
 
-    private void loadTrackInfo() {
+    private void loadReleaseInfo() {
         // TODO: Create method for parsing track info
-    }
-
-    private void loadReleasePicture() {
-        String releaseCoverLargeUrl = "";
+        String releaseGenre = null;
+        String releaseLabel = null;
         try {
-            releaseCoverLargeUrl = (String) mReleaseJSON.getJSONArray("images").getJSONObject(0).get("uri");
+            releaseGenre = mReleaseJSON.getJSONArray("styles").getString(0);
+            mReleaseGenre.setText(releaseGenre);
+            releaseLabel = mReleaseJSON.getJSONArray("labels").getJSONObject(0).getString("name");
+            mReleaseLabels.setText(releaseLabel);
+            JSONArray tracklist = mReleaseJSON.getJSONArray("tracklist");
+            for (int i = 0; i < tracklist.length(); i++) {
+                JSONObject currentTrack = tracklist.getJSONObject(i);
+                if (currentTrack.getString("type_").equals("track")) {
+                    TableRow trackRow = new TableRow(getContext());
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                    trackRow.setLayoutParams(lp);
+
+                    int dpInPx = (int) (8 * Resources.getSystem().getDisplayMetrics().density);
+                    trackRow.setPadding(dpInPx, 0, 0, 0);
+                    TextView trackNumber = new TextView(getContext());
+                    TextView trackName = new TextView(getContext());
+                    TextView trackDuration = new TextView(getContext());
+
+                    String trackNumberString = currentTrack.getString("position");
+                    trackNumber.setText(trackNumberString);
+
+                    String trackNameString = currentTrack.getString("title");
+                    trackName.setText(trackNameString);
+
+                    String trackDurationString = currentTrack.getString("duration");
+                    if (trackDurationString.length() == 0) {
+                        trackDurationString = "N/A";
+                    }
+                    trackDuration.setText(trackDurationString);
+
+                    trackRow.addView(trackNumber);
+                    trackRow.addView(trackName);
+                    trackRow.addView(trackDuration);
+                    mTrackInfoTable.addView(trackRow, i + 1);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ImageRequest thumbRequest = new ImageRequest(releaseCoverLargeUrl,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap releaseCoverBitmap) {
-                        mReleaseCoverView.setImageBitmap(releaseCoverBitmap);
+//        mReleaseUserFolder ;
+    }
 
-                        try {
-                            FileOutputStream fos = null;
-                            File imgFile = new File(mRelease.getThumbDir());
+    private void loadReleasePicture() {
+        if (!loadedHighRes) {
+            String releaseCoverLargeUrl = "";
+            try {
+                releaseCoverLargeUrl = (String) mReleaseJSON.getJSONArray("images").getJSONObject(0).get("uri");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ImageRequest thumbRequest = new ImageRequest(releaseCoverLargeUrl,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap releaseCoverBitmap) {
+                            mReleaseCoverView.setImageBitmap(releaseCoverBitmap);
+
                             try {
-                                fos = new FileOutputStream(imgFile);
-                                releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            } finally {
+                                FileOutputStream fos = null;
+                                File imgFile = new File(mRelease.getThumbDir());
                                 try {
-                                    if (fos != null) {
-                                        fos.close();
-                                    }
-                                } catch (IOException e) {
+                                    fos = new FileOutputStream(imgFile);
+                                    releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                } catch (FileNotFoundException e) {
                                     e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (fos != null) {
+                                            fos.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
                             }
 
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
+                            loadedHighRes = true;
                         }
-                    }
-                }, 600, 600, ImageView.ScaleType.FIT_CENTER, null, null);
-        // Add the request to the RequestQueue.
-        queue.add(thumbRequest);
+                    }, 600, 600, ImageView.ScaleType.FIT_CENTER, null, null);
+            // Add the request to the RequestQueue.
+            queue.add(thumbRequest);
+        }
     }
 
     @Override
@@ -194,9 +254,27 @@ public class ReleaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_release_page, container, false);
+        mTrackInfoTable = (TableLayout) v.findViewById(R.id.track_info_table);
+        mReleaseLabels = (TextView) v.findViewById(R.id.release_labels);
+
+        mReleaseFormatInfo = (TextView) v.findViewById(R.id.release_format_info);
+        mReleaseFormatInfo.setText(mRelease.getFormatName());
+        String formatInfoParsed = "";
+        for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+            formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+            if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                    i != mRelease.getFormatDescriptionsArray().length - 1) {
+                formatInfoParsed += " ";
+            }
+        }
+        mReleaseFormatInfo.append(" (" + formatInfoParsed);
+        if (mRelease.getFormatText().length() > 0) {
+            mReleaseFormatInfo.append(" " + mRelease.getFormatText() + ")");
+        } else {
+            mReleaseFormatInfo.append(")");
+        }
 
         mReleaseCoverView = (ImageView) v.findViewById(R.id.release_cover_image_view);
-
         File imgFile = new File(mRelease.getThumbDir());
         if (imgFile.exists()) {
             Bitmap coverBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -209,10 +287,10 @@ public class ReleaseFragment extends Fragment {
         TextView artistField = (TextView) v.findViewById(R.id.release_artist);
         artistField.setText(mRelease.getArtist());
 
-        TextView genreField = (TextView) v.findViewById(R.id.release_genre);
+        mReleaseGenre = (TextView) v.findViewById(R.id.release_genre);
 //        if(mRelease.getGenre().equals("")){
-        String empty = "(None Specified)";
-        genreField.setText(empty);
+//        String empty = "(None Specified)";
+//        mReleaseGenre.setText(empty);
 //        } else{
 //            genreField.setText(mRelease.getGenre());
 //        }

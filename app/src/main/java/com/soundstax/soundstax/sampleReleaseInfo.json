@@ -1,0 +1,198 @@
+{
+  "styles": [
+    "Punk"
+  ],
+  "series": [
+  ],
+  "labels": [
+    {
+      "name": "Modern Action Records",
+      "entity_type": "1",
+      "catno": "MAR010",
+      "resource_url": "https:\/\/api.discogs.com\/labels\/229342",
+      "id": 229342,
+      "entity_type_name": "Label"
+    }
+  ],
+  "year": 2010,
+  "community": {
+    "status": "Accepted",
+    "rating": {
+      "count": 6,
+      "average": 4.33
+    },
+    "have": 41,
+    "contributors": [
+      {
+        "username": "woodshampoo",
+        "resource_url": "https:\/\/api.discogs.com\/users\/woodshampoo"
+      },
+      {
+        "username": "thai80",
+        "resource_url": "https:\/\/api.discogs.com\/users\/thai80"
+      },
+      {
+        "username": "xdysenteryx",
+        "resource_url": "https:\/\/api.discogs.com\/users\/xdysenteryx"
+      },
+      {
+        "username": "DiscogsUpdateBot",
+        "resource_url": "https:\/\/api.discogs.com\/users\/DiscogsUpdateBot"
+      },
+      {
+        "username": "degm",
+        "resource_url": "https:\/\/api.discogs.com\/users\/degm"
+      }
+    ],
+    "want": 22,
+    "submitter": {
+      "username": "woodshampoo",
+      "resource_url": "https:\/\/api.discogs.com\/users\/woodshampoo"
+    },
+    "data_quality": "Needs Vote"
+  },
+  "artists": [
+    {
+      "join": ",",
+      "name": "The Stitches",
+      "anv": "",
+      "tracks": "",
+      "role": "",
+      "resource_url": "https:\/\/api.discogs.com\/artists\/759397",
+      "id": 759397
+    }
+  ],
+  "images": [
+    {
+      "uri": "https:\/\/api-img.discogs.com\/2ueXBD7KKAZKGsXErzH_jETFwsg=\/fit-in\/344x357\/filters:strip_icc():format(jpeg):mode_rgb():quality(90)\/discogs-images\/R-2968943-1328735417.jpeg.jpg",
+      "height": 357,
+      "width": 344,
+      "resource_url": "https:\/\/api-img.discogs.com\/2ueXBD7KKAZKGsXErzH_jETFwsg=\/fit-in\/344x357\/filters:strip_icc():format(jpeg):mode_rgb():quality(90)\/discogs-images\/R-2968943-1328735417.jpeg.jpg",
+      "type": "primary",
+      "uri150": "https:\/\/api-img.discogs.com\/dmb7GWi7Rd8XA1zJhYr3--NWjoQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2968943-1328735417.jpeg.jpg"
+    }
+  ],
+  "format_quantity": 1,
+  "id": 2968943,
+  "genres": [
+    "Rock"
+  ],
+  "thumb": "https:\/\/api-img.discogs.com\/dmb7GWi7Rd8XA1zJhYr3--NWjoQ=\/fit-in\/150x150\/filters:strip_icc():format(jpeg):mode_rgb():quality(40)\/discogs-images\/R-2968943-1328735417.jpeg.jpg",
+  "num_for_sale": 0,
+  "title": "8 x 12\"",
+  "date_changed": "2016-10-22T04:33:22-07:00",
+  "master_id": 316209,
+  "lowest_price": null,
+  "status": "Accepted",
+  "released_formatted": "07 Dec 2010",
+  "estimated_weight": 230,
+  "master_url": "https:\/\/api.discogs.com\/masters\/316209",
+  "released": "2010-12-07",
+  "date_added": "2011-07-02T22:28:20-07:00",
+  "tracklist": [
+    {
+      "duration": "",
+      "position": "A1",
+      "type_": "track",
+      "title": "Nowhere"
+    },
+    {
+      "duration": "",
+      "position": "A2",
+      "type_": "track",
+      "title": "I Can't Do Anything"
+    },
+    {
+      "duration": "",
+      "position": "A3",
+      "type_": "track",
+      "title": "Throw It Away"
+    },
+    {
+      "duration": "",
+      "position": "A4",
+      "type_": "track",
+      "extraartists": [
+        {
+          "join": "",
+          "name": "La Peste (3)",
+          "anv": "",
+          "tracks": "",
+          "role": "Written-By",
+          "resource_url": "https:\/\/api.discogs.com\/artists\/443900",
+          "id": 443900
+        }
+      ],
+      "title": "Better Off Dead"
+    },
+    {
+      "duration": "",
+      "position": "B1",
+      "type_": "track",
+      "title": "My Baby Hates Me"
+    },
+    {
+      "duration": "",
+      "position": "B2",
+      "type_": "track",
+      "title": "True Stories"
+    },
+    {
+      "duration": "",
+      "position": "B3",
+      "type_": "track",
+      "title": "Amphetamine Girl"
+    },
+    {
+      "duration": "",
+      "position": "B4",
+      "type_": "track",
+      "extraartists": [
+        {
+          "join": "",
+          "name": "Shane MacGowan",
+          "anv": "S. MacGowan",
+          "tracks": "",
+          "role": "Written-By",
+          "resource_url": "https:\/\/api.discogs.com\/artists\/257024",
+          "id": 257024
+        }
+      ],
+      "title": "That Woman's Got Me Drinking"
+    }
+  ],
+  "extraartists": [
+    {
+      "join": "",
+      "name": "The Stitches",
+      "anv": "",
+      "tracks": "A1 to A3, B1 to B3",
+      "role": "Written-By",
+      "resource_url": "https:\/\/api.discogs.com\/artists\/759397",
+      "id": 759397
+    }
+  ],
+  "country": "US",
+  "notes": "15th anniversary edition. Hand-numbered edition of 300 copies. Silk-screened cover with a Stitches button attached - includes a 2-sided lyric sheet & 2 poster inserts.",
+  "identifiers": [
+  ],
+  "companies": [
+  ],
+  "uri": "https:\/\/www.discogs.com\/The-Stitches-8-x-12\/release\/2968943",
+  "formats": [
+    {
+      "descriptions": [
+        "12\"",
+        "45 RPM",
+        "Limited Edition",
+        "Numbered",
+        "Reissue"
+      ],
+      "text": "Purple",
+      "name": "Vinyl",
+      "qty": "1"
+    }
+  ],
+  "resource_url": "https:\/\/api.discogs.com\/releases\/2968943",
+  "data_quality": "Needs Vote"
+}

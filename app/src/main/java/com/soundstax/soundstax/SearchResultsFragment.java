@@ -238,6 +238,7 @@ public class SearchResultsFragment extends Fragment {
         private final TextView mYearTextView;
         private final TextView mGenreTextView;
         private final ImageView mThumbImageView;
+        private final TextView mFormatInfo;
 
         private Release mRelease;
 
@@ -249,6 +250,7 @@ public class SearchResultsFragment extends Fragment {
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
             mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
             mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
 
@@ -257,7 +259,18 @@ public class SearchResultsFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-            mGenreTextView.setText(mRelease.getGenre());
+//            mGenreTextView.setText(mRelease.getGenre());
+            mGenreTextView.setVisibility(View.GONE);
+            mFormatInfo.setText(mRelease.getFormatName());
+            String formatInfoParsed = "";
+            for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+                formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+                if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                        i != mRelease.getFormatDescriptionsArray().length - 1) {
+                    formatInfoParsed += " ";
+                }
+            }
+            mFormatInfo.append(" (" + formatInfoParsed + ")");
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
