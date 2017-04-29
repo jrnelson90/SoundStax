@@ -30,6 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -141,6 +144,28 @@ public class ReleaseFragment extends Fragment {
                     @Override
                     public void onResponse(Bitmap releaseCoverBitmap) {
                         mReleaseCoverView.setImageBitmap(releaseCoverBitmap);
+
+                        try {
+                            FileOutputStream fos = null;
+                            File imgFile = new File(mRelease.getThumbDir());
+                            try {
+                                fos = new FileOutputStream(imgFile);
+                                releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fos != null) {
+                                        fos.close();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, 600, 600, ImageView.ScaleType.FIT_CENTER, null, null);
         // Add the request to the RequestQueue.

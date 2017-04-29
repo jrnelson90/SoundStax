@@ -71,17 +71,11 @@ public class DashboardFragment extends Fragment {
         queue = Volley.newRequestQueue(getContext());
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
-//            try {
-//                mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        setPreviewThumbnails();
+    }
 
     @Override
     public void onPause() {
@@ -111,7 +105,7 @@ public class DashboardFragment extends Fragment {
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                     imageView.setLayoutParams(parms);
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Collection", i, imageView);
+                        DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +133,7 @@ public class DashboardFragment extends Fragment {
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                     imageView.setLayoutParams(parms);
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Wantlist", i, imageView);
+                        DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -277,7 +271,7 @@ public class DashboardFragment extends Fragment {
             imageView.setLayoutParams(parms);
 
             if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Collection", i, imageView);
+                DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                 final Release finalCurrentRelease = currentRelease;
@@ -299,7 +293,7 @@ public class DashboardFragment extends Fragment {
             LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
             imageView.setLayoutParams(parms);
             if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Wantlist", i, imageView);
+                DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                 final Release finalCurrentRelease = currentRelease;
@@ -379,7 +373,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void DownloadPreviewThumbnail(final String _thumbDbName, final int dbIndex,
-                                          final ImageView imageView) {
+                                          final String _releaseID, final ImageView imageView) {
         long startTime = System.currentTimeMillis();
         String thumbURL = "";
         if (_thumbDbName.equals("Collection")) {
@@ -406,7 +400,7 @@ public class DashboardFragment extends Fragment {
 
                             File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                             // Create imageDir
-                            File filePath = new File(directory, "release_cover" + dbIndex + ".jpeg");
+                            File filePath = new File(directory, "release_" + _releaseID + "_cover.jpeg");
 
                             FileOutputStream fos = null;
                             try {

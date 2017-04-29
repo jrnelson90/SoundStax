@@ -283,8 +283,8 @@ public class SearchResultsFragment extends Fragment {
                                     String thumbDir = "SearchCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                                     // Create imageDir
-                                    File filePath = new File(directory, "release_cover" +
-                                            holder.getAdapterPosition() + ".jpeg");
+                                    File filePath = new File(directory, "release_" +
+                                            release.getReleaseId() + "_cover.jpeg");
 
                                     FileOutputStream fos = null;
                                     try {
