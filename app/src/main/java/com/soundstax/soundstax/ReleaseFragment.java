@@ -400,6 +400,10 @@ public class ReleaseFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         if (mStatusCode == 201) {
+                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
+                                            Date now = new Date();
+                                            String strDate = sdf.format(now);
+                                            mRelease.setDateAdded(strDate);
                                             UserWantlistDB.get(getActivity()).addRelease(mRelease);
                                             Toast.makeText(getActivity(), mTitleField.getText().toString()
                                                             + " added to Wantlist.",

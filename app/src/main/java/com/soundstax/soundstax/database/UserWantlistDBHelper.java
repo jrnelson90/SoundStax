@@ -28,6 +28,7 @@ public class UserWantlistDBHelper extends SQLiteOpenHelper {
                 WantlistTable.Cols.GENRE + ", " +
                 WantlistTable.Cols.YEAR + ", " +
                 WantlistTable.Cols.RELEASE_ID + ", " +
+                WantlistTable.Cols.DATE_ADDED + ", " +
                 WantlistTable.Cols.THUMB_URL + ", " +
                 WantlistTable.Cols.THUMB_DIR +
                 ")"

@@ -20,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -223,7 +225,7 @@ public class LoadingSplashActivity extends Activity {
                                 Log.i("Collection Download", "All collection items have been downloaded");
                                 String userWantlistURL = "https://api.discogs.com/users/" +
                                         Preferences.get(Preferences.USERNAME, "") +
-                                        "/wants?page=1&per_page=100&sort=added&sort_order=desc";
+                                        "/wants?page=1&per_page=100&sort=added&sort_order=asc";
                                 FetchUserWantlistJSON(userWantlistURL);
                             }
                         } catch (JSONException e) {
@@ -382,12 +384,15 @@ public class LoadingSplashActivity extends Activity {
                     String releaseYear = basicInfo.getString("year");
                     String releaseId = basicInfo.getString("id");
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-//                    String dateAdded = currentRelease.getString("date_added");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
+                    Date now = new Date();
+                    String dateAdded = sdf.format(now);
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
+                    release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserWantlistDB.addRelease(release);
