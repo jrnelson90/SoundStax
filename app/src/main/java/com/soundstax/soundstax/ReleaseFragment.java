@@ -67,8 +67,8 @@ public class ReleaseFragment extends Fragment {
     }
 
     public static boolean stringContainsItemFromList(String inputStr, String[] items) {
-        for (int i = 0; i < items.length; i++) {
-            if (inputStr.contains(items[i])) {
+        for (String item : items) {
+            if (inputStr.contains(item)) {
                 return true;
             }
         }
@@ -79,15 +79,19 @@ public class ReleaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID releaseID;
-        if (parentList.equals("Collection")) {
-            releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
-            mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
-        } else if (parentList.equals("Wantlist")) {
-            releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
-            mRelease = UserWantlistDB.get(getActivity()).getRelease(releaseID);
-        } else if (parentList.equals("Search")) {
-            Bundle args = getActivity().getIntent().getExtras();
-            mRelease = (Release) args.getSerializable(ARG_RELEASE);
+        switch (parentList) {
+            case "Collection":
+                releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
+                mRelease = UserCollectionDB.get(getActivity()).getRelease(releaseID);
+                break;
+            case "Wantlist":
+                releaseID = (UUID) getArguments().getSerializable(ARG_RELEASE_ID);
+                mRelease = UserWantlistDB.get(getActivity()).getRelease(releaseID);
+                break;
+            case "Search":
+                Bundle args = getActivity().getIntent().getExtras();
+                mRelease = (Release) args.getSerializable(ARG_RELEASE);
+                break;
         }
         queue = Volley.newRequestQueue(getContext());
     }
@@ -107,7 +111,6 @@ public class ReleaseFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO Auto-generated method stub
 
             }
         }) {
@@ -237,7 +240,6 @@ public class ReleaseFragment extends Fragment {
                                 }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                // TODO Auto-generated method stub
                             }
                         })
 
@@ -295,7 +297,6 @@ public class ReleaseFragment extends Fragment {
                                 }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                // TODO Auto-generated method stub
                             }
                         })
 
@@ -352,8 +353,7 @@ public class ReleaseFragment extends Fragment {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         if (mStatusCode == 201) {
-                                            String instanceId = null;
-                                            String dateAdded = null;
+                                            String instanceId;
                                             try {
                                                 instanceId = response.getString("instance_id");
                                                 mRelease.setInstanceId(instanceId);
@@ -377,7 +377,6 @@ public class ReleaseFragment extends Fragment {
                                 }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                // TODO Auto-generated method stub
                             }
                         })
 
@@ -439,7 +438,6 @@ public class ReleaseFragment extends Fragment {
                                 }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                // TODO Auto-generated method stub
                             }
                         })
 
@@ -525,7 +523,6 @@ public class ReleaseFragment extends Fragment {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    // TODO Auto-generated method stub
                 }
             })
 
@@ -586,7 +583,6 @@ public class ReleaseFragment extends Fragment {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    // TODO Auto-generated method stub
                 }
             })
 

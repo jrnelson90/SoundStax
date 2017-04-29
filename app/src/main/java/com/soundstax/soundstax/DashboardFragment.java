@@ -51,7 +51,6 @@ public class DashboardFragment extends Fragment {
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
-    private SearchView mSearchView;
     private RequestQueue queue;
 
     @Override
@@ -74,7 +73,9 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setPreviewThumbnails();
+        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+            setPreviewThumbnails();
+        }
     }
 
     @Override
@@ -189,8 +190,9 @@ public class DashboardFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_toolbar_layout, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-        mSearchView = (SearchView) searchItem.getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // your text view here
@@ -199,6 +201,10 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchView.setQuery("", false);
+                searchView.setFocusable(false);
+                searchItem.collapseActionView();
                 Intent i = new Intent(getActivity(), SearchResultsActivity.class);
                 Bundle args = new Bundle();
                 args.putString("query", query);

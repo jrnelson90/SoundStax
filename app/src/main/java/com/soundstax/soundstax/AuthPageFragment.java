@@ -110,7 +110,6 @@ public class AuthPageFragment extends VisibleFragment {
 
         // Load Auth Page
         webView.loadUrl(mUri.toString());
-
         return v;
     }
 
@@ -141,7 +140,6 @@ public class AuthPageFragment extends VisibleFragment {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
                     }
                 })
                 // Request Headers
