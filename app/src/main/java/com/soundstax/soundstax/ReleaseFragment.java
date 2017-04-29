@@ -194,7 +194,7 @@ public class ReleaseFragment extends Fragment {
             case "Collection":
                 removeButtonText = "Remove from " + parentList;
                 mModifyListActionOneButton.setText(removeButtonText);
-                mModifyListActionTwoButton.setVisibility(View.INVISIBLE);
+                mModifyListActionTwoButton.setVisibility(View.GONE);
                 mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -253,7 +253,7 @@ public class ReleaseFragment extends Fragment {
             case "Wantlist":
                 removeButtonText = "Remove from " + parentList;
                 mModifyListActionOneButton.setText(removeButtonText);
-                mModifyListActionTwoButton.setVisibility(View.INVISIBLE);
+                mModifyListActionTwoButton.setVisibility(View.GONE);
                 mModifyListActionOneButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -451,8 +451,7 @@ public class ReleaseFragment extends Fragment {
         }
 
         mSpotifyButton = (Button) v.findViewById(R.id.spotify_play_button);
-//        mSpotifyButton.setText("Listen on Spotify");
-        mSpotifyButton.setVisibility(View.INVISIBLE);
+        mSpotifyButton.setVisibility(View.GONE);
 
         return v;
     }
@@ -461,7 +460,7 @@ public class ReleaseFragment extends Fragment {
 
         // https://api.spotify.com/v1/search?q=album:arrival%20artist:abba&type=album
         final String parsedArtist = mRelease.getArtist().split(" \\(")[0].toLowerCase().replace("and ", "").replace("& ", "");
-        String releaseTitle = mRelease.getTitle().toLowerCase().replace("-", " ")
+        String releaseTitle = mRelease.getTitle().toLowerCase().trim().replace("-", " ")
                 .replaceAll("[+.^:,()\\[\\]\"]", "").replace("   ", "  ").replace("  ", " ");
         if (stringContainsItemFromList(releaseTitle, new String[]{"original", "motion", "picture", "movie", "cast", "recording", "broadway", "soundtrack"})) {
             String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
