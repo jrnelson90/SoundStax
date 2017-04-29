@@ -202,9 +202,21 @@ public class SearchResultsFragment extends Fragment {
                 }
                 String releaseArtist = currentRelease.getString("title").split("-")[0];
                 String releaseId = currentRelease.getString("id");
-                JSONArray formatInfo = currentRelease.getJSONArray("formats");
-                String formatName = formatInfo.getString(0);
-                String formatDescriptions = formatInfo.getString(1) + ", " + formatInfo.getString(2);
+                JSONArray formatInfo = currentRelease.getJSONArray("format");
+                String formatName = "";
+                String formatDescriptions = "";
+                for (int j = 0; j < formatInfo.length(); j++) {
+                    if (j == 0) {
+                        formatName = formatInfo.getString(j);
+                    } else {
+                        formatDescriptions += formatInfo.getString(j);
+
+                        if (formatInfo.length() > 2 && j < formatInfo.length() - 1) {
+                            formatDescriptions += ", ";
+                        }
+                    }
+                }
+
                 Release release = new Release();
                 release.setArtist(releaseArtist);
                 release.setYear(releaseYear);

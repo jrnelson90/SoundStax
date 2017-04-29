@@ -341,8 +341,12 @@ public class LoadingSplashActivity extends Activity {
                     JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
                     String formatName = formatInfo.getString("name");
                     String formatQty = formatInfo.getString("qty");
-                    JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
-                    String formatDescriptions = formatDescriptionsArray.toString();
+                    String formatDescriptions = "";
+                    if (formatInfo.has("descriptions")) {
+                        JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                        formatDescriptions = formatDescriptionsArray.toString();
+                    }
+
                     String formatText = "";
                     if (formatInfo.has("text")) {
                         formatText = formatInfo.getString("text");
@@ -386,8 +390,11 @@ public class LoadingSplashActivity extends Activity {
                     JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
                     String formatName = formatInfo.getString("name");
                     String formatQty = formatInfo.getString("qty");
-                    JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
-                    String formatDescriptions = formatDescriptionsArray.toString();
+                    String formatDescriptions = "";
+                    if (formatInfo.has("descriptions")) {
+                        JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                        formatDescriptions = formatDescriptionsArray.toString();
+                    }
                     String formatText = "";
                     if (formatInfo.has("text")) {
                         formatText = formatInfo.getString("text");
