@@ -166,37 +166,10 @@
             android:id="@+id/track_info_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:stretchColumns="1">
-
-            <!--<TableRow-->
-            <!--android:id="@+id/track_info_column_labels_row"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/track_number_label"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:text="Track #"/>-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/track_title_label"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingLeft="8dp"-->
-            <!--android:text="Title"/>-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/track_length_label"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="end"-->
-            <!--android:text="Length"/>-->
-
-            <!--</TableRow>-->
 
         </TableLayout>
 

@@ -166,7 +166,6 @@ public class ReleaseFragment extends Fragment {
             trackColumnTitleRow.setLayoutParams(lp);
 
             int dpInPx = (int) (8 * Resources.getSystem().getDisplayMetrics().density);
-            trackColumnTitleRow.setPadding(dpInPx, 0, 0, 0);
             TextView trackNumberLabel = new TextView(getContext());
             TextView trackNameLabel = new TextView(getContext());
             TextView trackDurationLabel = new TextView(getContext());
@@ -199,7 +198,6 @@ public class ReleaseFragment extends Fragment {
                     TableRow trackRow = new TableRow(getContext());
                     trackRow.setLayoutParams(lp);
 
-                    trackRow.setPadding(dpInPx, 0, 0, 0);
                     TextView trackNumber = new TextView(getContext());
                     TextView trackName = new TextView(getContext());
                     TextView trackDuration = new TextView(getContext());
