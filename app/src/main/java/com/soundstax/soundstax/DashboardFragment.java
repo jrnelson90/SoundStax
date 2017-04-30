@@ -281,10 +281,55 @@ public class DashboardFragment extends Fragment {
                 LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                 imageView.setLayoutParams(parms);
 
-                if (currentRelease.getThumbDir().equals("")) {
-                    DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
+                if (!currentRelease.getThumbUrl().equals("")) {
+                    if (currentRelease.getThumbDir().equals("")) {
+                        DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
+                    } else {
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        final Release finalCurrentRelease = currentRelease;
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        finalCurrentRelease.getId(), "Collection");
+                                startActivity(intent);
+                            }
+                        });
+                        mCollectionLinearLayout.addView(imageView);
+                    }
                 } else {
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                    currentRelease.setThumbUrl("local");
+                    Bitmap blankAlbumBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.album_blank);
+                    // path to /data/data/yourapp/app_data/imageDir
+                    ContextWrapper cw = new ContextWrapper(getContext());
+
+                    String thumbDir = "CollectionCovers";
+                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
+                    // Create imageDir
+                    File filePath = new File(directory, "release_" +
+                            currentRelease.getReleaseId() + "_cover.jpeg");
+
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(filePath);
+                        blankAlbumBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (fos != null) {
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    currentRelease.setThumbDir(filePath.getAbsolutePath());
+                    mUserCollectionDB.updateRelease(currentRelease);
+
+                    imageView.setImageBitmap(blankAlbumBitmap);
                     final Release finalCurrentRelease = currentRelease;
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -309,10 +354,56 @@ public class DashboardFragment extends Fragment {
                 imageView.setPadding(2, 2, 2, 2);
                 LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                 imageView.setLayoutParams(parms);
-                if (currentRelease.getThumbDir().equals("")) {
-                    DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
+
+                if (!currentRelease.getThumbUrl().equals("")) {
+                    if (currentRelease.getThumbDir().equals("")) {
+                        DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
+                    } else {
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                        final Release finalCurrentRelease = currentRelease;
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                        finalCurrentRelease.getId(), "Wantlist");
+                                startActivity(intent);
+                            }
+                        });
+                        mWantlistLinearLayout.addView(imageView);
+                    }
                 } else {
-                    imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                    currentRelease.setThumbUrl("local");
+                    Bitmap blankAlbumBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.album_blank);
+                    // path to /data/data/yourapp/app_data/imageDir
+                    ContextWrapper cw = new ContextWrapper(getContext());
+
+                    String thumbDir = "WantlistCovers";
+                    File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
+                    // Create imageDir
+                    File filePath = new File(directory, "release_" +
+                            currentRelease.getReleaseId() + "_cover.jpeg");
+
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(filePath);
+                        blankAlbumBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (fos != null) {
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    currentRelease.setThumbDir(filePath.getAbsolutePath());
+                    mUserWantlistDB.updateRelease(currentRelease);
+
+                    imageView.setImageBitmap(blankAlbumBitmap);
                     final Release finalCurrentRelease = currentRelease;
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
