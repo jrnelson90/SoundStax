@@ -61,10 +61,12 @@
 
             <TextView
                 android:id="@+id/list_item_release_format_info_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/list_item_release_genre_text_view"
                 android:layout_toRightOf="@id/list_item_release_thumb_image_view"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:padding="4dp"
                 tools:text="Format Info"/>
 
