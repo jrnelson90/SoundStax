@@ -1,5 +1,6 @@
 package com.soundstax.soundstax;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -66,7 +67,6 @@ public class SearchResultsFragment extends Fragment {
         queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         Bundle args = getActivity().getIntent().getExtras();
         String queryString = args.getString(QUERY_ARG);
-        getActivity().setTitle("Results for \"" + queryString + "\"");
         fetchQuery(queryString);
     }
 
@@ -101,6 +101,10 @@ public class SearchResultsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mSearchView.clearFocus();
+                mSearchView.setQuery("", false);
+                mSearchView.setFocusable(false);
+                searchItem.collapseActionView();
                 fetchQuery(query);
                 return true;
             }
@@ -125,6 +129,7 @@ public class SearchResultsFragment extends Fragment {
 
     void fetchQuery(String _queryString) {
         //Parse search into a URL friendly encoding.
+        getActivity().setTitle("Results for \"" + _queryString + "\"");
         String query_string_encoded = "";
         try {
             query_string_encoded = URLEncoder.encode(_queryString, "UTF-8");
@@ -134,12 +139,15 @@ public class SearchResultsFragment extends Fragment {
         // Get JSON object for passed release info.
         String searchString = "https://api.discogs.com/database/search?q=" +
                 query_string_encoded + "&per_page=100";
+        final ProgressDialog searchingDialog = new ProgressDialog(getActivity());
+        searchingDialog.setMessage("Searching Discogs for \"" + _queryString + "\"");
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         mSearchResults = response;
-                        Log.i(TAG, "Received Search JSON:");
+                        Log.i(TAG, "Received Search JSON");
+                        searchingDialog.dismiss();
                         updateUI();
                         // TODO Call and populate results view
                     }
@@ -170,6 +178,7 @@ public class SearchResultsFragment extends Fragment {
         };
         // Access the RequestQueue through your singleton class.
         queue.add(jsObjRequest);
+        searchingDialog.show();
     }
 
     private List<Release> searchJsonToReleaseList(JSONArray _searchResults) throws JSONException {

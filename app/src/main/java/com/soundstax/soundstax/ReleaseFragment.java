@@ -64,6 +64,7 @@ public class ReleaseFragment extends Fragment {
     private TextView mReleaseLabels;
     private android.widget.TableLayout mTrackInfoTable;
     private TextView mReleaseGenre;
+    private TextView mUserFolderTextView;
 
     public static ReleaseFragment newInstance(UUID releaseID, String _parentList) {
         Bundle args = new Bundle();
@@ -293,7 +294,8 @@ public class ReleaseFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_release_page, container, false);
         mTrackInfoTable = (TableLayout) v.findViewById(R.id.track_info_table);
         mReleaseLabels = (TextView) v.findViewById(R.id.release_labels);
-
+        mUserFolderTextView = (TextView) v.findViewById(R.id.release_user_folder);
+        mUserFolderTextView.setText(mRelease.getFolderName());
         mReleaseFormatInfo = (TextView) v.findViewById(R.id.release_format_info);
         mReleaseFormatInfo.setText(mRelease.getFormatName());
         String formatInfoParsed = "";

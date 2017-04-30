@@ -51,6 +51,8 @@ public class DashboardFragment extends Fragment {
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
     private RequestQueue queue;
+    private TextView mCollectionLabel;
+    private TextView mWantlistLabel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,11 @@ public class DashboardFragment extends Fragment {
         super.onResume();
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             if (mUserCollectionDB != null && mUserWantlistDB != null) {
+                String collectionLabelString = "Collection - Most Recent";
+                String wantlistLabelString = "Wantlist - Most Recent";
+                mCollectionLabel.setText(collectionLabelString);
+                mWantlistLabel.setText(wantlistLabelString);
                 setPreviewThumbnails();
-                Log.i("Preview Load", "Called setPreviewThumbnails from onResume");
             }
         }
     }
@@ -97,8 +102,10 @@ public class DashboardFragment extends Fragment {
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
-
+            mCollectionLabel = (TextView) view.findViewById(R.id.collection_dash_label);
+            mWantlistLabel = (TextView) view.findViewById(R.id.wantlist_dash_label);
             updateProfilePicture();
+
         } else {
             Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
             Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
