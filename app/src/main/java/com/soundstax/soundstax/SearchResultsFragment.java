@@ -132,7 +132,8 @@ public class SearchResultsFragment extends Fragment {
             System.out.println(e.getMessage());
         }
         // Get JSON object for passed release info.
-        String searchString = "https://api.discogs.com/database/search?q=" + query_string_encoded;
+        String searchString = "https://api.discogs.com/database/search?q=" +
+                query_string_encoded + "&per_page=100";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
                     @Override
