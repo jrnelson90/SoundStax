@@ -294,8 +294,15 @@ public class ReleaseFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_release_page, container, false);
         mTrackInfoTable = (TableLayout) v.findViewById(R.id.track_info_table);
         mReleaseLabels = (TextView) v.findViewById(R.id.release_labels);
+
         mUserFolderTextView = (TextView) v.findViewById(R.id.release_user_folder);
-        mUserFolderTextView.setText(mRelease.getFolderName());
+        if (parentList.equals("Collection")) {
+            mUserFolderTextView.setText(mRelease.getFolderName());
+        } else {
+            TableRow folderRow = (TableRow) v.findViewById(R.id.folder_row);
+            folderRow.setVisibility(View.GONE);
+        }
+
         mReleaseFormatInfo = (TextView) v.findViewById(R.id.release_format_info);
         mReleaseFormatInfo.setText(mRelease.getFormatName());
         String formatInfoParsed = "";

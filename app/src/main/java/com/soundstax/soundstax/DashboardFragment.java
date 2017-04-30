@@ -219,13 +219,9 @@ public class DashboardFragment extends Fragment {
     private void setPreviewThumbnails() {
         // Update view with retrieved Collection data
         Release currentRelease;
-        if (mCollectionLinearLayout.getChildCount() != 0) {
-            mCollectionLinearLayout.removeAllViews();
-        }
-        if (mWantlistLinearLayout.getChildCount() != 0) {
-            mWantlistLinearLayout.removeAllViews();
-        }
+
         if (mUserCollectionDB.getReleases().size() > 0) {
+            mCollectionLinearLayout.removeAllViews();
             int previewsToLoad = 10;
             if (mUserCollectionDB.getReleases().size() < 10) {
                 previewsToLoad = mUserCollectionDB.getReleases().size();
@@ -299,8 +295,18 @@ public class DashboardFragment extends Fragment {
                 }
             }
             Log.i("Preview Load", "Loaded " + previewsToLoad + " Collection previews from setPreviewThumbnails Loop");
+        } else {
+            mCollectionLinearLayout.removeAllViews();
+            TextView emptyMessageTextView = (TextView) getActivity()
+                    .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+            String emptyMessageString = "Collection is Empty";
+            emptyMessageTextView.setText(emptyMessageString);
+            mCollectionLinearLayout.addView(emptyMessageTextView);
         }
+
+
         if (mUserWantlistDB.getReleases().size() > 0) {
+            mWantlistLinearLayout.removeAllViews();
             int previewsToLoad = 10;
             if (mUserWantlistDB.getReleases().size() < 10) {
                 previewsToLoad = mUserWantlistDB.getReleases().size();
@@ -374,6 +380,19 @@ public class DashboardFragment extends Fragment {
                 }
             }
             Log.i("Preview Load", "Loaded " + previewsToLoad + " Wantlist previews from setPreviewThumbnails Loop");
+        } else {
+            mWantlistLinearLayout.removeAllViews();
+            TextView emptyMessageTextView = (TextView) getActivity()
+                    .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+            String emptyMessageString = "Wantlist is Empty";
+            emptyMessageTextView.setText(emptyMessageString);
+            mWantlistLinearLayout.addView(emptyMessageTextView);
+
+//            LinearLayout.LayoutParams layoutParams =
+//                    (LinearLayout.LayoutParams) emptyMessageTextView.getLayoutParams();
+//            layoutParams.weight = 1.0f;
+//            layoutParams.gravity = Gravity.CENTER;
+//            emptyMessageTextView.setLayoutParams(layoutParams);
         }
     }
 
