@@ -66,6 +66,7 @@ public class SearchResultsFragment extends Fragment {
         queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         Bundle args = getActivity().getIntent().getExtras();
         String queryString = args.getString(QUERY_ARG);
+        getActivity().setTitle("Results for \"" + queryString + "\"");
         fetchQuery(queryString);
     }
 
