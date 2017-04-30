@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -36,6 +37,7 @@ public class LoadingSplashActivity extends Activity {
     private JSONArray mUserCollectionJSON = new JSONArray();
     private JSONArray mUserWantlistJSON = new JSONArray();
     private JSONObject mUserProfileJSON = new JSONObject();
+    private JSONObject mUserFoldersJSON = new JSONObject();
     private RequestQueue queue;
     private ProgressBar loadingBar;
     private TextView loadingText;
@@ -132,7 +134,7 @@ public class LoadingSplashActivity extends Activity {
                         try {
                             wantlistNum = mUserProfileJSON.getInt("num_wantlist");
                             collectionNum = mUserProfileJSON.getInt("num_collection");
-                            progressTotal = 5 + (collectionNum / 100) + (wantlistNum / 100);
+                            progressTotal = 6 + (collectionNum / 100) + (wantlistNum / 100);
                             Log.i("Profile Request", "Received User Profile JSON");
                             Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
 
@@ -281,15 +283,15 @@ public class LoadingSplashActivity extends Activity {
                                         "page=" + String.valueOf(currentListPage + 1) + "&");
                                 FetchUserWantlistJSON(nextPageURL);
                             } else {
-                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
-                                extractCollectionData();
-                                extractWantlistData();
-                                Log.i("Loading Splash", "Loading complete");
-                                Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
-                                startActivity(i);
-                                // close this activity
-                                finish();
-//                                setPreviewThumbnails();
+                                FetchUserFoldersJSON();
+//                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
+//                                extractCollectionData();
+//                                extractWantlistData();
+//                                Log.i("Loading Splash", "Loading complete");
+//                                Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
+//                                startActivity(i);
+//                                // close this activity
+//                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -323,6 +325,89 @@ public class LoadingSplashActivity extends Activity {
 
         // Access the RequestQueue through your singleton class.
         queue.add(jsObjRequest);
+    }
+
+    private void FetchUserFoldersJSON() {
+        // GET /users/{username}/collection/folders
+        String folderRequestURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/collection/folders";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, folderRequestURL, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mUserFoldersJSON = response;
+                        String loadedFoldersMessage = "Loaded User Folders";
+                        loadingText.setText(loadedFoldersMessage);
+                        loadingBar.setProgress(++progressMade);
+
+                        Log.i("Folders Download", "All folder have been downloaded");
+                        extractFoldersData();
+                        extractCollectionData();
+                        extractWantlistData();
+                        Log.i("Loading Splash", "Loading complete");
+                        Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
+                        startActivity(i);
+                        // close this activity
+                        finish();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                }) {
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                int mStatusCode = response.statusCode;
+                if (mStatusCode == 204) {
+//                    UserCollectionDB.get(getActivity()).deleteRelease(mRelease);
+//                    getActivity().finish();
+                }
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
+    }
+
+    private void extractFoldersData() {
+        JSONArray foldersArray = null;
+        try {
+            foldersArray = mUserFoldersJSON.getJSONArray("folders");
+            for (int i = 0; i < foldersArray.length(); i++) {
+                UserFolders.Folder currentFolder = new UserFolders.Folder();
+                JSONObject currentFolderJSON = foldersArray.getJSONObject(i);
+                currentFolder.setId(currentFolderJSON.getString("id"));
+                currentFolder.setName(currentFolderJSON.getString("name"));
+                currentFolder.setCount(currentFolderJSON.getString("count"));
+                UserFolders.sFolderArrayList.add(currentFolder);
+            }
+            Log.i("Folder Extract", "All Folder info extracted");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void extractCollectionData() {

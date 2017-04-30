@@ -1,0 +1,76 @@
+{
+  "folders": [
+    {
+      "count": 149,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/0",
+      "id": 0,
+      "name": "All"
+    },
+    {
+      "count": 18,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040023",
+      "id": 1040023,
+      "name": "Alt Rock"
+    },
+    {
+      "count": 3,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1048602",
+      "id": 1048602,
+      "name": "Electro Swing"
+    },
+    {
+      "count": 1,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040052",
+      "id": 1040052,
+      "name": "Goth"
+    },
+    {
+      "count": 14,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040022",
+      "id": 1040022,
+      "name": "Oldies Rock"
+    },
+    {
+      "count": 3,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040043",
+      "id": 1040043,
+      "name": "Pop"
+    },
+    {
+      "count": 8,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040045",
+      "id": 1040045,
+      "name": "Pop Punk"
+    },
+    {
+      "count": 86,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040021",
+      "id": 1040021,
+      "name": "Punk"
+    },
+    {
+      "count": 4,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040042",
+      "id": 1040042,
+      "name": "Reggae\/Ska"
+    },
+    {
+      "count": 1,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040054",
+      "id": 1040054,
+      "name": "Rockabilly"
+    },
+    {
+      "count": 10,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1040024",
+      "id": 1040024,
+      "name": "Soundtrack\/Broadway"
+    },
+    {
+      "count": 1,
+      "resource_url": "https:\/\/api.discogs.com\/users\/jrnelson90\/collection\/folders\/1",
+      "id": 1,
+      "name": "Uncategorized"
+    }
+  ]
+}

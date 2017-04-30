@@ -163,7 +163,7 @@ public class WantlistListviewFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_folder_text_view);
             mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
@@ -241,13 +241,13 @@ public class WantlistListviewFragment extends Fragment {
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
                                     } finally {
-                                        try {
-                                            if (fos != null) {
-                                                fos.close();
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                    try {
+                                        if (fos != null) {
+                                            fos.close();
                                         }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     }
 
                                     release.setThumbDir(filePath.getAbsolutePath());
@@ -256,7 +256,7 @@ public class WantlistListviewFragment extends Fragment {
 
                                 } catch (NullPointerException e) {
                                     e.printStackTrace();
-                                }
+                            }
                             }
                         }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
                 // Add the request to the RequestQueue.

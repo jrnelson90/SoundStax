@@ -161,7 +161,7 @@ public class CollectionListviewFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_folder_text_view);
             mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }

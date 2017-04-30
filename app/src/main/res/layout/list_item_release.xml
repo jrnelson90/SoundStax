@@ -12,7 +12,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="4dp">
 
             <ImageView
                 android:id="@+id/list_item_release_thumb_image_view"
@@ -57,19 +57,19 @@
                 tools:text="Release Year"/>
 
             <TextView
-                android:id="@+id/list_item_release_genre_text_view"
+                android:id="@+id/list_item_release_folder_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/list_item_release_year_text_view"
                 android:layout_toRightOf="@id/list_item_release_thumb_image_view"
                 android:padding="4dp"
-                tools:text="Release Genre"/>
+                tools:text="Release Folder"/>
 
             <TextView
                 android:id="@+id/list_item_release_format_info_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/list_item_release_genre_text_view"
+                android:layout_below="@id/list_item_release_folder_text_view"
                 android:layout_toRightOf="@id/list_item_release_thumb_image_view"
                 android:ellipsize="end"
                 android:padding="4dp"
