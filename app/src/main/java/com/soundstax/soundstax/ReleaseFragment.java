@@ -160,14 +160,45 @@ public class ReleaseFragment extends Fragment {
             releaseLabel = mReleaseJSON.getJSONArray("labels").getJSONObject(0).getString("name");
             mReleaseLabels.setText(releaseLabel);
             JSONArray tracklist = mReleaseJSON.getJSONArray("tracklist");
+
+            TableRow trackColumnTitleRow = new TableRow(getContext());
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+            trackColumnTitleRow.setLayoutParams(lp);
+
+            int dpInPx = (int) (8 * Resources.getSystem().getDisplayMetrics().density);
+            trackColumnTitleRow.setPadding(dpInPx, 0, 0, 0);
+            TextView trackNumberLabel = new TextView(getContext());
+            TextView trackNameLabel = new TextView(getContext());
+            TextView trackDurationLabel = new TextView(getContext());
+
+            String trackNumberLabelString = "Track #";
+            trackNumberLabel.setText(trackNumberLabelString);
+
+            trackNameLabel.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    1f));
+            String trackNameLabelString = "Title";
+            trackNameLabel.setText(trackNameLabelString);
+            trackNameLabel.setSingleLine(true);
+            trackNameLabel.setEllipsize(TextUtils.TruncateAt.END);
+            trackNameLabel.setPadding(dpInPx, 0, 0, 0);
+            trackNameLabel.setHorizontallyScrolling(false);
+
+            String trackDurationLabelString = "Length";
+            trackDurationLabel.setText(trackDurationLabelString);
+
+            trackColumnTitleRow.addView(trackNumberLabel);
+            trackColumnTitleRow.addView(trackNameLabel);
+            trackColumnTitleRow.addView(trackDurationLabel);
+            mTrackInfoTable.addView(trackColumnTitleRow, 0);
+
             for (int i = 0; i < tracklist.length(); i++) {
                 JSONObject currentTrack = tracklist.getJSONObject(i);
                 if (currentTrack.getString("type_").equals("track")) {
                     TableRow trackRow = new TableRow(getContext());
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                     trackRow.setLayoutParams(lp);
 
-                    int dpInPx = (int) (8 * Resources.getSystem().getDisplayMetrics().density);
                     trackRow.setPadding(dpInPx, 0, 0, 0);
                     TextView trackNumber = new TextView(getContext());
                     TextView trackName = new TextView(getContext());
@@ -177,9 +208,15 @@ public class ReleaseFragment extends Fragment {
                     trackNumber.setText(trackNumberString);
 
                     String trackNameString = currentTrack.getString("title");
+                    trackName.setLayoutParams(new TableRow.LayoutParams(
+                            TableRow.LayoutParams.MATCH_PARENT,
+                            TableRow.LayoutParams.WRAP_CONTENT,
+                            1f));
                     trackName.setText(trackNameString);
+                    trackName.setSingleLine(true);
                     trackName.setEllipsize(TextUtils.TruncateAt.END);
-                    trackName.setMaxLines(1);
+                    trackName.setHorizontallyScrolling(false);
+                    trackName.setPadding(dpInPx, 0, dpInPx, 0);
 
                     String trackDurationString = currentTrack.getString("duration");
                     if (trackDurationString.length() == 0) {
