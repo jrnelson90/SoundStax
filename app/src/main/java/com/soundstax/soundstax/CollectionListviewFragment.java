@@ -16,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,7 +42,7 @@ public class CollectionListviewFragment extends Fragment {
 
     private static final String TAG = "CollectionListviewFragment";
     private RecyclerView mReleaseRecyclerView;
-    private Spinner mGenreFilterSpinner;
+    private Spinner mFolderFilterSpinner;
     private ReleaseAdapter mAdapter;
     private UserCollectionDB mUserCollectionDB;
     private RequestQueue queue;
@@ -62,29 +64,29 @@ public class CollectionListviewFragment extends Fragment {
         mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
         mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
-//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (mAdapter != null) {
-//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserCollectionDB.getReleases();
-//                        mAdapter.setReleases(allReleases);
-//                    } else {
-//                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
-//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setReleases(filteredReleases);
-//                    }
-//
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        mFolderFilterSpinner = (Spinner) view.findViewById(R.id.release_folder_filter_spinner);
+        mFolderFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mAdapter != null) {
+                    if (String.valueOf(mFolderFilterSpinner.getSelectedItem()).equals("(All)")) {
+                        List<Release> allReleases = mUserCollectionDB.getReleases();
+                        mAdapter.setReleases(allReleases);
+                    } else {
+                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
+                                String.valueOf(mFolderFilterSpinner.getSelectedItem()));
+                        mAdapter.setReleases(filteredReleases);
+                    }
+
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         updateUI();
         return view;
@@ -126,7 +128,6 @@ public class CollectionListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-//        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
         List<Release> releases = mUserCollectionDB.getReleases();
 
         if (mAdapter == null) {
@@ -137,10 +138,10 @@ public class CollectionListviewFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
-//        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
-//        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mGenreFilterSpinner.setAdapter(genreAdpater);
+        ArrayAdapter<String> folderAdpater = new ArrayAdapter<>(
+                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getFolderList());
+        folderAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFolderFilterSpinner.setAdapter(folderAdpater);
     }
 
     private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

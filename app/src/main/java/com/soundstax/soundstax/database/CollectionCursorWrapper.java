@@ -28,7 +28,9 @@ public class CollectionCursorWrapper extends CursorWrapper {
         String formatDescriptions = getString(getColumnIndex(CollectionTable.Cols.FORMAT_DESCRIPTIONS));
         String formatText = getString(getColumnIndex(CollectionTable.Cols.FORMAT_TEXT));
         String releaseId = getString(getColumnIndex(CollectionTable.Cols.RELEASE_ID));
-        String instanceID = getString(getColumnIndex(CollectionTable.Cols.INSTANCE_ID));
+        String instanceId = getString(getColumnIndex(CollectionTable.Cols.INSTANCE_ID));
+        String folderId = getString(getColumnIndex(CollectionTable.Cols.FOLDER_ID));
+        String folderName = getString(getColumnIndex(CollectionTable.Cols.FOLDER_NAME));
         String dateAdded = getString(getColumnIndex(CollectionTable.Cols.DATE_ADDED));
         String thumbUrl = getString(getColumnIndex(CollectionTable.Cols.THUMB_URL));
         String thumbDir = getString(getColumnIndex(CollectionTable.Cols.THUMB_DIR));
@@ -43,7 +45,9 @@ public class CollectionCursorWrapper extends CursorWrapper {
         release.setFormatDescriptions(formatDescriptions);
         release.setFormatText(formatText);
         release.setReleaseId(releaseId);
-        release.setInstanceId(instanceID);
+        release.setInstanceId(instanceId);
+        release.setFolderId(folderId);
+        release.setFolderName(folderName);
         release.setDateAdded(dateAdded);
         release.setThumbUrl(thumbUrl);
         release.setThumbDir(thumbDir);

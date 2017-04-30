@@ -6,10 +6,10 @@ import java.util.ArrayList;
  * Created by jrnel on 4/29/2017.
  */
 
-public class UserFolders {
-    protected static ArrayList<Folder> sFolderArrayList = new ArrayList<>();
+class UserFolders {
+    static ArrayList<Folder> sFolderArrayList = new ArrayList<>();
 
-    protected static class Folder {
+    static class Folder {
         protected String count;
         protected String id;
         protected String name;

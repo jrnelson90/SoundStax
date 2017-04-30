@@ -33,6 +33,8 @@ public class UserCollectionDBHelper extends SQLiteOpenHelper {
                 CollectionTable.Cols.FORMAT_TEXT + ", " +
                 CollectionTable.Cols.RELEASE_ID + ", " +
                 CollectionTable.Cols.INSTANCE_ID + ", " +
+                CollectionTable.Cols.FOLDER_ID + ", " +
+                CollectionTable.Cols.FOLDER_NAME + ", " +
                 CollectionTable.Cols.DATE_ADDED + ", " +
                 CollectionTable.Cols.THUMB_URL + ", " +
                 CollectionTable.Cols.THUMB_DIR +

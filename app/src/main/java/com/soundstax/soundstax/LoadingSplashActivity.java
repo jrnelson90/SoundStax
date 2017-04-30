@@ -422,6 +422,17 @@ public class LoadingSplashActivity extends Activity {
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
                     String releaseId = basicInfo.getString("id");
                     String instanceId = currentRelease.getString("instance_id");
+                    String folderId = currentRelease.getString("folder_id");
+
+                    String folderNameString = "";
+                    JSONArray foldersArray = mUserFoldersJSON.getJSONArray("folders");
+                    for (int j = 0; j < foldersArray.length(); j++) {
+                        JSONObject currentFolderJSON = foldersArray.getJSONObject(j);
+                        if (folderId.equals(currentFolderJSON.getString("id"))) {
+                            folderNameString = currentFolderJSON.getString("name");
+                        }
+                    }
+
                     String dateAdded = currentRelease.getString("date_added");
                     JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
                     String formatName = formatInfo.getString("name");
@@ -443,6 +454,8 @@ public class LoadingSplashActivity extends Activity {
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
                     release.setInstanceId(instanceId);
+                    release.setFolderId(folderId);
+                    release.setFolderName(folderNameString);
                     release.setFormatName(formatName);
                     release.setFormatQty(formatQty);
                     release.setFormatDescriptions(formatDescriptions);

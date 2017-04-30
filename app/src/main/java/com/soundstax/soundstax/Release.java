@@ -17,11 +17,12 @@ public class Release implements Serializable {
     private String mThumbDir;
     private String mReleaseId;
     private String mInstanceId;
+    private String mFolderId;
+    private String mFolderName;
     private String mDateAdded;
     private String mFormatName;
     private String mFormatQty;
     private String mFormatDescriptions;
-
 
     private String[] mFormatDescriptionsArray;
     private String mFormatText;
@@ -158,5 +159,21 @@ public class Release implements Serializable {
 
     public void setFormatText(String formatText) {
         mFormatText = formatText;
+    }
+
+    public String getFolderId() {
+        return mFolderId;
+    }
+
+    public void setFolderId(String folderId) {
+        mFolderId = folderId;
+    }
+
+    public String getFolderName() {
+        return mFolderName;
+    }
+
+    public void setFolderName(String folderName) {
+        mFolderName = folderName;
     }
 }

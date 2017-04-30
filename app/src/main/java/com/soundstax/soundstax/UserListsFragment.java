@@ -124,7 +124,7 @@ public class UserListsFragment extends Fragment {
         }
 
 //        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
+//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getFolderList());
 //        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }

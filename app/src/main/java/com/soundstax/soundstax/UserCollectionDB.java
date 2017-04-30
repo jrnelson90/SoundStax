@@ -47,6 +47,8 @@ class UserCollectionDB {
         values.put(CollectionTable.Cols.FORMAT_TEXT, release.getFormatText());
         values.put(CollectionTable.Cols.RELEASE_ID, release.getReleaseId());
         values.put(CollectionTable.Cols.INSTANCE_ID, release.getInstanceId());
+        values.put(CollectionTable.Cols.FOLDER_ID, release.getFolderId());
+        values.put(CollectionTable.Cols.FOLDER_NAME, release.getFolderName());
         values.put(CollectionTable.Cols.DATE_ADDED, release.getDateAdded());
         values.put(CollectionTable.Cols.THUMB_URL, release.getThumbUrl());
         values.put(CollectionTable.Cols.THUMB_DIR, release.getThumbDir());
@@ -91,7 +93,7 @@ class UserCollectionDB {
         try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if (cursor.getRelease().getGenre().equals(filterContraint))
+                if (cursor.getRelease().getFolderName().equals(filterContraint))
                     releases.add(cursor.getRelease());
                 cursor.moveToNext();
             }
@@ -100,27 +102,39 @@ class UserCollectionDB {
         return releases;
     }
 
-    ArrayList<String> getGenreList() {
-        ArrayList<String> returnedGenres = new ArrayList<>();
-        ArrayList<String> foundGenres = new ArrayList<>();
+    ArrayList<String> getFolderList() {
+        ArrayList<String> returnedFolders = new ArrayList<>();
+        ArrayList<String> foundFolders = new ArrayList<>();
 
         try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                String currentGenre = cursor.getRelease().getGenre();
-                if (!foundGenres.contains(currentGenre)) {
-                    foundGenres.add(cursor.getRelease().getGenre());
+                String currentFolder = cursor.getRelease().getFolderName();
+                if (!foundFolders.contains(currentFolder)) {
+                    foundFolders.add(cursor.getRelease().getFolderName());
                 }
+//
+//                String folderNameString = "";
+//                for (int i = 0; i < UserFolders.sFolderArrayList.size(); i++) {
+//                    String foldersSingletonId = UserFolders.sFolderArrayList.get(i).getId();
+//                    if(currentFolder.equals(foldersSingletonId)){
+//                        folderNameString = UserFolders.sFolderArrayList.get(i).getName();
+//                    }
+//                }
+//
+//                if (!foundFolders.contains(currentFolder)) {
+//                    foundFolders.add(folderNameString);
+//                }
                 cursor.moveToNext();
             }
         }
 
-        Collections.sort(foundGenres);
+        Collections.sort(foundFolders);
 
-        returnedGenres.add("(All)");
-        returnedGenres.addAll(foundGenres);
+        returnedFolders.add("(All)");
+        returnedFolders.addAll(foundFolders);
 
-        return returnedGenres;
+        return returnedFolders;
     }
 
     Release getRelease(UUID id) {
