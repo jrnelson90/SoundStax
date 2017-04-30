@@ -327,12 +327,6 @@ public class ReleaseFragment extends Fragment {
         artistField.setText(mRelease.getArtist());
 
         mReleaseGenre = (TextView) v.findViewById(R.id.release_genre);
-//        if(mRelease.getGenre().equals("")){
-//        String empty = "(None Specified)";
-//        mReleaseGenre.setText(empty);
-//        } else{
-//            genreField.setText(mRelease.getGenre());
-//        }
 
         TextView yearField = (TextView) v.findViewById(R.id.release_year);
         yearField.setText(mRelease.getYear());

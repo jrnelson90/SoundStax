@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -103,14 +104,28 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Release> releases = mUserWantlistDB.getReleases();
+        try {
+            List<Release> releases = mUserWantlistDB.getReleases();
 
-        if (mAdapter == null) {
-            mAdapter = new ReleaseAdapter(releases);
-            mReleaseRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setReleases(releases);
-            mAdapter.notifyDataSetChanged();
+            if (releases.size() > 0) {
+                if (mAdapter == null) {
+                    mAdapter = new ReleaseAdapter(releases);
+                    mReleaseRecyclerView.setAdapter(mAdapter);
+                } else {
+                    mAdapter.setReleases(releases);
+                    mAdapter.notifyDataSetChanged();
+                }
+            } else {
+                mReleaseRecyclerView.setVisibility(View.GONE);
+                RelativeLayout listLayout =
+                        (RelativeLayout) getView().findViewById(R.id.list_view_layout);
+                TextView errorTextView = new TextView(getContext());
+                String errorString = "Wantlist is Empty";
+                errorTextView.setText(errorString);
+                listLayout.addView(errorTextView);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -171,6 +186,8 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
+        private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
+        private static final int VIEW_TYPE_OBJECT_VIEW = 1;
         private List<Release> mReleases;
 
         ReleaseAdapter(List<Release> releases) {
@@ -178,9 +195,24 @@ public class WantlistListviewFragment extends Fragment {
         }
 
         @Override
+        public int getItemViewType(int position) {
+            if (mReleases.isEmpty()) {
+                return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
+            } else {
+                return VIEW_TYPE_OBJECT_VIEW;
+            }
+        }
+
+        @Override
         public ReleaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.list_item_release, parent, false);
+            if (viewType == VIEW_TYPE_EMPTY_LIST_PLACEHOLDER) {
+                view = layoutInflater.inflate(R.layout.list_item_empty_list, parent, false);
+                TextView errorText = (TextView) view.findViewById(R.id.empty_list_text_view);
+                String errorString = "Wantlist is Empty";
+                errorText.setText(errorString);
+            }
             return new ReleaseHolder(view);
         }
 

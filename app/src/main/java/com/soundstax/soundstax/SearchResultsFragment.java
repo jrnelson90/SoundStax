@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class SearchResultsFragment extends Fragment {
     private SearchView mSearchView;
     private RequestQueue queue;
     private ReleaseAdapter mAdapter;
+    private String lastQuery = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,15 +114,25 @@ public class SearchResultsFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Release> releases;
         try {
-            releases = searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
-            if (mAdapter == null) {
-                mAdapter = new ReleaseAdapter(releases);
-                mResultsRecyclerView.setAdapter(mAdapter);
+            List<Release> releases =
+                    searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
+            if (releases.size() > 0) {
+                if (mAdapter == null) {
+                    mAdapter = new ReleaseAdapter(releases);
+                    mResultsRecyclerView.setAdapter(mAdapter);
+                } else {
+                    mAdapter.setReleases(releases);
+                    mAdapter.notifyDataSetChanged();
+                }
             } else {
-                mAdapter.setReleases(releases);
-                mAdapter.notifyDataSetChanged();
+                mResultsRecyclerView.setVisibility(View.GONE);
+                RelativeLayout listLayout =
+                        (RelativeLayout) getView().findViewById(R.id.list_view_layout);
+                TextView errorTextView = new TextView(getContext());
+                String errorString = "No search results found for \"" + lastQuery + "\"";
+                errorTextView.setText(errorString);
+                listLayout.addView(errorTextView);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -129,6 +141,7 @@ public class SearchResultsFragment extends Fragment {
 
     void fetchQuery(String _queryString) {
         //Parse search into a URL friendly encoding.
+        lastQuery = _queryString;
         getActivity().setTitle("Results for \"" + _queryString + "\"");
         String query_string_encoded = "";
         try {
@@ -265,6 +278,7 @@ public class SearchResultsFragment extends Fragment {
             mFormatInfo.append(" (" + formatInfoParsed + ")");
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
+
 
         @Override
         public void onClick(View v) {
