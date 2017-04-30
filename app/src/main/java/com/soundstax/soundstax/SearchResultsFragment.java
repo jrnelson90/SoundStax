@@ -28,7 +28,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +63,7 @@ public class SearchResultsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         Bundle args = getActivity().getIntent().getExtras();
         String queryString = args.getString(QUERY_ARG);
         fetchQuery(queryString);

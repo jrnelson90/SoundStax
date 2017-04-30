@@ -11,6 +11,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.RequestQueue;
+
 import java.io.File;
 
 /**
@@ -26,7 +28,7 @@ public class DashboardActivity extends SingleFragmentActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private boolean logout = false;
-
+    private RequestQueue queue;
     @Override
     protected Fragment createFragment() {
         return new DashboardFragment();
@@ -35,6 +37,7 @@ public class DashboardActivity extends SingleFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        queue = VolleyRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (NavigationView) findViewById(R.id.navView);
@@ -150,13 +153,23 @@ public class DashboardActivity extends SingleFragmentActivity {
                 currentImage.delete();
             }
         }
+        File searchImageDir =
+                new File("/data/user/0/com.soundstax.soundstax/app_SearchCovers");
+        if (searchImageDir.isDirectory()) {
+            String[] children = searchImageDir.list();
+            for (String aChildren : children) {
+                File currentImage = new File(collectionImageDir, aChildren);
+                currentImage.delete();
+            }
+        }
+
         UserWantlistDB.get(getApplicationContext()).deleteAllReleases();
         UserCollectionDB.get(getApplicationContext()).deleteAllReleases();
+        queue.getCache().clear();
     }
 
     @Override
     public void setTitle(CharSequence title) {
-
         if (!title.equals("Log out")) {
             mTitle = title;
         } else {

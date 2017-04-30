@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,7 +103,7 @@ public class ReleaseFragment extends Fragment {
                 mRelease = (Release) args.getSerializable(ARG_RELEASE);
                 break;
         }
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
     }
 
     @Override
@@ -636,7 +635,6 @@ public class ReleaseFragment extends Fragment {
                                                 String albumURI = currentResult.getString("uri");
                                                 setSpotifyButton(albumURI);
                                             }
-
                                         }
                                     }
                                 } catch (JSONException e) {
