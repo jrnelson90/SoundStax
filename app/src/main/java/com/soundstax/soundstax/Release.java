@@ -17,7 +17,15 @@ public class Release implements Serializable {
     private String mThumbDir;
     private String mReleaseId;
     private String mInstanceId;
+    private String mFolderId;
+    private String mFolderName;
     private String mDateAdded;
+    private String mFormatName;
+    private String mFormatQty;
+    private String mFormatDescriptions;
+
+    private String[] mFormatDescriptionsArray;
+    private String mFormatText;
 
     public Release() {
         this(UUID.randomUUID());
@@ -105,5 +113,67 @@ public class Release implements Serializable {
 
     public void setDateAdded(String dateAdded) {
         mDateAdded = dateAdded;
+    }
+
+    public String getFormatName() {
+        return mFormatName;
+    }
+
+    public void setFormatName(String formatName) {
+        mFormatName = formatName;
+    }
+
+    public String getFormatQty() {
+        return mFormatQty;
+    }
+
+    public void setFormatQty(String formatQty) {
+        mFormatQty = formatQty;
+    }
+
+    public String getFormatDescriptions() {
+        return mFormatDescriptions;
+    }
+
+    public void setFormatDescriptions(String formatDescriptions) {
+        mFormatDescriptions = formatDescriptions;
+        String parsedArrayString = formatDescriptions.replaceAll("[\\]\\[\"]", "").replace("\\", "")
+                .replace("7", "7\"").replace("10", "10\"").replace("12", "12\"");
+        parsedArrayString = parsedArrayString.replace("Limited Edition", "Ltd").replace("Compilation", "Comp")
+                .replace("Reissue", "RE").replace("Numbered", "Num").replace("Deluxe Edition", "Dlx")
+                .replace("Special Edition", "S/Edition");
+        setFormatDescriptionsArray(parsedArrayString.split(","));
+    }
+
+    public String[] getFormatDescriptionsArray() {
+        return mFormatDescriptionsArray;
+    }
+
+    public void setFormatDescriptionsArray(String[] formatDescriptionsArray) {
+        mFormatDescriptionsArray = formatDescriptionsArray;
+    }
+
+    public String getFormatText() {
+        return mFormatText;
+    }
+
+    public void setFormatText(String formatText) {
+        mFormatText = formatText;
+    }
+
+    public String getFolderId() {
+        return mFolderId;
+    }
+
+    public void setFolderId(String folderId) {
+        mFolderId = folderId;
+    }
+
+    public String getFolderName() {
+        return mFolderName;
+    }
+
+    public void setFolderName(String folderName) {
+        mFolderName = folderName;
     }
 }

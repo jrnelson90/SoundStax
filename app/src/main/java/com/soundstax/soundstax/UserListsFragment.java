@@ -124,7 +124,7 @@ public class UserListsFragment extends Fragment {
         }
 
 //        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
+//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getFolderList());
 //        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
@@ -146,7 +146,7 @@ public class UserListsFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_folder_text_view);
             mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
             setIsRecyclable(false);
         }

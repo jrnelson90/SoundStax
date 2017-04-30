@@ -16,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,11 +42,10 @@ public class CollectionListviewFragment extends Fragment {
 
     private static final String TAG = "CollectionListviewFragment";
     private RecyclerView mReleaseRecyclerView;
-    private Spinner mGenreFilterSpinner;
+    private Spinner mFolderFilterSpinner;
     private ReleaseAdapter mAdapter;
     private UserCollectionDB mUserCollectionDB;
     private RequestQueue queue;
-    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,29 +64,29 @@ public class CollectionListviewFragment extends Fragment {
         mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
         mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
-//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (mAdapter != null) {
-//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserCollectionDB.getReleases();
-//                        mAdapter.setReleases(allReleases);
-//                    } else {
-//                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
-//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setReleases(filteredReleases);
-//                    }
-//
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        mFolderFilterSpinner = (Spinner) view.findViewById(R.id.release_folder_filter_spinner);
+        mFolderFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (mAdapter != null) {
+                    if (String.valueOf(mFolderFilterSpinner.getSelectedItem()).equals("(All)")) {
+                        List<Release> allReleases = mUserCollectionDB.getReleases();
+                        mAdapter.setReleases(allReleases);
+                    } else {
+                        List<Release> filteredReleases = mUserCollectionDB.getFilteredReleases(
+                                String.valueOf(mFolderFilterSpinner.getSelectedItem()));
+                        mAdapter.setReleases(filteredReleases);
+                    }
+
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         updateUI();
         return view;
@@ -102,8 +103,8 @@ public class CollectionListviewFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_toolbar_layout, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-        mSearchView = (SearchView) searchItem.getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // your text view here
@@ -112,6 +113,10 @@ public class CollectionListviewFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchView.setQuery("", false);
+                searchView.setFocusable(false);
+                searchItem.collapseActionView();
                 Intent i = new Intent(getActivity(), SearchResultsActivity.class);
                 Bundle args = new Bundle();
                 args.putString("query", query);
@@ -122,32 +127,7 @@ public class CollectionListviewFragment extends Fragment {
         });
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_item_search:
-//                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                    @Override
-//                    public boolean onQueryTextChange(String newText) {
-//                        // your text view here
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onQueryTextSubmit(String query) {
-//                        fetchQuery(query);
-//                        return true;
-//                    }
-//                });
-//
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-
     private void updateUI() {
-//        UserCollectionDB releaseBase = UserCollectionDB.get(getActivity());
         List<Release> releases = mUserCollectionDB.getReleases();
 
         if (mAdapter == null) {
@@ -158,31 +138,32 @@ public class CollectionListviewFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
-//        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getGenreList());
-//        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mGenreFilterSpinner.setAdapter(genreAdpater);
+        ArrayAdapter<String> folderAdpater = new ArrayAdapter<>(
+                this.getContext(), android.R.layout.simple_spinner_item, mUserCollectionDB.getFolderList());
+        folderAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFolderFilterSpinner.setAdapter(folderAdpater);
     }
 
-    private class ReleaseHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private final ImageView mThumbImageView;
         private final TextView mTitleTextView;
         private final TextView mArtistTextView;
         private final TextView mYearTextView;
         private final TextView mGenreTextView;
-        private final ImageView mThumbImageView;
+        private final TextView mFormatInfo;
 
         private Release mRelease;
 
         ReleaseHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
-            mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_folder_text_view);
+            mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
 
@@ -191,7 +172,23 @@ public class CollectionListviewFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-            mGenreTextView.setText(mRelease.getGenre());
+//            mGenreTextView.setText(mRelease.getGenre());
+            mGenreTextView.setVisibility(View.GONE);
+            mFormatInfo.setText(mRelease.getFormatName());
+            String formatInfoParsed = "";
+            for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+                formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+                if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                        i != mRelease.getFormatDescriptionsArray().length - 1) {
+                    formatInfoParsed += " ";
+                }
+            }
+            mFormatInfo.append(" (" + formatInfoParsed);
+            if (mRelease.getFormatText().length() > 0) {
+                mFormatInfo.append(" " + mRelease.getFormatText() + ")");
+            } else {
+                mFormatInfo.append(")");
+            }
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
@@ -230,9 +227,10 @@ public class CollectionListviewFragment extends Fragment {
 
                                     String thumbDir = "CollectionCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
                                     // Create imageDir
-                                    File filePath = new File(directory, "release_cover" +
-                                            holder.getAdapterPosition() + ".jpeg");
+                                    File filePath = new File(directory, "release_" +
+                                            release.getReleaseId() + "_cover.jpeg");
 
                                     FileOutputStream fos = null;
                                     try {

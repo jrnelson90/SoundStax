@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -77,29 +78,11 @@ public class SearchResultsFragment extends Fragment {
         mResultsRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
         mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
-//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (mAdapter != null) {
-//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserWantlistDB.getReleases();
-//                        mAdapter.setReleases(allReleases);
-//                    } else {
-//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
-//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setReleases(filteredReleases);
-//                    }
-//
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        TextView filterLabel = (TextView) view.findViewById(R.id.release_folder_filter_textview);
+        filterLabel.setVisibility(View.GONE);
+        Spinner filterSpinner = (Spinner) view.findViewById(R.id.release_folder_filter_spinner);
+        filterSpinner.setVisibility(View.GONE);
+
         return view;
     }
 
@@ -173,10 +156,10 @@ public class SearchResultsFragment extends Fragment {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -202,11 +185,28 @@ public class SearchResultsFragment extends Fragment {
                 }
                 String releaseArtist = currentRelease.getString("title").split("-")[0];
                 String releaseId = currentRelease.getString("id");
+                JSONArray formatInfo = currentRelease.getJSONArray("format");
+                String formatName = "";
+                String formatDescriptions = "";
+                for (int j = 0; j < formatInfo.length(); j++) {
+                    if (j == 0) {
+                        formatName = formatInfo.getString(j);
+                    } else {
+                        formatDescriptions += formatInfo.getString(j);
+
+                        if (formatInfo.length() > 2 && j < formatInfo.length() - 1) {
+                            formatDescriptions += ", ";
+                        }
+                    }
+                }
+
                 Release release = new Release();
                 release.setArtist(releaseArtist);
                 release.setYear(releaseYear);
                 release.setTitle(releaseTitle);
                 release.setReleaseId(releaseId);
+                release.setFormatName(formatName);
+                release.setFormatDescriptions(formatDescriptions);
                 release.setThumbUrl(currentRelease.getString("thumb"));
                 release.setThumbDir("");
                 returnList.add(release);
@@ -221,6 +221,7 @@ public class SearchResultsFragment extends Fragment {
         private final TextView mYearTextView;
         private final TextView mGenreTextView;
         private final ImageView mThumbImageView;
+        private final TextView mFormatInfo;
 
         private Release mRelease;
 
@@ -230,8 +231,9 @@ public class SearchResultsFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_release_title_text_view);
             mArtistTextView = (TextView) itemView.findViewById(R.id.list_item_release_artist_text_view);
             mYearTextView = (TextView) itemView.findViewById(R.id.list_item_release_year_text_view);
-            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_genre_text_view);
+            mGenreTextView = (TextView) itemView.findViewById(R.id.list_item_release_folder_text_view);
             mThumbImageView = (ImageView) itemView.findViewById(R.id.list_item_release_thumb_image_view);
+            mFormatInfo = (TextView) itemView.findViewById(R.id.list_item_release_format_info_view);
             setIsRecyclable(false);
         }
 
@@ -240,7 +242,18 @@ public class SearchResultsFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-            mGenreTextView.setText(mRelease.getGenre());
+//            mGenreTextView.setText(mRelease.getGenre());
+            mGenreTextView.setVisibility(View.GONE);
+            mFormatInfo.setText(mRelease.getFormatName());
+            String formatInfoParsed = "";
+            for (int i = 0; i < mRelease.getFormatDescriptionsArray().length; i++) {
+                formatInfoParsed += mRelease.getFormatDescriptionsArray()[i];
+                if (mRelease.getFormatDescriptionsArray().length >= 2 &&
+                        i != mRelease.getFormatDescriptionsArray().length - 1) {
+                    formatInfoParsed += " ";
+                }
+            }
+            mFormatInfo.append(" (" + formatInfoParsed + ")");
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
 
@@ -283,8 +296,8 @@ public class SearchResultsFragment extends Fragment {
                                     String thumbDir = "SearchCovers";
                                     File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                                     // Create imageDir
-                                    File filePath = new File(directory, "release_cover" +
-                                            holder.getAdapterPosition() + ".jpeg");
+                                    File filePath = new File(directory, "release_" +
+                                            release.getReleaseId() + "_cover.jpeg");
 
                                     FileOutputStream fos = null;
                                     try {

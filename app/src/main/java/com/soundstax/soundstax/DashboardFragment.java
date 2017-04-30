@@ -51,7 +51,6 @@ public class DashboardFragment extends Fragment {
     private LinearLayout mWantlistLinearLayout;
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
-    private SearchView mSearchView;
     private RequestQueue queue;
 
     @Override
@@ -71,17 +70,13 @@ public class DashboardFragment extends Fragment {
         queue = Volley.newRequestQueue(getContext());
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
-//            try {
-//                mUserProfileJSON = new JSONObject(Preferences.get(Preferences.USER_PROFILE, ""));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
+            setPreviewThumbnails();
+        }
+    }
 
     @Override
     public void onPause() {
@@ -111,7 +106,7 @@ public class DashboardFragment extends Fragment {
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                     imageView.setLayoutParams(parms);
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Collection", i, imageView);
+                        DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +134,7 @@ public class DashboardFragment extends Fragment {
                     LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
                     imageView.setLayoutParams(parms);
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Wantlist", i, imageView);
+                        DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -195,8 +190,9 @@ public class DashboardFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_toolbar_layout, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-        mSearchView = (SearchView) searchItem.getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // your text view here
@@ -205,6 +201,10 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchView.setQuery("", false);
+                searchView.setFocusable(false);
+                searchItem.collapseActionView();
                 Intent i = new Intent(getActivity(), SearchResultsActivity.class);
                 Bundle args = new Bundle();
                 args.putString("query", query);
@@ -242,10 +242,10 @@ public class DashboardFragment extends Fragment {
                     String ts = tsLong.toString();
                     params.put("Content-Type", "application/x-www-form-urlencoded");
                     params.put("Authorization", "OAuth" +
-                            "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                            "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                             ", oauth_nonce=" + ts +
                             ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                            ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                            ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                             Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                             ", oauth_signature_method=PLAINTEXT" +
                             ", oauth_timestamp=" + ts);
@@ -277,7 +277,7 @@ public class DashboardFragment extends Fragment {
             imageView.setLayoutParams(parms);
 
             if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Collection", i, imageView);
+                DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                 final Release finalCurrentRelease = currentRelease;
@@ -299,7 +299,7 @@ public class DashboardFragment extends Fragment {
             LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
             imageView.setLayoutParams(parms);
             if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Wantlist", i, imageView);
+                DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
             } else {
                 imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                 final Release finalCurrentRelease = currentRelease;
@@ -379,7 +379,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void DownloadPreviewThumbnail(final String _thumbDbName, final int dbIndex,
-                                          final ImageView imageView) {
+                                          final String _releaseID, final ImageView imageView) {
         long startTime = System.currentTimeMillis();
         String thumbURL = "";
         if (_thumbDbName.equals("Collection")) {
@@ -406,7 +406,7 @@ public class DashboardFragment extends Fragment {
 
                             File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
                             // Create imageDir
-                            File filePath = new File(directory, "release_cover" + dbIndex + ".jpeg");
+                            File filePath = new File(directory, "release_" + _releaseID + "_cover.jpeg");
 
                             FileOutputStream fos = null;
                             try {
@@ -465,6 +465,5 @@ public class DashboardFragment extends Fragment {
         Log.i("DownloadThumbnail", "Grabbed " + _thumbDbName + " thumbnail file " + dbIndex);
         Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
     }
-
 
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ public class LoadingSplashActivity extends Activity {
     private JSONArray mUserCollectionJSON = new JSONArray();
     private JSONArray mUserWantlistJSON = new JSONArray();
     private JSONObject mUserProfileJSON = new JSONObject();
+    private JSONObject mUserFoldersJSON = new JSONObject();
     private RequestQueue queue;
     private ProgressBar loadingBar;
     private TextView loadingText;
@@ -99,10 +103,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -130,18 +134,7 @@ public class LoadingSplashActivity extends Activity {
                         try {
                             wantlistNum = mUserProfileJSON.getInt("num_wantlist");
                             collectionNum = mUserProfileJSON.getInt("num_collection");
-                            progressTotal = 5 + (collectionNum / 100) + (wantlistNum / 100);
-//                            if(collectionNum < 10){
-//                                progressTotal += collectionNum;
-//                            } else {
-//                                progressTotal += 10;
-//                            }
-//
-//                            if(wantlistNum < 10) {
-//                                progressTotal += wantlistNum;
-//                            } else {
-//                                progressTotal += 10;
-//                            }
+                            progressTotal = 6 + (collectionNum / 100) + (wantlistNum / 100);
                             Log.i("Profile Request", "Received User Profile JSON");
                             Preferences.set(Preferences.USER_PROFILE, mUserProfileJSON.toString());
 
@@ -176,10 +169,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -223,7 +216,7 @@ public class LoadingSplashActivity extends Activity {
                                 Log.i("Collection Download", "All collection items have been downloaded");
                                 String userWantlistURL = "https://api.discogs.com/users/" +
                                         Preferences.get(Preferences.USERNAME, "") +
-                                        "/wants?page=1&per_page=100&sort=added&sort_order=desc";
+                                        "/wants?page=1&per_page=100&sort=added&sort_order=asc";
                                 FetchUserWantlistJSON(userWantlistURL);
                             }
                         } catch (JSONException e) {
@@ -244,10 +237,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -290,15 +283,7 @@ public class LoadingSplashActivity extends Activity {
                                         "page=" + String.valueOf(currentListPage + 1) + "&");
                                 FetchUserWantlistJSON(nextPageURL);
                             } else {
-                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
-                                extractCollectionData();
-                                extractWantlistData();
-                                Log.i("Loading Splash", "Loading complete");
-                                Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
-                                startActivity(i);
-                                // close this activity
-                                finish();
-//                                setPreviewThumbnails();
+                                FetchUserFoldersJSON();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -318,10 +303,10 @@ public class LoadingSplashActivity extends Activity {
                 String ts = tsLong.toString();
                 params.put("Content-Type", "application/x-www-form-urlencoded");
                 params.put("Authorization", "OAuth" +
-                        "  oauth_consumer_key=" + HttpConst.CONSUMER_KEY +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                         ", oauth_nonce=" + ts +
                         ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-                        ", oauth_signature=" + HttpConst.CONSUMER_SECRET + "&" +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                         Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                         ", oauth_signature_method=PLAINTEXT" +
                         ", oauth_timestamp=" + ts);
@@ -332,6 +317,89 @@ public class LoadingSplashActivity extends Activity {
 
         // Access the RequestQueue through your singleton class.
         queue.add(jsObjRequest);
+    }
+
+    private void FetchUserFoldersJSON() {
+        // GET /users/{username}/collection/folders
+        String folderRequestURL = "https://api.discogs.com/users/" +
+                Preferences.get(Preferences.USERNAME, "") + "/collection/folders";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, folderRequestURL, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mUserFoldersJSON = response;
+                        String loadedFoldersMessage = "Loaded User Folders";
+                        loadingText.setText(loadedFoldersMessage);
+                        loadingBar.setProgress(++progressMade);
+
+                        Log.i("Folders Download", "All folder have been downloaded");
+                        extractFoldersData();
+                        extractCollectionData();
+                        extractWantlistData();
+                        Log.i("Loading Splash", "Loading complete");
+                        Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
+                        startActivity(i);
+                        // close this activity
+                        finish();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                    }
+                }) {
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                int mStatusCode = response.statusCode;
+                if (mStatusCode == 204) {
+//                    UserCollectionDB.get(getActivity()).deleteRelease(mRelease);
+//                    getActivity().finish();
+                }
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                Long tsLong = System.currentTimeMillis() / 1000;
+                String ts = tsLong.toString();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "OAuth" +
+                        "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
+                        ", oauth_nonce=" + ts +
+                        ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                        ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
+                        Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                        ", oauth_signature_method=PLAINTEXT" +
+                        ", oauth_timestamp=" + ts);
+                params.put("User-Agent", HttpConst.USER_AGENT);
+                return params;
+            }
+        };
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsObjRequest);
+    }
+
+    private void extractFoldersData() {
+        JSONArray foldersArray = null;
+        try {
+            foldersArray = mUserFoldersJSON.getJSONArray("folders");
+            for (int i = 0; i < foldersArray.length(); i++) {
+                UserFolders.Folder currentFolder = new UserFolders.Folder();
+                JSONObject currentFolderJSON = foldersArray.getJSONObject(i);
+                currentFolder.setId(currentFolderJSON.getString("id"));
+                currentFolder.setName(currentFolderJSON.getString("name"));
+                currentFolder.setCount(currentFolderJSON.getString("count"));
+                UserFolders.sFolderArrayList.add(currentFolder);
+            }
+            Log.i("Folder Extract", "All Folder info extracted");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void extractCollectionData() {
@@ -346,21 +414,48 @@ public class LoadingSplashActivity extends Activity {
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
                     String releaseId = basicInfo.getString("id");
                     String instanceId = currentRelease.getString("instance_id");
+                    String folderId = currentRelease.getString("folder_id");
+
+                    String folderNameString = "";
+                    JSONArray foldersArray = mUserFoldersJSON.getJSONArray("folders");
+                    for (int j = 0; j < foldersArray.length(); j++) {
+                        JSONObject currentFolderJSON = foldersArray.getJSONObject(j);
+                        if (folderId.equals(currentFolderJSON.getString("id"))) {
+                            folderNameString = currentFolderJSON.getString("name");
+                        }
+                    }
+
                     String dateAdded = currentRelease.getString("date_added");
+                    JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
+                    String formatName = formatInfo.getString("name");
+                    String formatQty = formatInfo.getString("qty");
+                    String formatDescriptions = "";
+                    if (formatInfo.has("descriptions")) {
+                        JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                        formatDescriptions = formatDescriptionsArray.toString();
+                    }
+
+                    String formatText = "";
+                    if (formatInfo.has("text")) {
+                        formatText = formatInfo.getString("text");
+                    }
+
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
                     release.setInstanceId(instanceId);
+                    release.setFolderId(folderId);
+                    release.setFolderName(folderNameString);
+                    release.setFormatName(formatName);
+                    release.setFormatQty(formatQty);
+                    release.setFormatDescriptions(formatDescriptions);
+                    release.setFormatText(formatText);
                     release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserCollectionDB.addRelease(release);
-//                    String parsedCollectionItemMessage =
-//                            "Parsed Collection Item " + String.valueOf(i)
-//                                    + " of " + String.valueOf(mUserCollectionJSON.length());
-//                    loadingText.setText(parsedCollectionItemMessage);
                 }
                 Log.i("Collection Parse", "All releases in collection have been parsed to SQLite");
             } else {
@@ -382,19 +477,35 @@ public class LoadingSplashActivity extends Activity {
                     String releaseYear = basicInfo.getString("year");
                     String releaseId = basicInfo.getString("id");
                     String releaseArtist = basicInfo.getJSONArray("artists").getJSONObject(0).getString("name");
-//                    String dateAdded = currentRelease.getString("date_added");
+                    JSONObject formatInfo = basicInfo.getJSONArray("formats").getJSONObject(0);
+                    String formatName = formatInfo.getString("name");
+                    String formatQty = formatInfo.getString("qty");
+                    String formatDescriptions = "";
+                    if (formatInfo.has("descriptions")) {
+                        JSONArray formatDescriptionsArray = formatInfo.getJSONArray("descriptions");
+                        formatDescriptions = formatDescriptionsArray.toString();
+                    }
+                    String formatText = "";
+                    if (formatInfo.has("text")) {
+                        formatText = formatInfo.getString("text");
+                    }
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
+                    Date now = new Date();
+                    String dateAdded = sdf.format(now);
+
                     Release release = new Release();
                     release.setArtist(releaseArtist);
                     release.setYear(releaseYear);
                     release.setTitle(releaseTitle);
                     release.setReleaseId(releaseId);
+                    release.setFormatName(formatName);
+                    release.setFormatQty(formatQty);
+                    release.setFormatDescriptions(formatDescriptions);
+                    release.setFormatText(formatText);
+                    release.setDateAdded(dateAdded);
                     release.setThumbUrl(basicInfo.getString("thumb"));
                     release.setThumbDir("");
                     mUserWantlistDB.addRelease(release);
-//                    String parsedWantlistItemMessage =
-//                            "Parsed Wantlist Item " + String.valueOf(i)
-//                                    + " of " + String.valueOf(mUserWantlistJSON.length());
-//                    loadingText.setText(parsedWantlistItemMessage);
                 }
                 Log.i("Wantlist Parse", "All releases in wantlist have been parsed to SQLite");
             } else {
