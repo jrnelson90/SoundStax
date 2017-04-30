@@ -269,52 +269,63 @@ public class DashboardFragment extends Fragment {
         if (mWantlistLinearLayout.getChildCount() != 0) {
             mWantlistLinearLayout.removeAllViews();
         }
-        for (int i = 0; i < 10; i++) {
-            currentRelease = mUserCollectionDB.getReleases().get(i);
-            ImageView imageView = new ImageView(getContext());
-            imageView.setPadding(2, 2, 2, 2);
-            LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
-            imageView.setLayoutParams(parms);
+        if (mUserCollectionDB.getReleases().size() > 0) {
+            int previewsToLoad = 10;
+            if (mUserCollectionDB.getReleases().size() < 10) {
+                previewsToLoad = mUserCollectionDB.getReleases().size();
+            }
+            for (int i = 0; i < previewsToLoad; i++) {
+                currentRelease = mUserCollectionDB.getReleases().get(i);
+                ImageView imageView = new ImageView(getContext());
+                imageView.setPadding(2, 2, 2, 2);
+                LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+                imageView.setLayoutParams(parms);
 
-            if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
-            } else {
-                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                final Release finalCurrentRelease = currentRelease;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                finalCurrentRelease.getId(), "Collection");
-                        startActivity(intent);
-                    }
-                });
-                mCollectionLinearLayout.addView(imageView);
+                if (currentRelease.getThumbDir().equals("")) {
+                    DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
+                } else {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                    final Release finalCurrentRelease = currentRelease;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                    finalCurrentRelease.getId(), "Collection");
+                            startActivity(intent);
+                        }
+                    });
+                    mCollectionLinearLayout.addView(imageView);
+                }
             }
         }
-        for (int i = 0; i < 10; i++) {
-            currentRelease = mUserWantlistDB.getReleases().get(i);
-            ImageView imageView = new ImageView(getContext());
-            imageView.setPadding(2, 2, 2, 2);
-            LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
-            imageView.setLayoutParams(parms);
-            if (currentRelease.getThumbDir().equals("")) {
-                DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
-            } else {
-                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                final Release finalCurrentRelease = currentRelease;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                finalCurrentRelease.getId(), "Wantlist");
-                        startActivity(intent);
-                    }
-                });
-                mWantlistLinearLayout.addView(imageView);
+        if (mUserWantlistDB.getReleases().size() > 0) {
+            int previewsToLoad = 10;
+            if (mUserWantlistDB.getReleases().size() < 10) {
+                previewsToLoad = mUserWantlistDB.getReleases().size();
+            }
+            for (int i = 0; i < previewsToLoad; i++) {
+                currentRelease = mUserWantlistDB.getReleases().get(i);
+                ImageView imageView = new ImageView(getContext());
+                imageView.setPadding(2, 2, 2, 2);
+                LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
+                imageView.setLayoutParams(parms);
+                if (currentRelease.getThumbDir().equals("")) {
+                    DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
+                } else {
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                    final Release finalCurrentRelease = currentRelease;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                    finalCurrentRelease.getId(), "Wantlist");
+                            startActivity(intent);
+                        }
+                    });
+                    mWantlistLinearLayout.addView(imageView);
+                }
             }
         }
-
     }
 
     private void updateProfilePicture() {

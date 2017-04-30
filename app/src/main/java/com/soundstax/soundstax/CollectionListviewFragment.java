@@ -184,7 +184,7 @@ public class CollectionListviewFragment extends Fragment {
                 }
             }
             mFormatInfo.append(" (" + formatInfoParsed);
-            if (mRelease.getFormatText().length() > 0) {
+            if (mRelease.getFormatText() != null && mRelease.getFormatText().length() > 0) {
                 mFormatInfo.append(" " + mRelease.getFormatText() + ")");
             } else {
                 mFormatInfo.append(")");

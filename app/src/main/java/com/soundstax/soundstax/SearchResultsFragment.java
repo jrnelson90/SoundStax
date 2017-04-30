@@ -242,7 +242,6 @@ public class SearchResultsFragment extends Fragment {
             mTitleTextView.setText(mRelease.getTitle());
             mArtistTextView.setText(mRelease.getArtist());
             mYearTextView.setText(mRelease.getYear());
-//            mGenreTextView.setText(mRelease.getGenre());
             mGenreTextView.setVisibility(View.GONE);
             mFormatInfo.setText(mRelease.getFormatName());
             String formatInfoParsed = "";

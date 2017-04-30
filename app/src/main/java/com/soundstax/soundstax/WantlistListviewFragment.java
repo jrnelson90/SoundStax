@@ -25,8 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,11 +39,9 @@ import java.util.List;
 public class WantlistListviewFragment extends Fragment {
     private static final String TAG = "WantlistListview";
     private RecyclerView mReleaseRecyclerView;
-    private Spinner mGenreFilterSpinner;
     private ReleaseAdapter mAdapter;
     private UserWantlistDB mUserWantlistDB;
     private RequestQueue queue;
-    private JSONObject mSearchResults;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,7 +155,7 @@ public class WantlistListviewFragment extends Fragment {
                 }
             }
             mFormatInfo.append(" (" + formatInfoParsed);
-            if (mRelease.getFormatText().length() > 0) {
+            if (mRelease.getFormatText() != null && mRelease.getFormatText().length() > 0) {
                 mFormatInfo.append(" " + mRelease.getFormatText() + ")");
             } else {
                 mFormatInfo.append(")");

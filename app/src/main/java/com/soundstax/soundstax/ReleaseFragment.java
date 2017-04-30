@@ -191,7 +191,7 @@ public class ReleaseFragment extends Fragment {
             trackColumnTitleRow.addView(trackNameLabel);
             trackColumnTitleRow.addView(trackDurationLabel);
             mTrackInfoTable.addView(trackColumnTitleRow, 0);
-
+            int trackCounter = 0;
             for (int i = 0; i < tracklist.length(); i++) {
                 JSONObject currentTrack = tracklist.getJSONObject(i);
                 if (currentTrack.getString("type_").equals("track")) {
@@ -225,7 +225,7 @@ public class ReleaseFragment extends Fragment {
                     trackRow.addView(trackNumber);
                     trackRow.addView(trackName);
                     trackRow.addView(trackDuration);
-                    mTrackInfoTable.addView(trackRow, i + 1);
+                    mTrackInfoTable.addView(trackRow, trackCounter++ + 1);
                 }
             }
         } catch (JSONException e) {
@@ -306,7 +306,7 @@ public class ReleaseFragment extends Fragment {
             }
         }
         mReleaseFormatInfo.append(" (" + formatInfoParsed);
-        if (mRelease.getFormatText().length() > 0) {
+        if (mRelease.getFormatText() != null && mRelease.getFormatText().length() > 0) {
             mReleaseFormatInfo.append(" " + mRelease.getFormatText() + ")");
         } else {
             mReleaseFormatInfo.append(")");
@@ -480,7 +480,8 @@ public class ReleaseFragment extends Fragment {
                                                 mRelease.setInstanceId(instanceId);
 //                                                dateAdded = response.getString("date_added");
                                                 //       "date_added": "2015-11-30T10:54:13-08:00",
-                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
+                                                SimpleDateFormat sdf =
+                                                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-SSS");
                                                 Date now = new Date();
                                                 String strDate = sdf.format(now);
                                                 mRelease.setDateAdded(strDate);
@@ -603,10 +604,12 @@ public class ReleaseFragment extends Fragment {
     private void getSpotifyLink() {
 
         // https://api.spotify.com/v1/search?q=album:arrival%20artist:abba&type=album
-        final String parsedArtist = mRelease.getArtist().split(" \\(")[0].toLowerCase().replace("and ", "").replace("& ", "");
+        final String parsedArtist = mRelease.getArtist().split(" \\(")[0].toLowerCase()
+                .replace("and ", "").replace("& ", "");
         String releaseTitle = mRelease.getTitle().toLowerCase().trim().replace("-", " ")
                 .replaceAll("[+.^:,()\\[\\]\"]", "").replace("   ", "  ").replace("  ", " ");
-        if (stringContainsItemFromList(releaseTitle, new String[]{"original", "motion", "picture", "movie", "cast", "recording", "broadway", "soundtrack"})) {
+        if (stringContainsItemFromList(releaseTitle, new String[]{"original", "motion", "picture",
+                "movie", "cast", "recording", "broadway", "soundtrack"})) {
             String releaseURL = "https://api.spotify.com/v1/search?q=album:" +
                     Uri.encode(releaseTitle) + "&type=album";
             int mStatusCode = 0;
@@ -625,11 +628,11 @@ public class ReleaseFragment extends Fragment {
                                         for (int i = 0; i < items.length(); i++) {
                                             JSONObject currentResult = (JSONObject) items.get(i);
                                             String title = currentResult.getString("name").toLowerCase()
-                                                    .replaceAll("[-+.^:,()\\[\\]\"]", "").replace("remastered", "").replace("version", "")
+                                                    .replaceAll("[-+.^:,()\\[\\]\"]", "")
+                                                    .replace("remastered", "").replace("version", "")
                                                     .replace("edition", "").replace("  ", " ");
                                             if (title.replace(" ", "").equals(finalReleaseTitle1.replace(" ", ""))) {
-//                                            JSONObject externalURLs = currentResult.getJSONObject("external_urls");
-//                                            mSpotifyLink = externalURLs.getString("spotify");
+
                                                 String albumURI = currentResult.getString("uri");
                                                 setSpotifyButton(albumURI);
                                             }
@@ -675,7 +678,9 @@ public class ReleaseFragment extends Fragment {
                                         for (int i = 0; i < items.length(); i++) {
                                             JSONObject currentResult = (JSONObject) items.get(i);
                                             String title = currentResult.getString("name");
-                                            title = title.split(" \\(")[0].split(":")[0].toLowerCase().replaceAll("[+.^:,()\\[\\]\"]", "").replace("remastered", "").replace("version", "")
+                                            title = title.split(" \\(")[0].split(":")[0]
+                                                    .toLowerCase().replaceAll("[+.^:,()\\[\\]\"]", "")
+                                                    .replace("remastered", "").replace("version", "")
                                                     .replace("edition", "").replace("  ", " ");
                                             JSONArray artistsArray = currentResult.getJSONArray("artists");
                                             for (int j = 0; j < artistsArray.length(); j++) {
@@ -687,9 +692,9 @@ public class ReleaseFragment extends Fragment {
                                                     artistName = "various";
                                                 }
                                                 if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
-                                                        && artistName.replace(" ", "").equals(parsedArtist.replace(" ", ""))) {
-//                                            JSONObject externalURLs = currentResult.getJSONObject("external_urls");
-//                                            mSpotifyLink = externalURLs.getString("spotify");
+                                                        && artistName.replace(" ", "")
+                                                        .equals(parsedArtist.replace(" ", ""))) {
+
                                                     String albumURI = currentResult.getString("uri");
                                                     setSpotifyButton(albumURI);
                                                 }
