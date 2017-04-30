@@ -143,10 +143,18 @@ public class CollectionListviewFragment extends Fragment {
                 mReleaseRecyclerView.setVisibility(View.GONE);
                 RelativeLayout listLayout =
                         (RelativeLayout) getView().findViewById(R.id.list_view_layout);
-                TextView errorTextView = new TextView(getContext());
+                TextView errorTextView = (TextView) getActivity()
+                        .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+
                 String errorString = "Collection is Empty";
                 errorTextView.setText(errorString);
                 listLayout.addView(errorTextView);
+
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams) errorTextView.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                errorTextView.setLayoutParams(layoutParams);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -214,8 +222,6 @@ public class CollectionListviewFragment extends Fragment {
     }
 
     private class ReleaseAdapter extends RecyclerView.Adapter<ReleaseHolder> {
-        private static final int VIEW_TYPE_EMPTY_LIST_PLACEHOLDER = 0;
-        private static final int VIEW_TYPE_OBJECT_VIEW = 1;
         private List<Release> mReleases;
 
         ReleaseAdapter(List<Release> releases) {
@@ -223,24 +229,9 @@ public class CollectionListviewFragment extends Fragment {
         }
 
         @Override
-        public int getItemViewType(int position) {
-            if (mReleases.isEmpty()) {
-                return VIEW_TYPE_EMPTY_LIST_PLACEHOLDER;
-            } else {
-                return VIEW_TYPE_OBJECT_VIEW;
-            }
-        }
-
-        @Override
         public ReleaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.list_item_release, parent, false);
-            if (viewType == VIEW_TYPE_EMPTY_LIST_PLACEHOLDER) {
-                view = layoutInflater.inflate(R.layout.list_item_empty_list, parent, false);
-                TextView errorText = (TextView) view.findViewById(R.id.empty_list_text_view);
-                String errorString = "Collection is Empty";
-                errorText.setText(errorString);
-            }
             return new ReleaseHolder(view);
         }
 

@@ -129,12 +129,20 @@ public class SearchResultsFragment extends Fragment {
                 mResultsRecyclerView.setVisibility(View.GONE);
                 RelativeLayout listLayout =
                         (RelativeLayout) getView().findViewById(R.id.list_view_layout);
-                TextView errorTextView = new TextView(getContext());
-                String errorString = "No search results found for \"" + lastQuery + "\"";
+                TextView errorTextView = (TextView) getActivity()
+                        .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+
+                String errorString = "No results found for \"" + lastQuery + "\"";
                 errorTextView.setText(errorString);
                 listLayout.addView(errorTextView);
+
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams) errorTextView.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                errorTextView.setLayoutParams(layoutParams);
             }
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }
