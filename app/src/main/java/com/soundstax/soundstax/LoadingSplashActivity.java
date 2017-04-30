@@ -284,14 +284,6 @@ public class LoadingSplashActivity extends Activity {
                                 FetchUserWantlistJSON(nextPageURL);
                             } else {
                                 FetchUserFoldersJSON();
-//                                Log.i("Wantlist Download", "All wantlist items have been downloaded");
-//                                extractCollectionData();
-//                                extractWantlistData();
-//                                Log.i("Loading Splash", "Loading complete");
-//                                Intent i = new Intent(LoadingSplashActivity.this, DashboardActivity.class);
-//                                startActivity(i);
-//                                // close this activity
-//                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

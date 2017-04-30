@@ -113,18 +113,7 @@ class UserCollectionDB {
                 if (!foundFolders.contains(currentFolder)) {
                     foundFolders.add(cursor.getRelease().getFolderName());
                 }
-//
-//                String folderNameString = "";
-//                for (int i = 0; i < UserFolders.sFolderArrayList.size(); i++) {
-//                    String foldersSingletonId = UserFolders.sFolderArrayList.get(i).getId();
-//                    if(currentFolder.equals(foldersSingletonId)){
-//                        folderNameString = UserFolders.sFolderArrayList.get(i).getName();
-//                    }
-//                }
-//
-//                if (!foundFolders.contains(currentFolder)) {
-//                    foundFolders.add(folderNameString);
-//                }
+
                 cursor.moveToNext();
             }
         }

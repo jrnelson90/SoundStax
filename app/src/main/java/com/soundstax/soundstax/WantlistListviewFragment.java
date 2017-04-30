@@ -63,31 +63,10 @@ public class WantlistListviewFragment extends Fragment {
 
         mReleaseRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
         mReleaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
-//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (mAdapter != null) {
-//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserWantlistDB.getReleases();
-//                        mAdapter.setReleases(allReleases);
-//                    } else {
-//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
-//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setReleases(filteredReleases);
-//                    }
-//
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-
+        TextView filterLabel = (TextView) view.findViewById(R.id.release_folder_filter_textview);
+        filterLabel.setVisibility(View.GONE);
+        Spinner filterSpinner = (Spinner) view.findViewById(R.id.release_folder_filter_spinner);
+        filterSpinner.setVisibility(View.GONE);
         updateUI();
 
         return view;
@@ -138,11 +117,6 @@ public class WantlistListviewFragment extends Fragment {
             mAdapter.setReleases(releases);
             mAdapter.notifyDataSetChanged();
         }
-
-//        ArrayAdapter<String> genreAdpater = new ArrayAdapter<>(
-//                this.getContext(), android.R.layout.simple_spinner_item, mUserWantlistDB.getFolderList());
-//        genreAdpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mGenreFilterSpinner.setAdapter(genreAdpater);
     }
 
     private class ReleaseHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -77,29 +78,11 @@ public class SearchResultsFragment extends Fragment {
         mResultsRecyclerView = (RecyclerView) view.findViewById(R.id.release_recycler_view);
         mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mGenreFilterSpinner = (Spinner) view.findViewById(R.id.release_genre_filter_spinner);
-//        mGenreFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                if (mAdapter != null) {
-//                    if (String.valueOf(mGenreFilterSpinner.getSelectedItem()).equals("(All)")) {
-//                        List<Release> allReleases = mUserWantlistDB.getReleases();
-//                        mAdapter.setReleases(allReleases);
-//                    } else {
-//                        List<Release> filteredReleases = mUserWantlistDB.getFilteredReleases(
-//                                String.valueOf(mGenreFilterSpinner.getSelectedItem()));
-//                        mAdapter.setReleases(filteredReleases);
-//                    }
-//
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        TextView filterLabel = (TextView) view.findViewById(R.id.release_folder_filter_textview);
+        filterLabel.setVisibility(View.GONE);
+        Spinner filterSpinner = (Spinner) view.findViewById(R.id.release_folder_filter_spinner);
+        filterSpinner.setVisibility(View.GONE);
+
         return view;
     }
 
