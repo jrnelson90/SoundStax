@@ -28,6 +28,7 @@ public class DashboardActivity extends SingleFragmentActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private boolean logout = false;
+    private boolean syncReload = false;
     private RequestQueue queue;
     @Override
     protected Fragment createFragment() {
@@ -90,23 +91,27 @@ public class DashboardActivity extends SingleFragmentActivity {
             case R.id.wantlist_fragment_nav:
                 fragmentClass = WantlistListviewFragment.class;
                 break;
-//            case R.id.lists_fragment_nav:
-//                fragmentClass = UserListsFragment.class;
-//                break;
+            case R.id.sync_fragment_nav:
+                clearUserLists();
+                Intent loading = new Intent(this, LoadingSplashActivity.class);
+                startActivity(loading);
+                syncReload = true;
+                finish();
+                break;
             case R.id.profile_fragment_nav:
                 fragmentClass = UserInfoFragment.class;
                 break;
             case R.id.logout_nav:
                 clearAllUserInfo();
-                Intent i = new Intent(this, LoginSplashActivity.class);
-                startActivity(i);
+                Intent login = new Intent(this, LoginSplashActivity.class);
+                startActivity(login);
                 logout = true;
                 finish();
                 break;
             default:
                 fragmentClass = DashboardFragment.class;
         }
-        if (!logout) {
+        if (!logout && !syncReload) {
             try {
                 assert fragmentClass != null;
                 fragment = (Fragment) fragmentClass.newInstance();
@@ -134,7 +139,10 @@ public class DashboardActivity extends SingleFragmentActivity {
         Preferences.set(Preferences.USER_ID, "");
         Preferences.set(Preferences.USER_PROFILE, "");
         Preferences.set(Preferences.USER_PIC_DIR, "");
+        clearUserLists();
+    }
 
+    private void clearUserLists() {
         File collectionImageDir =
                 new File("/data/user/0/com.soundstax.soundstax/app_CollectionCovers");
         if (collectionImageDir.isDirectory()) {
