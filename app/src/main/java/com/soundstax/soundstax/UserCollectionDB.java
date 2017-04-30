@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Collection List DB
  * Created by jrnel on 2/18/2017.
  */
 

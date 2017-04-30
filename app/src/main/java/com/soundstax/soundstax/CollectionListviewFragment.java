@@ -184,7 +184,7 @@ public class CollectionListviewFragment extends Fragment {
                 }
             }
             mFormatInfo.append(" (" + formatInfoParsed);
-            if (mRelease.getFormatText().length() > 0) {
+            if (mRelease.getFormatText() != null && mRelease.getFormatText().length() > 0) {
                 mFormatInfo.append(" " + mRelease.getFormatText() + ")");
             } else {
                 mFormatInfo.append(")");
@@ -216,8 +216,9 @@ public class CollectionListviewFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ReleaseHolder holder, int position) {
             final Release release = mReleases.get(position);
-            if (release.getThumbDir().equals("")) {
-                ImageRequest thumbRequest = new ImageRequest(release.getThumbUrl(),
+            if (!release.getThumbUrl().equals("")) {
+                if (release.getThumbDir().equals("") && !release.getThumbUrl().equals("local")) {
+                    ImageRequest thumbRequest = new ImageRequest(release.getThumbUrl(),
                         new Response.Listener<Bitmap>() {
                             @Override
                             public void onResponse(Bitmap releaseCoverBitmap) {
@@ -256,9 +257,42 @@ public class CollectionListviewFragment extends Fragment {
                                 }
                             }
                         }, 200, 200, ImageView.ScaleType.FIT_CENTER, null, null);
-                // Add the request to the RequestQueue.
-                queue.add(thumbRequest);
+                    // Add the request to the RequestQueue.
+                    queue.add(thumbRequest);
+                } else {
+                    holder.bindRelease(release);
+                }
             } else {
+                release.setThumbUrl("local");
+                Bitmap blankAlbumBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.album_blank);
+                // path to /data/data/yourapp/app_data/imageDir
+                ContextWrapper cw = new ContextWrapper(getContext());
+
+                String thumbDir = "CollectionCovers";
+                File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+
+                // Create imageDir
+                File filePath = new File(directory, "release_" +
+                        release.getReleaseId() + "_cover.jpeg");
+
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(filePath);
+                    blankAlbumBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (fos != null) {
+                            fos.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                release.setThumbDir(filePath.getAbsolutePath());
+                mUserCollectionDB.updateRelease(release);
                 holder.bindRelease(release);
             }
         }
