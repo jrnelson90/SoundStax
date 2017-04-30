@@ -153,6 +153,25 @@
                     android:layout_marginRight="16dp"/>
             </TableRow>
 
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="8dp">
+
+                <TextView
+                    android:id="@+id/user_folder_label_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Folder"/>
+
+                <TextView
+                    android:id="@+id/release_user_folder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+            </TableRow>
+
         </TableLayout>
 
         <TextView
