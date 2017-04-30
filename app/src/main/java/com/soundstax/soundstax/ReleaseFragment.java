@@ -682,21 +682,24 @@ public class ReleaseFragment extends Fragment {
                                                     .toLowerCase().replaceAll("[+.^:,()\\[\\]\"]", "")
                                                     .replace("remastered", "").replace("version", "")
                                                     .replace("edition", "").replace("  ", " ");
-                                            JSONArray artistsArray = currentResult.getJSONArray("artists");
-                                            for (int j = 0; j < artistsArray.length(); j++) {
-                                                JSONObject currentArtist = (JSONObject) artistsArray.get(i);
-                                                String artistName = currentArtist.getString("name")
-                                                        .toLowerCase().replace(".", "")
-                                                        .replace("and ", "").replace("& ", "");
-                                                if (artistName.equals("various artists")) {
-                                                    artistName = "various";
-                                                }
-                                                if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
-                                                        && artistName.replace(" ", "")
-                                                        .equals(parsedArtist.replace(" ", ""))) {
 
-                                                    String albumURI = currentResult.getString("uri");
-                                                    setSpotifyButton(albumURI);
+                                            JSONArray artistsArray = currentResult.getJSONArray("artists");
+                                            if (artistsArray.length() > 0) {
+                                                for (int j = 0; j < artistsArray.length(); j++) {
+                                                    JSONObject currentArtist = (JSONObject) artistsArray.get(j);
+                                                    String artistName = currentArtist.getString("name")
+                                                            .toLowerCase().replace(".", "")
+                                                            .replace("and ", "").replace("& ", "");
+                                                    if (artistName.equals("various artists")) {
+                                                        artistName = "various";
+                                                    }
+                                                    if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
+                                                            && artistName.replace(" ", "")
+                                                            .equals(parsedArtist.replace(" ", ""))) {
+
+                                                        String albumURI = currentResult.getString("uri");
+                                                        setSpotifyButton(albumURI);
+                                                    }
                                                 }
                                             }
                                         }
