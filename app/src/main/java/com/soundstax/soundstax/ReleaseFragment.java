@@ -27,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,7 +103,7 @@ public class ReleaseFragment extends Fragment {
                 mRelease = (Release) args.getSerializable(ARG_RELEASE);
                 break;
         }
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
     }
 
     @Override
@@ -636,7 +635,6 @@ public class ReleaseFragment extends Fragment {
                                                 String albumURI = currentResult.getString("uri");
                                                 setSpotifyButton(albumURI);
                                             }
-
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -682,21 +680,24 @@ public class ReleaseFragment extends Fragment {
                                                     .toLowerCase().replaceAll("[+.^:,()\\[\\]\"]", "")
                                                     .replace("remastered", "").replace("version", "")
                                                     .replace("edition", "").replace("  ", " ");
-                                            JSONArray artistsArray = currentResult.getJSONArray("artists");
-                                            for (int j = 0; j < artistsArray.length(); j++) {
-                                                JSONObject currentArtist = (JSONObject) artistsArray.get(i);
-                                                String artistName = currentArtist.getString("name")
-                                                        .toLowerCase().replace(".", "")
-                                                        .replace("and ", "").replace("& ", "");
-                                                if (artistName.equals("various artists")) {
-                                                    artistName = "various";
-                                                }
-                                                if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
-                                                        && artistName.replace(" ", "")
-                                                        .equals(parsedArtist.replace(" ", ""))) {
 
-                                                    String albumURI = currentResult.getString("uri");
-                                                    setSpotifyButton(albumURI);
+                                            JSONArray artistsArray = currentResult.getJSONArray("artists");
+                                            if (artistsArray.length() > 0) {
+                                                for (int j = 0; j < artistsArray.length(); j++) {
+                                                    JSONObject currentArtist = (JSONObject) artistsArray.get(j);
+                                                    String artistName = currentArtist.getString("name")
+                                                            .toLowerCase().replace(".", "")
+                                                            .replace("and ", "").replace("& ", "");
+                                                    if (artistName.equals("various artists")) {
+                                                        artistName = "various";
+                                                    }
+                                                    if (title.replace(" ", "").equals(finalReleaseTitle.replace(" ", ""))
+                                                            && artistName.replace(" ", "")
+                                                            .equals(parsedArtist.replace(" ", ""))) {
+
+                                                        String albumURI = currentResult.getString("uri");
+                                                        setSpotifyButton(albumURI);
+                                                    }
                                                 }
                                             }
                                         }

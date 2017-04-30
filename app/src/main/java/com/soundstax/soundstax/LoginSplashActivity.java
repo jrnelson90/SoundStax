@@ -19,7 +19,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        queue = Volley.newRequestQueue(getApplicationContext());
+        queue = VolleyRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
         Preferences.setPreferenceContext(PreferenceManager.getDefaultSharedPreferences(this));
         if (Preferences.get(Preferences.OAUTH_ACCESS_KEY, "").length() > 0) {
             Intent i = new Intent(this, DashboardActivity.class);

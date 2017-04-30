@@ -15,7 +15,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +47,7 @@ public class LoadingSplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("Loading Splash", "Loading started");
-        queue = Volley.newRequestQueue(getApplicationContext());
+        queue = VolleyRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
         setContentView(R.layout.activity_splash_screen);
         loadingBar = (ProgressBar) findViewById(R.id.loading_account_progress_bar);
         loadingText = (TextView) findViewById(R.id.loading_account_text_view);

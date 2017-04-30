@@ -26,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,14 +66,17 @@ public class DashboardFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
-            setPreviewThumbnails();
+            if (mUserCollectionDB != null && mUserWantlistDB != null) {
+                setPreviewThumbnails();
+                Log.i("Preview Load", "Called setPreviewThumbnails from onResume");
+            }
         }
     }
 
@@ -90,65 +92,12 @@ public class DashboardFragment extends Fragment {
         View view = null;
         if (oauthVerified) {
             view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
             mUsernameLabel = (TextView) view.findViewById(R.id.user_name_dashboard_label);
-
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
-
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
-            if (mCollectionLinearLayout.getChildCount() != 0) {
-                mCollectionLinearLayout.removeAllViews();
-            }
-            if (mUserCollectionDB != null && mUserCollectionDB.getReleases().size() > 10) {
-                for (int i = 0; i < 10; i++) {
-                    final Release currentRelease = mUserCollectionDB.getReleases().get(i);
-                    ImageView imageView = new ImageView(getContext());
-                    imageView.setPadding(2, 2, 2, 2);
-                    LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
-                    imageView.setLayoutParams(parms);
-                    if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
-                    } else {
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                        currentRelease.getId(), "Collection");
-                                startActivity(intent);
-                            }
-                        });
-                        mCollectionLinearLayout.addView(imageView);
-                    }
-                }
-            }
-
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
-            if (mWantlistLinearLayout.getChildCount() != 0) {
-                mWantlistLinearLayout.removeAllViews();
-            }
-            if (mUserWantlistDB != null && mUserWantlistDB.getReleases().size() > 10) {
-                for (int i = 0; i < 10; i++) {
-                    final Release currentRelease = mUserWantlistDB.getReleases().get(i);
-                    ImageView imageView = new ImageView(getContext());
-                    imageView.setPadding(2, 2, 2, 2);
-                    LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(300, 300);
-                    imageView.setLayoutParams(parms);
-                    if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
-                    } else {
-                        imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                        currentRelease.getId(), "Wantlist");
-                                startActivity(intent);
-                            }
-                        });
-                        mWantlistLinearLayout.addView(imageView);
-                    }
-                }
-            }
+
             updateProfilePicture();
         } else {
             Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
@@ -342,6 +291,7 @@ public class DashboardFragment extends Fragment {
                     mCollectionLinearLayout.addView(imageView);
                 }
             }
+            Log.i("Preview Load", "Loaded " + previewsToLoad + " Collection previews from setPreviewThumbnails Loop");
         }
         if (mUserWantlistDB.getReleases().size() > 0) {
             int previewsToLoad = 10;
@@ -416,6 +366,7 @@ public class DashboardFragment extends Fragment {
                     mWantlistLinearLayout.addView(imageView);
                 }
             }
+            Log.i("Preview Load", "Loaded " + previewsToLoad + " Wantlist previews from setPreviewThumbnails Loop");
         }
     }
 
@@ -463,7 +414,6 @@ public class DashboardFragment extends Fragment {
                             Preferences.set(Preferences.USER_PIC_DIR, filePath.getAbsolutePath());
                             mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
                                     Preferences.get(Preferences.USER_PIC_DIR, "")));
-                            setPreviewThumbnails();
                         }
                     }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
             // Add the request to the RequestQueue.
@@ -471,7 +421,6 @@ public class DashboardFragment extends Fragment {
         } else {
             mUserProfilePicture.setImageBitmap(BitmapFactory.decodeFile(
                     Preferences.get(Preferences.USER_PIC_DIR, "")));
-            setPreviewThumbnails();
         }
 
     }

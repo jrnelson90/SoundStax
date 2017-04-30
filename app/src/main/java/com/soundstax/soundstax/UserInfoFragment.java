@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +34,7 @@ public class UserInfoFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
     }
 
     @Override

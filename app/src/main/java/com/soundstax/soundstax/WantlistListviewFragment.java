@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.Volley;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +48,7 @@ public class WantlistListviewFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         mUserWantlistDB = UserWantlistDB.get(getActivity());
-        queue = Volley.newRequestQueue(getContext());
+        queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
     }
 
     @Override
