@@ -11,6 +11,7 @@ import com.soundstax.soundstax.database.UserCollectionDBHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -125,6 +126,39 @@ class UserCollectionDB {
         returnedFolders.addAll(foundFolders);
 
         return returnedFolders;
+    }
+
+    ArrayList<String[]> getFolderIDAndNameList() {
+        ArrayList<String[]> foundFolders = new ArrayList<>();
+        ArrayList<String> foundFolderNames = new ArrayList<>();
+        ArrayList<String> foundFolderIds = new ArrayList<>();
+
+        try (CollectionCursorWrapper cursor = queryReleases(null, null)) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                String currentFolder = cursor.getRelease().getFolderName();
+                if (!foundFolderNames.contains(currentFolder)) {
+                    foundFolderNames.add(cursor.getRelease().getFolderName());
+                    foundFolderIds.add(cursor.getRelease().getFolderId());
+                }
+                cursor.moveToNext();
+            }
+        }
+
+        for (int i = 0; i < foundFolderNames.size(); i++) {
+            foundFolders.add(new String[]{foundFolderNames.get(i), foundFolderIds.get(i)});
+        }
+
+        Collections.sort(foundFolders, new Comparator<String[]>() {
+            @Override
+            public int compare(final String[] entry1, final String[] entry2) {
+                final String folderName1 = entry1[0];
+                final String foldername2 = entry2[0];
+                return folderName1.compareTo(foldername2);
+            }
+        });
+
+        return foundFolders;
     }
 
     Release getRelease(UUID id) {
