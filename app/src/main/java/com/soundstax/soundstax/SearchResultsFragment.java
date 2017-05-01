@@ -1,5 +1,6 @@
 package com.soundstax.soundstax;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -57,6 +59,7 @@ public class SearchResultsFragment extends Fragment {
     private SearchView mSearchView;
     private RequestQueue queue;
     private ReleaseAdapter mAdapter;
+    private String lastQuery = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,6 @@ public class SearchResultsFragment extends Fragment {
         queue = VolleyRequestQueue.getInstance(getActivity().getApplicationContext()).getRequestQueue();
         Bundle args = getActivity().getIntent().getExtras();
         String queryString = args.getString(QUERY_ARG);
-        getActivity().setTitle("Results for \"" + queryString + "\"");
         fetchQuery(queryString);
     }
 
@@ -101,6 +103,10 @@ public class SearchResultsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mSearchView.clearFocus();
+                mSearchView.setQuery("", false);
+                mSearchView.setFocusable(false);
+                searchItem.collapseActionView();
                 fetchQuery(query);
                 return true;
             }
@@ -108,23 +114,43 @@ public class SearchResultsFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Release> releases;
         try {
-            releases = searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
-            if (mAdapter == null) {
-                mAdapter = new ReleaseAdapter(releases);
-                mResultsRecyclerView.setAdapter(mAdapter);
+            List<Release> releases =
+                    searchJsonToReleaseList(mSearchResults.getJSONArray("results"));
+            if (releases.size() > 0) {
+                if (mAdapter == null) {
+                    mAdapter = new ReleaseAdapter(releases);
+                    mResultsRecyclerView.setAdapter(mAdapter);
+                } else {
+                    mAdapter.setReleases(releases);
+                    mAdapter.notifyDataSetChanged();
+                }
             } else {
-                mAdapter.setReleases(releases);
-                mAdapter.notifyDataSetChanged();
+                mResultsRecyclerView.setVisibility(View.GONE);
+                RelativeLayout listLayout =
+                        (RelativeLayout) getView().findViewById(R.id.list_view_layout);
+                TextView errorTextView = (TextView) getActivity()
+                        .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+
+                String errorString = "No results found for \"" + lastQuery + "\"";
+                errorTextView.setText(errorString);
+                listLayout.addView(errorTextView);
+
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams) errorTextView.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                errorTextView.setLayoutParams(layoutParams);
             }
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     void fetchQuery(String _queryString) {
         //Parse search into a URL friendly encoding.
+        lastQuery = _queryString;
+        getActivity().setTitle("Results for \"" + _queryString + "\"");
         String query_string_encoded = "";
         try {
             query_string_encoded = URLEncoder.encode(_queryString, "UTF-8");
@@ -134,12 +160,15 @@ public class SearchResultsFragment extends Fragment {
         // Get JSON object for passed release info.
         String searchString = "https://api.discogs.com/database/search?q=" +
                 query_string_encoded + "&per_page=100";
+        final ProgressDialog searchingDialog = new ProgressDialog(getActivity());
+        searchingDialog.setMessage("Searching Discogs for \"" + _queryString + "\"");
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, searchString, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         mSearchResults = response;
-                        Log.i(TAG, "Received Search JSON:");
+                        Log.i(TAG, "Received Search JSON");
+                        searchingDialog.dismiss();
                         updateUI();
                         // TODO Call and populate results view
                     }
@@ -170,6 +199,7 @@ public class SearchResultsFragment extends Fragment {
         };
         // Access the RequestQueue through your singleton class.
         queue.add(jsObjRequest);
+        searchingDialog.show();
     }
 
     private List<Release> searchJsonToReleaseList(JSONArray _searchResults) throws JSONException {
@@ -256,6 +286,7 @@ public class SearchResultsFragment extends Fragment {
             mFormatInfo.append(" (" + formatInfoParsed + ")");
             mThumbImageView.setImageBitmap(BitmapFactory.decodeFile(mRelease.getThumbDir()));
         }
+
 
         @Override
         public void onClick(View v) {

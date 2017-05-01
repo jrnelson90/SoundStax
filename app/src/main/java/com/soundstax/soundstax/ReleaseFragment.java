@@ -64,6 +64,7 @@ public class ReleaseFragment extends Fragment {
     private TextView mReleaseLabels;
     private android.widget.TableLayout mTrackInfoTable;
     private TextView mReleaseGenre;
+    private TextView mUserFolderTextView;
 
     public static ReleaseFragment newInstance(UUID releaseID, String _parentList) {
         Bundle args = new Bundle();
@@ -294,6 +295,14 @@ public class ReleaseFragment extends Fragment {
         mTrackInfoTable = (TableLayout) v.findViewById(R.id.track_info_table);
         mReleaseLabels = (TextView) v.findViewById(R.id.release_labels);
 
+        mUserFolderTextView = (TextView) v.findViewById(R.id.release_user_folder);
+        if (parentList.equals("Collection")) {
+            mUserFolderTextView.setText(mRelease.getFolderName());
+        } else {
+            TableRow folderRow = (TableRow) v.findViewById(R.id.folder_row);
+            folderRow.setVisibility(View.GONE);
+        }
+
         mReleaseFormatInfo = (TextView) v.findViewById(R.id.release_format_info);
         mReleaseFormatInfo.setText(mRelease.getFormatName());
         String formatInfoParsed = "";
@@ -325,12 +334,6 @@ public class ReleaseFragment extends Fragment {
         artistField.setText(mRelease.getArtist());
 
         mReleaseGenre = (TextView) v.findViewById(R.id.release_genre);
-//        if(mRelease.getGenre().equals("")){
-//        String empty = "(None Specified)";
-//        mReleaseGenre.setText(empty);
-//        } else{
-//            genreField.setText(mRelease.getGenre());
-//        }
 
         TextView yearField = (TextView) v.findViewById(R.id.release_year);
         yearField.setText(mRelease.getYear());

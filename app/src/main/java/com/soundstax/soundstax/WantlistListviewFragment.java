@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -103,14 +104,36 @@ public class WantlistListviewFragment extends Fragment {
     }
 
     private void updateUI() {
-        List<Release> releases = mUserWantlistDB.getReleases();
+        try {
+            List<Release> releases = mUserWantlistDB.getReleases();
 
-        if (mAdapter == null) {
-            mAdapter = new ReleaseAdapter(releases);
-            mReleaseRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setReleases(releases);
-            mAdapter.notifyDataSetChanged();
+            if (releases.size() > 0) {
+                if (mAdapter == null) {
+                    mAdapter = new ReleaseAdapter(releases);
+                    mReleaseRecyclerView.setAdapter(mAdapter);
+                } else {
+                    mAdapter.setReleases(releases);
+                    mAdapter.notifyDataSetChanged();
+                }
+            } else {
+                mReleaseRecyclerView.setVisibility(View.GONE);
+                RelativeLayout listLayout =
+                        (RelativeLayout) getView().findViewById(R.id.list_view_layout);
+                TextView errorTextView = (TextView) getActivity()
+                        .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+
+                String errorString = "Wantlist is Empty";
+                errorTextView.setText(errorString);
+                listLayout.addView(errorTextView);
+
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams) errorTextView.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                errorTextView.setLayoutParams(layoutParams);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 

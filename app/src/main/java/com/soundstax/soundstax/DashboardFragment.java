@@ -51,6 +51,8 @@ public class DashboardFragment extends Fragment {
     private TextView mUsernameLabel;
     private ImageView mUserProfilePicture;
     private RequestQueue queue;
+    private TextView mCollectionLabel;
+    private TextView mWantlistLabel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,11 @@ public class DashboardFragment extends Fragment {
         super.onResume();
         if (Preferences.get(Preferences.USER_PROFILE, "").length() != 0) {
             if (mUserCollectionDB != null && mUserWantlistDB != null) {
+                String collectionLabelString = "Collection - Most Recent";
+                String wantlistLabelString = "Wantlist - Most Recent";
+                mCollectionLabel.setText(collectionLabelString);
+                mWantlistLabel.setText(wantlistLabelString);
                 setPreviewThumbnails();
-                Log.i("Preview Load", "Called setPreviewThumbnails from onResume");
             }
         }
     }
@@ -97,8 +102,10 @@ public class DashboardFragment extends Fragment {
             mUserProfilePicture = (ImageView) view.findViewById(R.id.user_profile_picture);
             mCollectionLinearLayout = (LinearLayout) view.findViewById(R.id.collection_dashboard_linear_layout);
             mWantlistLinearLayout = (LinearLayout) view.findViewById(R.id.wantlist_dashboard_linear_layout);
-
+            mCollectionLabel = (TextView) view.findViewById(R.id.collection_dash_label);
+            mWantlistLabel = (TextView) view.findViewById(R.id.wantlist_dash_label);
             updateProfilePicture();
+
         } else {
             Preferences.set(Preferences.OAUTH_ACCESS_KEY, "");
             Preferences.set(Preferences.OAUTH_ACCESS_SECRET, "");
@@ -212,13 +219,9 @@ public class DashboardFragment extends Fragment {
     private void setPreviewThumbnails() {
         // Update view with retrieved Collection data
         Release currentRelease;
-        if (mCollectionLinearLayout.getChildCount() != 0) {
-            mCollectionLinearLayout.removeAllViews();
-        }
-        if (mWantlistLinearLayout.getChildCount() != 0) {
-            mWantlistLinearLayout.removeAllViews();
-        }
+
         if (mUserCollectionDB.getReleases().size() > 0) {
+            mCollectionLinearLayout.removeAllViews();
             int previewsToLoad = 10;
             if (mUserCollectionDB.getReleases().size() < 10) {
                 previewsToLoad = mUserCollectionDB.getReleases().size();
@@ -292,8 +295,18 @@ public class DashboardFragment extends Fragment {
                 }
             }
             Log.i("Preview Load", "Loaded " + previewsToLoad + " Collection previews from setPreviewThumbnails Loop");
+        } else {
+            mCollectionLinearLayout.removeAllViews();
+            TextView emptyMessageTextView = (TextView) getActivity()
+                    .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+            String emptyMessageString = "Collection is Empty";
+            emptyMessageTextView.setText(emptyMessageString);
+            mCollectionLinearLayout.addView(emptyMessageTextView);
         }
+
+
         if (mUserWantlistDB.getReleases().size() > 0) {
+            mWantlistLinearLayout.removeAllViews();
             int previewsToLoad = 10;
             if (mUserWantlistDB.getReleases().size() < 10) {
                 previewsToLoad = mUserWantlistDB.getReleases().size();
@@ -367,6 +380,19 @@ public class DashboardFragment extends Fragment {
                 }
             }
             Log.i("Preview Load", "Loaded " + previewsToLoad + " Wantlist previews from setPreviewThumbnails Loop");
+        } else {
+            mWantlistLinearLayout.removeAllViews();
+            TextView emptyMessageTextView = (TextView) getActivity()
+                    .getLayoutInflater().inflate(R.layout.list_empty_list_text_view, null);
+            String emptyMessageString = "Wantlist is Empty";
+            emptyMessageTextView.setText(emptyMessageString);
+            mWantlistLinearLayout.addView(emptyMessageTextView);
+
+//            LinearLayout.LayoutParams layoutParams =
+//                    (LinearLayout.LayoutParams) emptyMessageTextView.getLayoutParams();
+//            layoutParams.weight = 1.0f;
+//            layoutParams.gravity = Gravity.CENTER;
+//            emptyMessageTextView.setLayoutParams(layoutParams);
         }
     }
 
