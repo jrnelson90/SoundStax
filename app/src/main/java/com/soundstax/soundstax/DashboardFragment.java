@@ -181,7 +181,7 @@ public class DashboardFragment extends Fragment {
 
                         @Override
                         public void onResponse(JSONObject response) {
-                            updateUsername();
+                            mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
                             Log.i("User Profile", "Already loaded user");
                         }
                     }, new Response.ErrorListener() {
@@ -235,7 +235,7 @@ public class DashboardFragment extends Fragment {
 
                 if (!currentRelease.getThumbUrl().equals("")) {
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
+                        downloadPreviewThumbnail("Collection", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         final Release finalCurrentRelease = currentRelease;
@@ -320,7 +320,7 @@ public class DashboardFragment extends Fragment {
 
                 if (!currentRelease.getThumbUrl().equals("")) {
                     if (currentRelease.getThumbDir().equals("")) {
-                        DownloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
+                        downloadPreviewThumbnail("Wantlist", i, currentRelease.getReleaseId(), imageView);
                     } else {
                         imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
                         final Release finalCurrentRelease = currentRelease;
@@ -451,11 +451,7 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private void updateUsername() {
-        mUsernameLabel.setText(Preferences.get(Preferences.USERNAME, ""));
-    }
-
-    private void DownloadPreviewThumbnail(final String _thumbDbName, final int dbIndex,
+    private void downloadPreviewThumbnail(final String _thumbDbName, final int dbIndex,
                                           final String _releaseID, final ImageView imageView) {
         long startTime = System.currentTimeMillis();
         String thumbURL = "";
@@ -470,68 +466,36 @@ public class DashboardFragment extends Fragment {
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap releaseCoverBitmap) {
-                        try {
-                            // path to /data/data/yourapp/app_data/imageDir
-                            ContextWrapper cw = new ContextWrapper(getContext());
-
-                            String thumbDir = "";
-                            if (_thumbDbName.equals("Collection")) {
-                                thumbDir = "CollectionCovers";
-                            } else if (_thumbDbName.equals("Wantlist")) {
-                                thumbDir = "WantlistCovers";
-                            }
-
-                            File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
-                            // Create imageDir
-                            File filePath = new File(directory, "release_" + _releaseID + "_cover.jpeg");
-
-                            FileOutputStream fos = null;
-                            try {
-                                fos = new FileOutputStream(filePath);
-                                releaseCoverBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (fos != null) {
-                                        fos.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                        File filePath = saveReleaseImageToFile(releaseCoverBitmap, _thumbDbName, _releaseID);
+                        final Release currentRelease;
+                        if (_thumbDbName.equals("Collection")) {
+                            currentRelease = mUserCollectionDB.getReleases().get(dbIndex);
+                            currentRelease.setThumbDir(filePath.getAbsolutePath());
+                            mUserCollectionDB.updateRelease(currentRelease);
+                            imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                            currentRelease.getId(), "Collection");
+                                    startActivity(intent);
                                 }
-                            }
-                            final Release currentRelease;
-                            if (_thumbDbName.equals("Collection")) {
-                                currentRelease = mUserCollectionDB.getReleases().get(dbIndex);
-                                currentRelease.setThumbDir(filePath.getAbsolutePath());
-                                mUserCollectionDB.updateRelease(currentRelease);
-                                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                                currentRelease.getId(), "Collection");
-                                        startActivity(intent);
-                                    }
-                                });
-                                mCollectionLinearLayout.addView(imageView);
-                            } else if (_thumbDbName.equals("Wantlist")) {
-                                currentRelease = mUserWantlistDB.getReleases().get(dbIndex);
-                                currentRelease.setThumbDir(filePath.getAbsolutePath());
-                                mUserWantlistDB.updateRelease(currentRelease);
-                                imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = ReleaseActivity.newIntent(getActivity(),
-                                                currentRelease.getId(), "Wantlist");
-                                        startActivity(intent);
-                                    }
-                                });
-                                mWantlistLinearLayout.addView(imageView);
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
+                            });
+                            mCollectionLinearLayout.addView(imageView);
+                        } else if (_thumbDbName.equals("Wantlist")) {
+                            currentRelease = mUserWantlistDB.getReleases().get(dbIndex);
+                            currentRelease.setThumbDir(filePath.getAbsolutePath());
+                            mUserWantlistDB.updateRelease(currentRelease);
+                            imageView.setImageBitmap(BitmapFactory.decodeFile(currentRelease.getThumbDir()));
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = ReleaseActivity.newIntent(getActivity(),
+                                            currentRelease.getId(), "Wantlist");
+                                    startActivity(intent);
+                                }
+                            });
+                            mWantlistLinearLayout.addView(imageView);
                         }
                     }
                 }, 300, 300, ImageView.ScaleType.FIT_CENTER, null, null);
@@ -541,6 +505,46 @@ public class DashboardFragment extends Fragment {
         // wait for each item
         Log.i("DownloadThumbnail", "Grabbed " + _thumbDbName + " thumbnail file " + dbIndex);
         Log.i("Execution took {}ms", String.valueOf(System.currentTimeMillis() - startTime));
+    }
+
+    private File saveReleaseImageToFile(Bitmap _responseBitmap, String _thumbDbName, String _releaseID) {
+        File filePath = null;
+        try {
+            // path to /data/data/yourapp/app_data/imageDir
+            ContextWrapper cw = new ContextWrapper(getContext());
+
+            String thumbDir = "";
+            if (_thumbDbName.equals("Collection")) {
+                thumbDir = "CollectionCovers";
+            } else if (_thumbDbName.equals("Wantlist")) {
+                thumbDir = "WantlistCovers";
+            }
+
+            File directory = cw.getDir(thumbDir, Context.MODE_PRIVATE);
+            // Create imageDir
+            filePath = new File(directory, "release_" + _releaseID + "_cover.jpeg");
+
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(filePath);
+                _responseBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return filePath;
     }
 
 }

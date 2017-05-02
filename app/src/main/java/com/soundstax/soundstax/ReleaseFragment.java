@@ -1,5 +1,6 @@
 package com.soundstax.soundstax;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -7,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
@@ -36,7 +39,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -217,87 +222,113 @@ public class ReleaseFragment extends Fragment {
                     }
 
                 });
-                mModifyListActionTwoButton.setVisibility(View.GONE);
+//                mModifyListActionTwoButton.setVisibility(View.GONE);
 
-//                mModifyListActionTwoButton.setText("Set Folder");
-//                mModifyListActionTwoButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//                        builder.setTitle("Select a folder");
-//                        final ArrayList<String> folderNames =
-//                                UserCollectionDB.get(getContext()).getFolderList();
-//                        final ArrayList<String[]> folderNamesAndIds =
-//                        UserCollectionDB.get(getContext()).getFolderIDAndNameList();
-//                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
-//                                        android.R.layout.select_dialog_singlechoice);
-//                        arrayAdapter.addAll(folderNames);
-//
-//                        builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-//                            public void onClick(final DialogInterface dialog, final int item) {
-//
-//                                UserCollectionDB.get(getActivity()).updateRelease(mRelease);
-//
-//                                String releaseURL = "https://api.discogs.com/users/" +
-//                                        Preferences.get(Preferences.USERNAME, "") +
-//                                        "/collection/folders/" + mRelease.getFolderId() + "/releases/" +
-//                                        mRelease.getReleaseId() + "/instances/" + mRelease.getInstanceId();
-//                                final int[] mStatusCode = new int[1];
-//                                JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, releaseURL, null,
-//                                        new Response.Listener<JSONObject>() {
-//                                            @Override
-//                                            public void onResponse(JSONObject response) {
-//                                                if (mStatusCode[0] == 204) {
-//                                                    mRelease.setFolderName(folderNamesAndIds.get(item)[0]);
-//                                                    mRelease.setFolderId(folderNamesAndIds.get(item)[1]);
-//                                                    mUserFolderTextView.setText(mRelease.getFolderName());
-//                                                    dialog.dismiss();
-//                                                    Toast.makeText(getActivity(), mTitleField.getText().toString()
-//                                                                    + " added to " + folderNamesAndIds.get(item)[0]
-//                                                                    + " folder",
-//                                                            Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            }
-//                                        }, new Response.ErrorListener() {
-//                                    @Override
-//                                    public void onErrorResponse(VolleyError error) {
-//                                    }
-//                                })
-//
-//                                {
-//                                    @Override
-//                                    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-//                                        mStatusCode[0] = response.statusCode;
-//                                        return super.parseNetworkResponse(response);
-//                                    }
-//
-//                                    @Override
-//                                    public Map<String, String> getHeaders() throws AuthFailureError {
-//                                        Map<String, String> params = new HashMap<>();
-//                                        Long tsLong = System.currentTimeMillis() / 1000;
-//                                        String ts = tsLong.toString();
-//                                        params.put("Content-Type", "application/x-www-form-urlencoded");
-//                                        params.put("Authorization", "OAuth" +
-//                                                "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
-//                                                ", oauth_nonce=" + ts +
-//                                                ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
-//                                                ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
-//                                                Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
-//                                                ", oauth_signature_method=PLAINTEXT" +
-//                                                ", oauth_timestamp=" + ts);
-//                                        params.put("User-Agent", HttpConst.USER_AGENT);
-//                                        params.put("folder_id", folderNamesAndIds.get(item)[1]);
-//                                        return params;
-//                                    }
-//                                };
-//                                queue.add(stringRequest);
-//
-//                            }
-//                        });
-//                        AlertDialog alert = builder.create();
-//                        alert.show();
-//                    }
-//                });
+                mModifyListActionTwoButton.setText("Set Folder");
+                mModifyListActionTwoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Select a folder");
+                        final ArrayList<String> folderNames =
+                                UserCollectionDB.get(getContext()).getFolderList();
+                        final ArrayList<String[]> folderNamesAndIds =
+                                UserCollectionDB.get(getContext()).getFolderIDAndNameList();
+                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
+                                android.R.layout.select_dialog_singlechoice);
+                        for (int i = 1; i < folderNames.size(); i++) {
+                            arrayAdapter.add(folderNames.get(i));
+                        }
+
+                        builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, final int item) {
+
+                                UserCollectionDB.get(getActivity()).updateRelease(mRelease);
+
+                                String releaseURL = "https://api.discogs.com/users/" +
+                                        Preferences.get(Preferences.USERNAME, "") +
+                                        "/collection/folders/" + mRelease.getFolderId() + "/releases/" +
+                                        mRelease.getReleaseId() + "/instances/" + mRelease.getInstanceId();
+                                final int[] mStatusCode = new int[1];
+                                StringRequest stringRequest = new StringRequest(Request.Method.POST, releaseURL,
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                if (mStatusCode[0] == 204) {
+                                                    mRelease.setFolderName(folderNamesAndIds.get(item)[0]);
+                                                    mRelease.setFolderId(folderNamesAndIds.get(item)[1]);
+                                                    mUserFolderTextView.setText(mRelease.getFolderName());
+                                                    dialog.dismiss();
+                                                    Toast.makeText(getActivity(), mTitleField.getText().toString()
+                                                                    + " added to " + folderNamesAndIds.get(item)[0]
+                                                                    + " folder",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                    }
+                                })
+
+                                {
+                                    @Override
+                                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                        mStatusCode[0] = response.statusCode;
+                                        return super.parseNetworkResponse(response);
+                                    }
+
+                                    @Override
+                                    public String getBodyContentType() {
+                                        return "application/json; charset=utf-8";
+                                    }
+
+                                    @Override
+                                    public byte[] getBody() throws AuthFailureError {
+                                        JSONObject jsonBody = new JSONObject();
+                                        try {
+                                            jsonBody.put("rating", "5");
+                                            jsonBody.put("folder_id", folderNamesAndIds.get(item)[1]);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        final String requestBody = jsonBody.toString();
+
+                                        try {
+                                            return requestBody.getBytes("utf-8");
+                                        } catch (UnsupportedEncodingException e) {
+                                            e.printStackTrace();
+                                            return null;
+                                        }
+                                    }
+
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> params = new HashMap<>();
+                                        Long tsLong = System.currentTimeMillis() / 1000;
+                                        String ts = tsLong.toString();
+                                        params.put("Content-Type", "application/x-www-form-urlencoded");
+                                        params.put("Authorization", "OAuth" +
+                                                "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
+                                                ", oauth_nonce=" + ts +
+                                                ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
+                                                ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
+                                                Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
+                                                ", oauth_signature_method=PLAINTEXT" +
+                                                ", oauth_timestamp=" + ts);
+                                        params.put("User-Agent", HttpConst.USER_AGENT);
+                                        return params;
+                                    }
+
+                                };
+                                queue.add(stringRequest);
+
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                });
                 break;
             case "Wantlist":
                 removeButtonText = "Remove from " + parentList;
