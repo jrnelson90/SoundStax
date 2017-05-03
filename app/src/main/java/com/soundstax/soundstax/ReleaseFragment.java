@@ -251,20 +251,21 @@ public class ReleaseFragment extends Fragment {
                         builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, final int item) {
 
-                                UserCollectionDB.get(getActivity()).updateRelease(mRelease);
-
                                 String releaseURL = "https://api.discogs.com/users/" +
                                         Preferences.get(Preferences.USERNAME, "") +
                                         "/collection/folders/" + mRelease.getFolderId() + "/releases/" +
                                         mRelease.getReleaseId() + "/instances/" + mRelease.getInstanceId();
+
                                 Long tsLong = System.currentTimeMillis() / 1000;
                                 String ts = tsLong.toString();
+
                                 JSONObject folderBody = new JSONObject();
                                 try {
                                     folderBody.put("folder_id", folderNamesAndIds.get(item)[1]);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+
                                 com.afollestad.bridge.Request request = null;
                                 request = Bridge
                                         .post(releaseURL)
@@ -286,7 +287,6 @@ public class ReleaseFragment extends Fragment {
                                                                  com.afollestad.bridge.Response response,
                                                                  BridgeException e) {
                                                 if (e != null) {
-                                                    // See the 'Error Handling' section for information on how to process BridgeExceptions
                                                     int reason = e.reason();
                                                 } else {
                                                     // Use the Response object
@@ -295,11 +295,11 @@ public class ReleaseFragment extends Fragment {
                                                         mRelease.setFolderName(folderNamesAndIds.get(item)[0]);
                                                         mRelease.setFolderId(folderNamesAndIds.get(item)[1]);
                                                         mUserFolderTextView.setText(mRelease.getFolderName());
+                                                        UserCollectionDB.get(getActivity()).updateRelease(mRelease);
 
                                                         dialog.dismiss();
                                                         Toast.makeText(getActivity(), mTitleField.getText().toString()
-                                                                        + " added to " + folderNamesAndIds.get(item)[0]
-                                                                        + " folder",
+                                                                        + " added to " + folderNamesAndIds.get(item)[0],
                                                                 Toast.LENGTH_SHORT).show();
 
                                                     } else {
