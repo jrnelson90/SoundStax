@@ -1,5 +1,6 @@
 package com.soundstax.soundstax;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -115,6 +116,14 @@ public class AuthPageFragment extends VisibleFragment {
     private void openLoadingActivity() {
         Intent i = new Intent(getActivity(), LoadingSplashActivity.class);
         startActivity(i);
+        Intent responseIntent = new Intent();
+
+        // Throw in some identifier
+//        i.putExtra(EXTRA_CAR_ID, car.getId());
+
+        // Set the result with this data, and finish the activity
+        getActivity().setResult(Activity.RESULT_OK, responseIntent);
+
         getActivity().finish();
     }
 
