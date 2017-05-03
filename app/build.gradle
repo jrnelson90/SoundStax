@@ -39,4 +39,8 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile('com.afollestad:bridge:5.1.2') {
+        exclude group: 'org.json', module: 'json'
+    }
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
 }

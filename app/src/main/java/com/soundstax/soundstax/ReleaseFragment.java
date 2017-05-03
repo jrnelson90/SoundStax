@@ -21,6 +21,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.bridge.Bridge;
+import com.afollestad.bridge.BridgeException;
+import com.afollestad.bridge.Callback;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -39,7 +42,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +91,12 @@ public class ReleaseFragment extends Fragment {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Bridge.destroy();
     }
 
     @Override
@@ -249,79 +257,61 @@ public class ReleaseFragment extends Fragment {
                                         Preferences.get(Preferences.USERNAME, "") +
                                         "/collection/folders/" + mRelease.getFolderId() + "/releases/" +
                                         mRelease.getReleaseId() + "/instances/" + mRelease.getInstanceId();
-                                final int[] mStatusCode = new int[1];
-                                StringRequest stringRequest = new StringRequest(Request.Method.POST, releaseURL,
-                                        new Response.Listener<String>() {
-                                            @Override
-                                            public void onResponse(String response) {
-                                                if (mStatusCode[0] == 204) {
-                                                    mRelease.setFolderName(folderNamesAndIds.get(item)[0]);
-                                                    mRelease.setFolderId(folderNamesAndIds.get(item)[1]);
-                                                    mUserFolderTextView.setText(mRelease.getFolderName());
-                                                    dialog.dismiss();
-                                                    Toast.makeText(getActivity(), mTitleField.getText().toString()
-                                                                    + " added to " + folderNamesAndIds.get(item)[0]
-                                                                    + " folder",
-                                                            Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                    }
-                                })
-
-                                {
-                                    @Override
-                                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                                        mStatusCode[0] = response.statusCode;
-                                        return super.parseNetworkResponse(response);
-                                    }
-
-                                    @Override
-                                    public String getBodyContentType() {
-                                        return "application/json; charset=utf-8";
-                                    }
-
-                                    @Override
-                                    public byte[] getBody() throws AuthFailureError {
-                                        JSONObject jsonBody = new JSONObject();
-                                        try {
-                                            jsonBody.put("rating", "5");
-                                            jsonBody.put("folder_id", folderNamesAndIds.get(item)[1]);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        final String requestBody = jsonBody.toString();
-
-                                        try {
-                                            return requestBody.getBytes("utf-8");
-                                        } catch (UnsupportedEncodingException e) {
-                                            e.printStackTrace();
-                                            return null;
-                                        }
-                                    }
-
-                                    @Override
-                                    public Map<String, String> getHeaders() throws AuthFailureError {
-                                        Map<String, String> params = new HashMap<>();
-                                        Long tsLong = System.currentTimeMillis() / 1000;
-                                        String ts = tsLong.toString();
-                                        params.put("Content-Type", "application/x-www-form-urlencoded");
-                                        params.put("Authorization", "OAuth" +
+                                Long tsLong = System.currentTimeMillis() / 1000;
+                                String ts = tsLong.toString();
+                                JSONObject folderBody = new JSONObject();
+                                try {
+                                    folderBody.put("folder_id", folderNamesAndIds.get(item)[1]);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                com.afollestad.bridge.Request request = null;
+                                request = Bridge
+                                        .post(releaseURL)
+                                        .header("Content-Type", "application/x-www-form-urlencoded")
+                                        .header("Authorization", "OAuth" +
                                                 "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
                                                 ", oauth_nonce=" + ts +
                                                 ", oauth_token=" + Preferences.get(Preferences.OAUTH_ACCESS_KEY, "") +
                                                 ", oauth_signature=" + HttpConst.DISCOGS_CONSUMER_SECRET + "&" +
                                                 Preferences.get(Preferences.OAUTH_ACCESS_SECRET, "") +
                                                 ", oauth_signature_method=PLAINTEXT" +
-                                                ", oauth_timestamp=" + ts);
-                                        params.put("User-Agent", HttpConst.USER_AGENT);
-                                        return params;
-                                    }
+                                                ", oauth_timestamp=" + ts)
+                                        .header("User-Agent", HttpConst.USER_AGENT)
+                                        .body(folderBody)
+                                        .throwIfNotSuccess() // optional
+                                        .request(new Callback() {
+                                            @Override
+                                            public void response(com.afollestad.bridge.Request request,
+                                                                 com.afollestad.bridge.Response response,
+                                                                 BridgeException e) {
+                                                if (e != null) {
+                                                    // See the 'Error Handling' section for information on how to process BridgeExceptions
+                                                    int reason = e.reason();
+                                                } else {
+                                                    // Use the Response object
+                                                    if (response.code() == 204) {
+                                                        // Request returned HTTP status 204
+                                                        mRelease.setFolderName(folderNamesAndIds.get(item)[0]);
+                                                        mRelease.setFolderId(folderNamesAndIds.get(item)[1]);
+                                                        mUserFolderTextView.setText(mRelease.getFolderName());
 
-                                };
-                                queue.add(stringRequest);
+                                                        dialog.dismiss();
+                                                        Toast.makeText(getActivity(), mTitleField.getText().toString()
+                                                                        + " added to " + folderNamesAndIds.get(item)[0]
+                                                                        + " folder",
+                                                                Toast.LENGTH_SHORT).show();
+
+                                                    } else {
+                                                        Toast.makeText(getActivity(), "Error Code " + response.code() +
+                                                                        " when attempting to add " +
+                                                                        mTitleField.getText().toString() +
+                                                                        " to " + folderNamesAndIds.get(item)[0],
+                                                                Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        });
 
                             }
                         });
