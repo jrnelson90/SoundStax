@@ -22,9 +22,15 @@ public class AuthPageActivity extends SingleFragmentActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent("finish_activity");
-        sendBroadcast(intent);
+//        Intent intent = new Intent("finish_activity");
+//        sendBroadcast(intent);
+
     }
 }

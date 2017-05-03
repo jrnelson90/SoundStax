@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import java.util.Map;
  */
 
 public class LoginSplashActivity extends Activity {
+    private static final int REQUEST_CODE_LOGIN_SUCCESS = 101;
     private RequestQueue queue;
     private BroadcastReceiver broadcast_reciever;
 
@@ -62,16 +62,6 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        broadcast_reciever = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent intent) {
-                String action = intent.getAction();
-                if (action.equals("finish_activity")) {
-                    finish();
-                }
-            }
-        };
-        registerReceiver(broadcast_reciever, new IntentFilter("finish_activity"));
     }
 
     private void FetchRequestToken() {
@@ -90,7 +80,6 @@ public class LoginSplashActivity extends Activity {
                             if (OauthVerifyTokens.getOauthRequestToken() != null) {
                                 authUrl = HttpConst.DISCOGS_AUTHORIZATION_WEBSITE_URL + "?oauth_token=" +
                                         OauthVerifyTokens.getOauthRequestToken();
-                                Log.i("Auth URL", authUrl);
                             } else {
                                 Log.i("Auth Dialog", "No oauth request token values populated");
                             }
@@ -98,7 +87,7 @@ public class LoginSplashActivity extends Activity {
                             if (authUrl != null) {
                                 Uri authUri = Uri.parse(authUrl);
                                 Intent i = AuthPageActivity.newIntent(getApplicationContext(), authUri);
-                                startActivity(i);
+                                startActivityForResult(i, REQUEST_CODE_LOGIN_SUCCESS);
                             }
                         }
 
@@ -130,5 +119,17 @@ public class LoginSplashActivity extends Activity {
 
         // Access the RequestQueue through your singleton class.
         queue.add(stringRequest);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODE_LOGIN_SUCCESS == requestCode) {
+            // If the activity confirmed a succesful login
+            if (Activity.RESULT_OK == resultCode) {
+                finish();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
