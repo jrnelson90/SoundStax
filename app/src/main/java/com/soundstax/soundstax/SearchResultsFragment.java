@@ -107,6 +107,18 @@ public class SearchResultsFragment extends Fragment {
                 mSearchView.setQuery("", false);
                 mSearchView.setFocusable(false);
                 searchItem.collapseActionView();
+                if (mResultsRecyclerView.getVisibility() == View.GONE) {
+                    try {
+                        TextView noResultsTextView = (TextView) getView().findViewById(R.id.empty_list_text_view);
+                        RelativeLayout listLayout =
+                                (RelativeLayout) getView().findViewById(R.id.list_view_layout);
+                        listLayout.removeView(noResultsTextView);
+                        mResultsRecyclerView.setVisibility(View.VISIBLE);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 fetchQuery(query);
                 return true;
             }

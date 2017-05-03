@@ -230,7 +230,6 @@ public class ReleaseFragment extends Fragment {
                     }
 
                 });
-//                mModifyListActionTwoButton.setVisibility(View.GONE);
 
                 mModifyListActionTwoButton.setText("Set Folder");
                 mModifyListActionTwoButton.setOnClickListener(new View.OnClickListener() {
@@ -266,9 +265,7 @@ public class ReleaseFragment extends Fragment {
                                     e.printStackTrace();
                                 }
 
-                                com.afollestad.bridge.Request request = null;
-                                request = Bridge
-                                        .post(releaseURL)
+                                Bridge.post(releaseURL)
                                         .header("Content-Type", "application/x-www-form-urlencoded")
                                         .header("Authorization", "OAuth" +
                                                 "  oauth_consumer_key=" + HttpConst.DISCOGS_CONSUMER_KEY +
@@ -308,8 +305,8 @@ public class ReleaseFragment extends Fragment {
                                                                         mTitleField.getText().toString() +
                                                                         " to " + folderNamesAndIds.get(item)[0],
                                                                 Toast.LENGTH_SHORT).show();
-                                                    }
                                                 }
+                                            }
                                             }
                                         });
 
@@ -391,8 +388,8 @@ public class ReleaseFragment extends Fragment {
                         String releaseURL = "https://api.discogs.com/users/" +
                                 Preferences.get(Preferences.USERNAME, "") +
                                 "/collection/folders/1/releases/" + mRelease.getReleaseId();
-                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, releaseURL, null,
-                                new Response.Listener<JSONObject>() {
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST,
+                                releaseURL, null, new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         if (mStatusCode == 201) {
